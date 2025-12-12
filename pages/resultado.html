@@ -1,0 +1,11 @@
+<script>
+const resultado = JSON.parse(localStorage.getItem("resultado"));
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+const perfis = JSON.parse(localStorage.getItem("textosPerfis"));
+
+/* ordenar perfis por pontuação */
+const ordenado = Object.entries(resultado)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0,3);
+
+/* montar cards */
