@@ -1,5 +1,157 @@
-function salvarResposta(pergunta, alternativa) {
-    let respostas = JSON.parse(localStorage.getItem("respostas")) || [];
-    respostas.push({pergunta, alternativa});
-    localStorage.setItem("respostas", JSON.stringify(respostas));
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Página 2 - Teste de Competências Emocionais</title>
+
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="../script.js"></script>
+
+    <style>
+        .question-card {
+            background: #fff;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #0F2B5B;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: #183c7d;
+        }
+
+        .next-btn {
+            margin-top: 35px;
+            background: #E57E25;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .next-btn:hover {
+            background: #cf6d1f;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: #0F2B5B;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        
+        <h1>Formulário de Pesquisa — Página 2</h1>
+        <p>Continue selecionando a alternativa que MAIS se parece com você em cada situação.</p>
+
+        <!-- ============================ -->
+        <!-- PERGUNTA 1 - P2_01 -->
+        <!-- ============================ -->
+        <div class="question-card">
+            <h3>Às vezes</h3>
+
+            <button class="option-btn" onclick="salvarResposta('P2_01','A')">
+                Imagino um mundo ideal
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_01','B')">
+                Prefiro ficar só para analisar o cenário sem influência dos outros
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_01','C')">
+                Prefiro saber a opinião dos outros para decidir o que é melhor a fazer
+            </button>
+        </div>
+
+        <!-- ============================ -->
+        <!-- PERGUNTA 2 - P2_02 -->
+        <!-- ============================ -->
+        <div class="question-card">
+            <h3>Não gosto de</h3>
+
+            <button class="option-btn" onclick="salvarResposta('P2_02','A')">
+                Me sentir desvalorizado, quando não me dão atenção
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_02','B')">
+                Me sentir preso a rotinas e processos
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_02','C')">
+                Ser pressionado a tomar partido, pois acredito que todos têm suas razões
+            </button>
+        </div>
+
+        <!-- ============================ -->
+        <!-- PERGUNTA 3 - P2_03 -->
+        <!-- ============================ -->
+        <div class="question-card">
+            <h3>Sei que sou</h3>
+
+            <button class="option-btn" onclick="salvarResposta('P2_03','A')">
+                Orgulhoso
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_03','B')">
+                Disperso
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_03','C')">
+                Narcisista
+            </button>
+        </div>
+
+        <!-- ============================ -->
+        <!-- PERGUNTA 4 - P2_04 -->
+        <!-- ============================ -->
+        <div class="question-card">
+            <h3>Não sou e não gosto</h3>
+
+            <button class="option-btn" onclick="salvarResposta('P2_04','A')">
+                Situações mal esclarecidas
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_04','B')">
+                Injustiças
+            </button>
+
+            <button class="option-btn" onclick="salvarResposta('P2_04','C')">
+                Ter que decidir no calor da emoção
+            </button>
+        </div>
+
+        <!-- botão voltar opcional -->
+        <a class="back-link" href="page1.html">← Voltar para a página 1</a>
+
+        <!-- BOTÃO PRÓXIMA PÁGINA -->
+        <button class="next-btn" onclick="window.location.href='page3.html'">
+            Próxima Página →
+        </button>
+
+    </div>
+
+</body>
+</html>
