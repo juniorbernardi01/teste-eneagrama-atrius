@@ -1,0 +1,5 @@
+function salvarResposta(pergunta, alternativa) {
+    let respostas = JSON.parse(localStorage.getItem("respostas")) || [];
+    respostas.push({pergunta, alternativa});
+    localStorage.setItem("respostas", JSON.stringify(respostas));
+}
