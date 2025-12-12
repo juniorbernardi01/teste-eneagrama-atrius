@@ -1,0 +1,13 @@
+<script>
+function salvarIdentificacao() {
+    const dados = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        empresa: document.getElementById('empresa').value,
+        telefone: document.getElementById('telefone').value,
+        nascimento: document.getElementById('nascimento').value
+    };
+    localStorage.setItem("usuario", JSON.stringify(dados));
+    window.location.href = "pages/page1.html";
+}
+</script>
