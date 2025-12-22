@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário de Pesquisa — Página 1</title>
+  <title>Quem sou eu — Página 1</title>
 
   <link rel="stylesheet" href="../styles.css" />
   <script src="../script.js"></script>
@@ -64,8 +64,23 @@
 
     .opt span{ font-size:15px; color:#222; line-height:1.25; }
 
-    .page-title{ font-size:26px; margin:12px 0 6px; }
-    .page-sub{ margin:0 0 18px; color:#444; }
+    .page-title{ font-size:28px; margin:12px 0 10px; }
+    .page-sub{ margin:0 0 12px; color:#444; line-height:1.5; }
+
+    .progress-container{
+      width:100%;
+      height:10px;
+      background:#e6e6e6;
+      border-radius:10px;
+      margin:18px 0 18px;
+      overflow:hidden;
+    }
+    .progress-bar{
+      height:100%;
+      background:#E57E25;
+      width:20%;
+      transition:width .3s ease;
+    }
 
     .next-btn{
       margin-top:18px;
@@ -84,8 +99,32 @@
 
 <body>
   <div class="container">
-    <h1 class="page-title">Formulário de Pesquisa — Página 1</h1>
-    <p class="page-sub">Assinale uma alternativa que mais se adequa a você.</p>
+    <h1 class="page-title">Quem sou eu</h1>
+
+    <p class="page-sub">
+      <strong>Seja bem vindo(a)!</strong><br>
+      Reserve alguns minutos do seu tempo, concentre-se e boa pesquisa!
+    </p>
+
+    <p class="page-sub">
+      Estas questões fazem parte da entrevista e não têm respostas certas ou erradas.<br>
+      Têm como objetivo principal conhecê-lo (a) melhor, por isso seja sincero(a).
+    </p>
+
+    <p class="page-sub">
+      Assinale as alternativas que mais motivam você ao desempenhar suas atividades profissionais.<br>
+      Utilize o tempo que julgar necessário.
+    </p>
+
+    <!-- Barra de progresso -->
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+
+    <p class="page-sub">
+      <strong>Instruções:</strong><br>
+      Preencha suas informações pessoais para identificação.
+    </p>
 
     <!-- P1_01 -->
     <div class="question-card">
@@ -102,7 +141,7 @@
       <p class="question-title">Me considero mais <span style="color:#d00">*</span></p>
       <div class="options">
         <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','A')"><span>Preocupado, detalhista, analítico</span></label>
-        <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','B')"><span>Líder, responsável, impaciente</span></label>
+        <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','B')"><span>Lider, responsável, impaciente</span></label>
         <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','C')"><span>Alegre e otimista</span></label>
       </div>
     </div>
@@ -219,7 +258,7 @@
 
     <!-- P1_14 -->
     <div class="question-card">
-      <p class="question-title">Nem sempre, mas às vezes dizem que sou <span style="color:#d00">*</span></p>
+      <p class="question-title">Nem sempre, mas as vezes dizem que sou <span style="color:#d00">*</span></p>
       <div class="options">
         <label class="opt"><input type="radio" name="P1_14" onchange="salvarResposta('P1_14','A')"><span>Mandão, intransigente, vaidoso</span></label>
         <label class="opt"><input type="radio" name="P1_14" onchange="salvarResposta('P1_14','B')"><span>Melancólico, distante, reservado e direto na comunicação</span></label>
