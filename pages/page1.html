@@ -1,148 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Página 1 - Teste de Competências Emocionais</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página 1 - Teste de Competências Emocionais</title>
 
-    <link rel="stylesheet" href="../styles.css" />
-    <script src="../script.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+  <script src="../script.js"></script>
 
-    <style>
-        .question-card {
-            background: #fff;
-            padding: 22px;
-            border-radius: 12px;
-            margin-bottom: 22px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
-        }
+  <style>
+    .question-card {
+      background: #fff;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
+    }
 
-        .option-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: none;
-            background: #0F2B5B;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.2s;
-        }
+    .option-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #0F2B5B;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.2s;
+      text-align: center;
+    }
 
-        .option-btn:hover {
-            background: #183c7d;
-        }
+    .option-btn:hover { background: #183c7d; }
 
-        .next-btn {
-            margin-top: 35px;
-            background: #E57E25;
-            color: #fff;
-            padding: 14px 22px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
+    .next-btn {
+      margin-top: 35px;
+      background: #E57E25;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+    }
 
-        .next-btn:hover {
-            background: #cf6d1f;
-        }
-    </style>
+    .next-btn:hover { background: #cf6d1f; }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <h1>Formulário de Pesquisa — Página 1</h1>
+    <p>Selecione a alternativa que MAIS se parece com você em cada situação.</p>
 
-    <div class="container">
-        
-        <h1>Formulário de Pesquisa — Página 1</h1>
-        <p>Selecione a alternativa que MAIS se parece com você em cada situação.</p>
+    <!-- P1_01 -->
+    <div class="question-card">
+      <h3>Quando tenho um trabalho difícil para entregar</h3>
 
-        <!-- ============================ -->
-        <!-- PERGUNTA 1 -->
-        <!-- ============================ -->
-        <div class="question-card">
-            <h3>Quando tenho um trabalho difícil para entregar</h3>
+      <button class="option-btn" onclick="salvarResposta('P1_01','A', this)">
+        Procuro fazê-lo com o grupo de forma animada
+      </button>
 
-            <button class="option-btn" onclick="salvarResposta('P1_01','A')">
-                Procuro fazê-lo com o grupo de forma animada
-            </button>
+      <button class="option-btn" onclick="salvarResposta('P1_01','B', this)">
+        Estudo antes de executá-lo, gosto de analisar tudo
+      </button>
 
-            <button class="option-btn" onclick="salvarResposta('P1_01','B')">
-                Estudo antes de executá-lo, gosto de analisar tudo
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_01','C')">
-                Procuro saber os detalhes para ser bem certeiro
-            </button>
-        </div>
-
-        <!-- ============================ -->
-        <!-- PERGUNTA 2 -->
-        <!-- ============================ -->
-        <div class="question-card">
-            <h3>Me considero mais</h3>
-
-            <button class="option-btn" onclick="salvarResposta('P1_02','A')">
-                Preocupado, detalhista, analítico
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_02','B')">
-                Líder, responsável, impaciente
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_02','C')">
-                Alegre e otimista
-            </button>
-        </div>
-
-        <!-- ============================ -->
-        <!-- PERGUNTA 3 -->
-        <!-- ============================ -->
-        <div class="question-card">
-            <h3>Me vejo como uma pessoa</h3>
-
-            <button class="option-btn" onclick="salvarResposta('P1_03','A')">
-                Animada e falante
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_03','B')">
-                Independente e ousada que sabe onde quer chegar
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_03','C')">
-                Leal, original e racional
-            </button>
-        </div>
-
-        <!-- ============================ -->
-        <!-- PERGUNTA 4 -->
-        <!-- ============================ -->
-        <div class="question-card">
-            <h3>Gosto de</h3>
-
-            <button class="option-btn" onclick="salvarResposta('P1_04','A')">
-                Analisar, pesquisar
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_04','B')">
-                Interagir, ajudar
-            </button>
-
-            <button class="option-btn" onclick="salvarResposta('P1_04','C')">
-                Agir rapidamente
-            </button>
-        </div>
-
-        <!-- ============================ -->
-        <!-- BOTÃO PRÓXIMA PÁGINA -->
-        <!-- ============================ -->
-        <button class="next-btn" onclick="window.location.href='page2.html'">
-            Próxima Página →
-        </button>
-
+      <button class="option-btn" onclick="salvarResposta('P1_01','C', this)">
+        Procuro saber os detalhes para ser bem certeiro
+      </button>
     </div>
 
+    <!-- P1_02 -->
+    <div class="question-card">
+      <h3>Me considero mais</h3>
+
+      <button class="option-btn" onclick="salvarResposta('P1_02','A', this)">
+        Preocupado, detalhista, analítico
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P1_02','B', this)">
+        Líder, responsável, impaciente
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P1_02','C', this)">
+        Alegre e otimista
+      </button>
+    </div>
+
+    <!-- P1_03 -->
+    <div class="question-card">
+      <h3>Me vejo como uma pessoa</h3>
+
+      <button class="option-btn" onclick="salvarResposta('P1_03','A', this)">
+        Animada e falante
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P1_03','B', this)">
+        Independente e ousada que sabe onde quer chegar
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P1_03','C', this)">
+        Leal, original e racional
+      </button>
+    </div>
+
+    <!-- P1_04 -->
+    <div class="question-card">
+      <h3>Gosto de</h3>
+
+      <button class="option-btn" onclick="salvarResposta('P1_04','A', this)">
+        Analisar, pesquisar
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P1_04','B', this)">
+        Interagir, ajudar
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P1_04','C', this)">
+        Agir rapidamente
+      </button>
+    </div>
+
+    <button class="next-btn" onclick="window.location.href='page2.html'">
+      Próxima Página →
+    </button>
+  </div>
 </body>
 </html>
