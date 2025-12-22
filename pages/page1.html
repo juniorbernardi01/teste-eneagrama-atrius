@@ -3,124 +3,191 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Página 1 - Teste de Competências Emocionais</title>
+  <title>Página 1 - Formulário de Pesquisa</title>
 
   <link rel="stylesheet" href="../styles.css" />
   <script src="../script.js"></script>
 
   <style>
+    /* card geral */
     .question-card {
       background: #fff;
-      padding: 22px;
-      border-radius: 12px;
-      margin-bottom: 22px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
+      padding: 22px 22px 14px;
+      border-radius: 14px;
+      margin: 18px 0;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
     }
 
-    .option-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-      background: #0F2B5B;
-      color: white;
-      cursor: pointer;
+    .question-title {
+      margin: 0 0 12px;
       font-size: 16px;
-      transition: 0.2s;
-      text-align: center;
+      font-weight: 700;
+      color: #111;
     }
 
-    .option-btn:hover { background: #183c7d; }
+    /* lista estilo formulário */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 8px;
+    }
 
+    .opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e7e7e7;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .opt:hover {
+      border-color: #cfcfcf;
+      background: #fafafa;
+    }
+
+    /* esconder radio padrão e desenhar um custom */
+    .opt input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #c9c9c9;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      margin: 0;
+      flex: 0 0 18px;
+    }
+
+    /* quando marcado */
+    .opt input[type="radio"]:checked {
+      border-color: #E57E25;
+    }
+    .opt input[type="radio"]:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      background: #E57E25;
+      border-radius: 50%;
+    }
+
+    /* texto */
+    .opt span {
+      font-size: 15px;
+      color: #222;
+      line-height: 1.25;
+    }
+
+    /* botão de próxima */
     .next-btn {
-      margin-top: 35px;
+      margin-top: 18px;
       background: #E57E25;
       color: #fff;
-      padding: 14px 22px;
-      border-radius: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 16px;
       width: 100%;
     }
-
     .next-btn:hover { background: #cf6d1f; }
+
+    /* header simples */
+    .page-title {
+      font-size: 26px;
+      margin: 12px 0 6px;
+    }
+    .page-sub {
+      margin: 0 0 18px;
+      color: #444;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Formulário de Pesquisa — Página 1</h1>
-    <p>Selecione a alternativa que MAIS se parece com você em cada situação.</p>
+    <h1 class="page-title">Formulário de Pesquisa — Página 1</h1>
+    <p class="page-sub">Assinale uma alternativa que mais se adequa a você.</p>
 
     <!-- P1_01 -->
     <div class="question-card">
-      <h3>Quando tenho um trabalho difícil para entregar</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P1_01','A', this)">
-        Procuro fazê-lo com o grupo de forma animada
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_01','B', this)">
-        Estudo antes de executá-lo, gosto de analisar tudo
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_01','C', this)">
-        Procuro saber os detalhes para ser bem certeiro
-      </button>
+      <p class="question-title">Quando tenho um trabalho difícil para entregar <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="P1_01" onchange="salvarResposta('P1_01','A')" />
+          <span>Procuro fazê-lo com o grupo de forma animada</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_01" onchange="salvarResposta('P1_01','B')" />
+          <span>Estudo antes de executá-lo, gosto de analisar tudo</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_01" onchange="salvarResposta('P1_01','C')" />
+          <span>Procuro saber os detalhes para ser bem certeiro</span>
+        </label>
+      </div>
     </div>
 
     <!-- P1_02 -->
     <div class="question-card">
-      <h3>Me considero mais</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P1_02','A', this)">
-        Preocupado, detalhista, analítico
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_02','B', this)">
-        Líder, responsável, impaciente
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_02','C', this)">
-        Alegre e otimista
-      </button>
+      <p class="question-title">Me considero mais <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="P1_02" onchange="salvarResposta('P1_02','A')" />
+          <span>Preocupado, detalhista, analítico</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_02" onchange="salvarResposta('P1_02','B')" />
+          <span>Líder, responsável, impaciente</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_02" onchange="salvarResposta('P1_02','C')" />
+          <span>Alegre e otimista</span>
+        </label>
+      </div>
     </div>
 
     <!-- P1_03 -->
     <div class="question-card">
-      <h3>Me vejo como uma pessoa</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P1_03','A', this)">
-        Animada e falante
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_03','B', this)">
-        Independente e ousada que sabe onde quer chegar
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_03','C', this)">
-        Leal, original e racional
-      </button>
+      <p class="question-title">Me vejo como uma pessoa <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="P1_03" onchange="salvarResposta('P1_03','A')" />
+          <span>Animada e falante</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_03" onchange="salvarResposta('P1_03','B')" />
+          <span>Independente e ousada que sabe onde quer chegar</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_03" onchange="salvarResposta('P1_03','C')" />
+          <span>Leal, original e racional</span>
+        </label>
+      </div>
     </div>
 
     <!-- P1_04 -->
     <div class="question-card">
-      <h3>Gosto de</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P1_04','A', this)">
-        Analisar, pesquisar
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_04','B', this)">
-        Interagir, ajudar
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P1_04','C', this)">
-        Agir rapidamente
-      </button>
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="P1_04" onchange="salvarResposta('P1_04','A')" />
+          <span>Analisar, pesquisar</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_04" onchange="salvarResposta('P1_04','B')" />
+          <span>Interagir, ajudar</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="P1_04" onchange="salvarResposta('P1_04','C')" />
+          <span>Agir rapidamente</span>
+        </label>
+      </div>
     </div>
 
     <button class="next-btn" onclick="window.location.href='page2.html'">
