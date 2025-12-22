@@ -26,3 +26,9 @@ body {
     box-shadow: var(--shadow);
     margin-bottom: 20px;
 }
+/* mostra visualmente a opção marcada */
+.option-btn.selected{
+  background: #E57E25 !important;
+  color: #fff !important;
+  font-weight: 700;
+}
