@@ -6,7 +6,6 @@
   <title>Quem sou eu — Página 5</title>
 
   <link rel="stylesheet" href="../styles.css" />
-  <script src="../script.js"></script>
 
   <style>
     .page-title{font-size:28px;margin:12px 0 10px;}
@@ -25,6 +24,7 @@
       margin-top:14px;
     }
 
+    /* Card clicável */
     .chip{
       background:#fff;
       border:1px solid #e7e7e7;
@@ -49,6 +49,14 @@
       font-weight:600;
     }
 
+    /* Esconde o checkbox real */
+    .chip input[type="checkbox"]{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+      width:1px;height:1px;
+    }
+
     .chip .dot{
       width:18px;height:18px;border-radius:50%;
       border:2px solid #c9c9c9;
@@ -57,20 +65,24 @@
       background:#fff;
     }
 
-    .chip.selected{
-      border-color:#E57E25;
-      background:#fff7ef;
-      box-shadow:0 6px 14px rgba(229,126,37,.18);
+    /* MARCADO (via :checked) */
+    .chip input[type="checkbox"]:checked ~ .text{
+      color:#1a1a1a;
     }
-    .chip.selected .dot{
+    .chip input[type="checkbox"]:checked ~ .dot{
       border-color:#E57E25;
     }
-    .chip.selected .dot::after{
+    .chip input[type="checkbox"]:checked ~ .dot::after{
       content:"";
       position:absolute;
       inset:3px;
       border-radius:50%;
       background:#E57E25;
+    }
+    .chip:has(input[type="checkbox"]:checked){
+      border-color:#E57E25;
+      background:#fff7ef;
+      box-shadow:0 6px 14px rgba(229,126,37,.18);
     }
 
     .finish-btn{
@@ -105,110 +117,229 @@
 
     <a class="back-link" href="page4.html">← Voltar</a>
 
-    <div class="grid" id="chipsGrid"></div>
+    <div class="grid">
+      <!-- Cada box salva 1 (marcado) / 0 (desmarcado) -->
+
+      <label class="chip">
+        <input type="checkbox" id="P5_01" onchange="salvarP5(this)">
+        <span class="text">Comprometido</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_02" onchange="salvarP5(this)">
+        <span class="text">Original</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_03" onchange="salvarP5(this)">
+        <span class="text">Positivo</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_04" onchange="salvarP5(this)">
+        <span class="text">Harmonioso, discreto e tranquilo</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_05" onchange="salvarP5(this)">
+        <span class="text">Determinado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_06" onchange="salvarP5(this)">
+        <span class="text">Inovador</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_07" onchange="salvarP5(this)">
+        <span class="text">Voluntarioso</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_08" onchange="salvarP5(this)">
+        <span class="text">Intenso</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_09" onchange="salvarP5(this)">
+        <span class="text">Harmônico</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_10" onchange="salvarP5(this)">
+        <span class="text">Descomplicado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_11" onchange="salvarP5(this)">
+        <span class="text">Controlador</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_12" onchange="salvarP5(this)">
+        <span class="text">Ambicioso</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_13" onchange="salvarP5(this)">
+        <span class="text">Atencioso e colaborador</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_14" onchange="salvarP5(this)">
+        <span class="text">Desapegado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_15" onchange="salvarP5(this)">
+        <span class="text">Gosto de liberdade</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_16" onchange="salvarP5(this)">
+        <span class="text">Sonhador</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_17" onchange="salvarP5(this)">
+        <span class="text">Sensível</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_18" onchange="salvarP5(this)">
+        <span class="text">Apreensivo</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_19" onchange="salvarP5(this)">
+        <span class="text">Desafiador</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_20" onchange="salvarP5(this)">
+        <span class="text">Simpático</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_21" onchange="salvarP5(this)">
+        <span class="text">Autonomo</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_22" onchange="salvarP5(this)">
+        <span class="text">Faço o que é certo ser feito</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_23" onchange="salvarP5(this)">
+        <span class="text">Atualizado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_24" onchange="salvarP5(this)">
+        <span class="text">Agitado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_25" onchange="salvarP5(this)">
+        <span class="text">Criativo e sei improvisar</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_26" onchange="salvarP5(this)">
+        <span class="text">As vezes distante</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_27" onchange="salvarP5(this)">
+        <span class="text">Incansável</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_28" onchange="salvarP5(this)">
+        <span class="text">Comprometido</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_29" onchange="salvarP5(this)">
+        <span class="text">Reservado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_30" onchange="salvarP5(this)">
+        <span class="text">Esforçado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_31" onchange="salvarP5(this)">
+        <span class="text">Simples</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_32" onchange="salvarP5(this)">
+        <span class="text">Criativo e veloz</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_33" onchange="salvarP5(this)">
+        <span class="text">Cativante, transparente</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_34" onchange="salvarP5(this)">
+        <span class="text">Sintonizado com o mercado</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_35" onchange="salvarP5(this)">
+        <span class="text">Questionador</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_36" onchange="salvarP5(this)">
+        <span class="text">Tranquilo</span><span class="dot"></span>
+      </label>
+
+      <label class="chip">
+        <input type="checkbox" id="P5_37" onchange="salvarP5(this)">
+        <span class="text">Preocupado</span><span class="dot"></span>
+      </label>
+    </div>
 
     <button class="finish-btn" onclick="finalizarTeste()">Finalizar</button>
   </div>
 
   <script>
-    // Lista exata da sua Page 5 (cada item vale 1 se selecionado)
-    const PAGE5_ITEMS = [
-      "Comprometido",
-      "Original",
-      "Positivo",
-      "Harmonioso, discreto e tranquilo",
-      "Determinado",
-      "Inovador",
-      "Voluntarioso",
-      "Intenso",
-      "Harmônico",
-      "Descomplicado",
-      "Controlador",
-      "Ambicioso",
-      "Atencioso e colaborador",
-      "Desapegado",
-      "Gosto de liberdade",
-      "Sonhador",
-      "Sensível",
-      "Apreensivo",
-      "Desafiador",
-      "Simpático",
-      "Autonomo",
-      "Faço o que é certo ser feito",
-      "Atualizado",
-      "Agitado",
-      "Criativo e sei improvisar",
-      "As vezes distante",
-      "Incansável",
-      "Comprometido",
-      "Reservado",
-      "Esforçado",
-      "Simples",
-      "Criativo e veloz",
-      "Cativante, transparente",
-      "Sintonizado com o mercado",
-      "Questionador",
-      "Tranquilo",
-      "Preocupado"
-    ];
-
-    // prefixo das chaves pra não conflitar com outras páginas
-    const KEY_PREFIX = "P5_";
-
     function getRespostas() {
       return JSON.parse(localStorage.getItem("respostas") || "{}");
     }
-
     function setRespostas(obj) {
       localStorage.setItem("respostas", JSON.stringify(obj));
     }
 
-    // Page 5: salvar 1/0 por item (true/false)
-    function toggleP5(index) {
+    // salva 1/0
+    function salvarP5(checkboxEl){
       const respostas = getRespostas();
-      const key = KEY_PREFIX + String(index+1).padStart(2,"0");
-      const current = respostas[key] === 1 ? 1 : 0;
-      const next = current === 1 ? 0 : 1;
-      respostas[key] = next;
+      respostas[checkboxEl.id] = checkboxEl.checked ? 1 : 0;
       setRespostas(respostas);
-      render();
     }
 
-    function isSelected(index) {
+    // ao carregar, restaura checks
+    function restaurarP5(){
       const respostas = getRespostas();
-      const key = KEY_PREFIX + String(index+1).padStart(2,"0");
-      return respostas[key] === 1;
+      for (let i=1; i<=37; i++){
+        const id = "P5_" + String(i).padStart(2,"0");
+        const el = document.getElementById(id);
+        if (!el) continue;
+        el.checked = respostas[id] === 1;
+      }
     }
 
-    function render() {
-      const grid = document.getElementById("chipsGrid");
-      grid.innerHTML = "";
-
-      PAGE5_ITEMS.forEach((text, i) => {
-        const chip = document.createElement("div");
-        chip.className = "chip" + (isSelected(i) ? " selected" : "");
-        chip.onclick = () => toggleP5(i);
-
-        const span = document.createElement("div");
-        span.className = "text";
-        span.textContent = text;
-
-        const dot = document.createElement("div");
-        dot.className = "dot";
-
-        chip.appendChild(span);
-        chip.appendChild(dot);
-        grid.appendChild(chip);
-      });
-    }
-
-    function finalizarTeste() {
-      // aqui a gente só envia pra página de resultado final por enquanto
-      // (depois conectamos o cálculo do eneagrama)
+    function finalizarTeste(){
       window.location.href = "../resultado.html";
     }
 
-    render();
+    restaurarP5();
   </script>
 </body>
 </html>
