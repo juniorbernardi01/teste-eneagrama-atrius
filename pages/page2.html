@@ -3,138 +3,491 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Página 2 - Teste de Competências Emocionais</title>
+  <title>Quem sou eu — Página 2</title>
 
   <link rel="stylesheet" href="../styles.css" />
   <script src="../script.js"></script>
 
   <style>
-    .question-card {
-      background: #fff;
-      padding: 22px;
-      border-radius: 12px;
-      margin-bottom: 22px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
-    }
-
-    .option-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-      background: #0F2B5B;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.2s;
-      text-align: left;
-    }
-
-    .option-btn:hover { background: #183c7d; }
-
-    .next-btn {
-      margin-top: 35px;
-      background: #E57E25;
-      color: #fff;
-      padding: 14px 22px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      width: 100%;
-    }
-
-    .next-btn:hover { background: #cf6d1f; }
-
-    .back-link {
-      margin-top: 14px;
-      display: inline-block;
-      color: #0F2B5B;
-      text-decoration: none;
-    }
+    .question-card{background:#fff;padding:22px 22px 14px;border-radius:14px;margin:18px 0;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+    .question-title{margin:0 0 12px;font-size:16px;font-weight:700;color:#111;}
+    .options{display:flex;flex-direction:column;gap:10px;padding-bottom:8px;}
+    .opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #e7e7e7;background:#fff;cursor:pointer;transition:.15s;}
+    .opt:hover{border-color:#cfcfcf;background:#fafafa;}
+    .opt input[type="radio"]{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:2px solid #c9c9c9;border-radius:50%;display:inline-block;position:relative;margin:0;flex:0 0 18px;}
+    .opt input[type="radio"]:checked{border-color:#E57E25;}
+    .opt input[type="radio"]:checked::after{content:"";position:absolute;inset:3px;background:#E57E25;border-radius:50%;}
+    .opt span{font-size:15px;color:#222;line-height:1.25;}
+    .page-title{font-size:28px;margin:12px 0 10px;}
+    .page-sub{margin:0 0 12px;color:#444;line-height:1.5;}
+    .progress-container{width:100%;height:10px;background:#e6e6e6;border-radius:10px;margin:18px 0 18px;overflow:hidden;}
+    .progress-bar{height:100%;background:#E57E25;width:40%;transition:width .3s ease;}
+    .next-btn{margin-top:18px;background:#E57E25;color:#fff;padding:14px 18px;border-radius:12px;border:none;cursor:pointer;font-size:16px;width:100%;}
+    .next-btn:hover{background:#cf6d1f;}
+    .back-link{display:inline-block;margin:8px 0 0;color:#0F2B5B;text-decoration:none;}
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Formulário de Pesquisa — Página 2</h1>
-    <p>Continue selecionando a alternativa que MAIS se parece com você em cada situação.</p>
+    <h1 class="page-title">Quem sou eu</h1>
+    <p class="page-sub">Assinale as alternativas que mais motivam você ao desempenhar suas atividades profissionais.</p>
+
+    <div class="progress-container"><div class="progress-bar"></div></div>
+
+    <a class="back-link" href="page1.html">← Voltar</a>
 
     <!-- P2_01 -->
     <div class="question-card">
-      <h3>Às vezes</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P2_01','A', this)">
-        Imagino um mundo ideal
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_01','B', this)">
-        Prefiro ficar só para analisar o cenário sem influência dos outros
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_01','C', this)">
-        Prefiro saber a opinião dos outros para decidir o que é melhor a fazer
-      </button>
+      <p class="question-title">As vezes <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_01" onchange="salvarResposta('P2_01','A')"><span>Imagino um mundo ideal</span></label>
+        <label class="opt"><input type="radio" name="P2_01" onchange="salvarResposta('P2_01','B')"><span>Prefiro ficar só para analisar o cenário sem influencia dos outros</span></label>
+        <label class="opt"><input type="radio" name="P2_01" onchange="salvarResposta('P2_01','C')"><span>Prefiro saber a opinião dos outros para decidir o que é melhor a fazer</span></label>
+      </div>
     </div>
 
     <!-- P2_02 -->
     <div class="question-card">
-      <h3>Não gosto de</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P2_02','A', this)">
-        Me sentir desvalorizado, quando não me dão atenção
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_02','B', this)">
-        Me sentir preso a rotinas e processos
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_02','C', this)">
-        Ser pressionado a tomar partido, pois acredito que todos têm suas razões
-      </button>
+      <p class="question-title">Não gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_02" onchange="salvarResposta('P2_02','A')"><span>Me sentir desvalorizado, quando não me dão atenção</span></label>
+        <label class="opt"><input type="radio" name="P2_02" onchange="salvarResposta('P2_02','B')"><span>Me sentir preso a rotinas e processos</span></label>
+        <label class="opt"><input type="radio" name="P2_02" onchange="salvarResposta('P2_02','C')"><span>Ser pressionado a tomar partido, pois acredito que todos tëm suas razões</span></label>
+      </div>
     </div>
 
     <!-- P2_03 -->
     <div class="question-card">
-      <h3>Sei que sou</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P2_03','A', this)">
-        Orgulhoso
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_03','B', this)">
-        Disperso
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_03','C', this)">
-        Narcisista
-      </button>
+      <p class="question-title">Sei que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_03" onchange="salvarResposta('P2_03','A')"><span>Orgulhoso</span></label>
+        <label class="opt"><input type="radio" name="P2_03" onchange="salvarResposta('P2_03','B')"><span>Disperso</span></label>
+        <label class="opt"><input type="radio" name="P2_03" onchange="salvarResposta('P2_03','C')"><span>Narcisista</span></label>
+      </div>
     </div>
 
     <!-- P2_04 -->
     <div class="question-card">
-      <h3>Não sou e não gosto</h3>
-
-      <button class="option-btn" onclick="salvarResposta('P2_04','A', this)">
-        Situações mal esclarecidas
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_04','B', this)">
-        Injustiças
-      </button>
-
-      <button class="option-btn" onclick="salvarResposta('P2_04','C', this)">
-        Ter que decidir no calor da emoção
-      </button>
+      <p class="question-title">Não sou e não gosto <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_04" onchange="salvarResposta('P2_04','A')"><span>Situações mal esclarecidas</span></label>
+        <label class="opt"><input type="radio" name="P2_04" onchange="salvarResposta('P2_04','B')"><span>Injustiças</span></label>
+        <label class="opt"><input type="radio" name="P2_04" onchange="salvarResposta('P2_04','C')"><span>Ter que decidir no calor da emoção</span></label>
+      </div>
     </div>
 
-    <a class="back-link" href="page1.html">← Voltar para a página 1</a>
+    <!-- P2_05 -->
+    <div class="question-card">
+      <p class="question-title">Quando ajudo alguém <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_05" onchange="salvarResposta('P2_05','A')"><span>Gosto de ser reconhecido pela contribuição</span></label>
+        <label class="opt"><input type="radio" name="P2_05" onchange="salvarResposta('P2_05','B')"><span>Me coloco a disposição acalmando os animos e buscando soluções conciliadoras</span></label>
+        <label class="opt"><input type="radio" name="P2_05" onchange="salvarResposta('P2_05','C')"><span>Forneço ideias e soluções criativas</span></label>
+      </div>
+    </div>
 
-    <button class="next-btn" onclick="window.location.href='page3.html'">
-      Próxima Página →
-    </button>
+    <!-- P2_06 -->
+    <div class="question-card">
+      <p class="question-title">Não gosto <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_06" onchange="salvarResposta('P2_06','A')"><span>De ter minha privacidade invadida</span></label>
+        <label class="opt"><input type="radio" name="P2_06" onchange="salvarResposta('P2_06','B')"><span>Ser comparado a outras pessoas</span></label>
+        <label class="opt"><input type="radio" name="P2_06" onchange="salvarResposta('P2_06','C')"><span>que mintam para mim</span></label>
+      </div>
+    </div>
+
+    <!-- P2_07 -->
+    <div class="question-card">
+      <p class="question-title">Me considero <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_07" onchange="salvarResposta('P2_07','A')"><span>Lógico e racional</span></label>
+        <label class="opt"><input type="radio" name="P2_07" onchange="salvarResposta('P2_07','B')"><span>Criativo e insatisfeito</span></label>
+        <label class="opt"><input type="radio" name="P2_07" onchange="salvarResposta('P2_07','C')"><span>Prudente e cuidadoso</span></label>
+      </div>
+    </div>
+
+    <!-- P2_08 -->
+    <div class="question-card">
+      <p class="question-title">Me considero <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_08" onchange="salvarResposta('P2_08','A')"><span>Alguém que não gosta de trabalhos mal feitos e cometer erros</span></label>
+        <label class="opt"><input type="radio" name="P2_08" onchange="salvarResposta('P2_08','B')"><span>Criativo e inovador</span></label>
+        <label class="opt"><input type="radio" name="P2_08" onchange="salvarResposta('P2_08','C')"><span>Uma pessoa cautelosa ao decidir</span></label>
+      </div>
+    </div>
+
+    <!-- P2_09 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_09" onchange="salvarResposta('P2_09','A')"><span>Distante</span></label>
+        <label class="opt"><input type="radio" name="P2_09" onchange="salvarResposta('P2_09','B')"><span>Sensível</span></label>
+        <label class="opt"><input type="radio" name="P2_09" onchange="salvarResposta('P2_09','C')"><span>Preocupado</span></label>
+      </div>
+    </div>
+
+    <!-- P2_10 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_10" onchange="salvarResposta('P2_10','A')"><span>Ser diferente, original</span></label>
+        <label class="opt"><input type="radio" name="P2_10" onchange="salvarResposta('P2_10','B')"><span>Da minha própria companhia e de privacidade</span></label>
+        <label class="opt"><input type="radio" name="P2_10" onchange="salvarResposta('P2_10','C')"><span>Me sentir seguro no grupo de trabalho ou familia</span></label>
+      </div>
+    </div>
+
+    <!-- P2_11 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_11" onchange="salvarResposta('P2_11','A')"><span>Empolgado e cheio de ideias, gosto de brincar</span></label>
+        <label class="opt"><input type="radio" name="P2_11" onchange="salvarResposta('P2_11','B')"><span>Voluntarioso e apegado</span></label>
+        <label class="opt"><input type="radio" name="P2_11" onchange="salvarResposta('P2_11','C')"><span>Despretencioso e desapegado</span></label>
+      </div>
+    </div>
+
+    <!-- P2_12 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_12" onchange="salvarResposta('P2_12','A')"><span>Questionador</span></label>
+        <label class="opt"><input type="radio" name="P2_12" onchange="salvarResposta('P2_12','B')"><span>Reservado</span></label>
+        <label class="opt"><input type="radio" name="P2_12" onchange="salvarResposta('P2_12','C')"><span>Controlador</span></label>
+      </div>
+    </div>
+
+    <!-- P2_13 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_13" onchange="salvarResposta('P2_13','A')"><span>Competir e ser reconhecido por vencer</span></label>
+        <label class="opt"><input type="radio" name="P2_13" onchange="salvarResposta('P2_13','B')"><span>Terminar o que comecei sendo um exemplo de quem faz o que é certo</span></label>
+        <label class="opt"><input type="radio" name="P2_13" onchange="salvarResposta('P2_13','C')"><span>Me posicionar abertamente, de forma destemida, sem medo de errar</span></label>
+      </div>
+    </div>
+
+    <!-- P2_14 -->
+    <div class="question-card">
+      <p class="question-title">Quando sou questionado <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_14" onchange="salvarResposta('P2_14','A')"><span>Percebo que muitas vezes errei mas tive muito impulso para ação</span></label>
+        <label class="opt"><input type="radio" name="P2_14" onchange="salvarResposta('P2_14','B')"><span>Mostro as razões que justificam minha atitude</span></label>
+        <label class="opt"><input type="radio" name="P2_14" onchange="salvarResposta('P2_14','C')"><span>Procuro reverter a situação e me adaptar novamente</span></label>
+      </div>
+    </div>
+
+    <!-- P2_15 -->
+    <div class="question-card">
+      <p class="question-title">Gosto e me sinto motivado quando <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_15" onchange="salvarResposta('P2_15','A')"><span>Sou admirado e reconhecido pelo sucesso que alcancei</span></label>
+        <label class="opt"><input type="radio" name="P2_15" onchange="salvarResposta('P2_15','B')"><span>Consigo consertar falhas e melhorar os processos</span></label>
+        <label class="opt"><input type="radio" name="P2_15" onchange="salvarResposta('P2_15','C')"><span>Tenho bastante independencia e liberdade</span></label>
+      </div>
+    </div>
+
+    <!-- P2_16 -->
+    <div class="question-card">
+      <p class="question-title">Sei como <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_16" onchange="salvarResposta('P2_16','A')"><span>Fazer o que é correto ser feito</span></label>
+        <label class="opt"><input type="radio" name="P2_16" onchange="salvarResposta('P2_16','B')"><span>Identificar o que realmente importa</span></label>
+        <label class="opt"><input type="radio" name="P2_16" onchange="salvarResposta('P2_16','C')"><span>Quebrar regras e ser ousado</span></label>
+      </div>
+    </div>
+
+    <!-- P2_17 -->
+    <div class="question-card">
+      <p class="question-title">Também sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_17" onchange="salvarResposta('P2_17','A')"><span>Mais enfático quando me desvalorizam</span></label>
+        <label class="opt"><input type="radio" name="P2_17" onchange="salvarResposta('P2_17','B')"><span>Extravagante, sonhador</span></label>
+        <label class="opt"><input type="radio" name="P2_17" onchange="salvarResposta('P2_17','C')"><span>Tolerante e compreensivo. Prefiro ceder do que impor</span></label>
+      </div>
+    </div>
+
+    <!-- P2_18 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_18" onchange="salvarResposta('P2_18','A')"><span>Ambicioso e refinado</span></label>
+        <label class="opt"><input type="radio" name="P2_18" onchange="salvarResposta('P2_18','B')"><span>Inquieto, autêntico, as vezes exagerado</span></label>
+        <label class="opt"><input type="radio" name="P2_18" onchange="salvarResposta('P2_18','C')"><span>Perfeccionista, especialista, disciplinado, ordeiro</span></label>
+      </div>
+    </div>
+
+    <!-- P2_19 -->
+    <div class="question-card">
+      <p class="question-title">Sei como <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_19" onchange="salvarResposta('P2_19','A')"><span>Sinto que estou fazendo o que é correto ser feito</span></label>
+        <label class="opt"><input type="radio" name="P2_19" onchange="salvarResposta('P2_19','B')"><span>Ofereço metas ousadas sem medo de correr riscos e errar</span></label>
+        <label class="opt"><input type="radio" name="P2_19" onchange="salvarResposta('P2_19','C')"><span>Encontro oportunidades e sou reconhecido</span></label>
+      </div>
+    </div>
+
+    <!-- P2_20 -->
+    <div class="question-card">
+      <p class="question-title">Também sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_20" onchange="salvarResposta('P2_20','A')"><span>Intuitivo e sensível</span></label>
+        <label class="opt"><input type="radio" name="P2_20" onchange="salvarResposta('P2_20','B')"><span>Imparcial e pragmático</span></label>
+        <label class="opt"><input type="radio" name="P2_20" onchange="salvarResposta('P2_20','C')"><span>Confiável e justo</span></label>
+      </div>
+    </div>
+
+    <!-- P2_21 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_21" onchange="salvarResposta('P2_21','A')"><span>Viver de forma simples. De calma e harmonia</span></label>
+        <label class="opt"><input type="radio" name="P2_21" onchange="salvarResposta('P2_21','B')"><span>Movimento e resolver problemas, de ser prestativo</span></label>
+        <label class="opt"><input type="radio" name="P2_21" onchange="salvarResposta('P2_21','C')"><span>Ter liberdade, de viver de forma leve</span></label>
+      </div>
+    </div>
+
+    <!-- P2_22 -->
+    <div class="question-card">
+      <p class="question-title">Quando preciso resolver algo <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_22" onchange="salvarResposta('P2_22','A')"><span>Prefiro ser metódico para deixar tudo claro, sou perfeccionista</span></label>
+        <label class="opt"><input type="radio" name="P2_22" onchange="salvarResposta('P2_22','B')"><span>Foco em ser compreendido e alcançar o resultado, sou certeiro</span></label>
+        <label class="opt"><input type="radio" name="P2_22" onchange="salvarResposta('P2_22','C')"><span>Sugiro mudanças, mesmo que ousadas</span></label>
+      </div>
+    </div>
+
+    <!-- P2_23 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_23" onchange="salvarResposta('P2_23','A')"><span>Exigente, organizado, rígido e teimoso porém erro pouco</span></label>
+        <label class="opt"><input type="radio" name="P2_23" onchange="salvarResposta('P2_23','B')"><span>Franco, direto, falo tudo o que penso</span></label>
+        <label class="opt"><input type="radio" name="P2_23" onchange="salvarResposta('P2_23','C')"><span>Trabalhador incansável e vaidoso</span></label>
+      </div>
+    </div>
+
+    <!-- P2_24 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_24" onchange="salvarResposta('P2_24','A')"><span>Evitar conflitos, brigas e confusões</span></label>
+        <label class="opt"><input type="radio" name="P2_24" onchange="salvarResposta('P2_24','B')"><span>Apoiar o lado mais justo, mesmo que gere embate</span></label>
+        <label class="opt"><input type="radio" name="P2_24" onchange="salvarResposta('P2_24','C')"><span>Liberdade e prazer</span></label>
+      </div>
+    </div>
+
+    <!-- P2_25 -->
+    <div class="question-card">
+      <p class="question-title">Me considero <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_25" onchange="salvarResposta('P2_25','A')"><span>Sério e responsável</span></label>
+        <label class="opt"><input type="radio" name="P2_25" onchange="salvarResposta('P2_25','B')"><span>Agitado</span></label>
+        <label class="opt"><input type="radio" name="P2_25" onchange="salvarResposta('P2_25','C')"><span>Sabedor de onde quero chegar</span></label>
+      </div>
+    </div>
+
+    <!-- P2_26 -->
+    <div class="question-card">
+      <p class="question-title">Quando desorganizam minhas coisas e não consigo terminar o que comecei <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_26" onchange="salvarResposta('P2_26','A')"><span>Sinto que perderei a oportunidade de crescimento</span></label>
+        <label class="opt"><input type="radio" name="P2_26" onchange="salvarResposta('P2_26','B')"><span>Organizo tudo novamente, fico tenso e impaciente</span></label>
+        <label class="opt"><input type="radio" name="P2_26" onchange="salvarResposta('P2_26','C')"><span>Sinto que perco autonomia e rapidez, gosto de estar no controle</span></label>
+      </div>
+    </div>
+
+    <!-- P2_27 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_27" onchange="salvarResposta('P2_27','A')"><span>Me preparar para não ser pego de surpresa</span></label>
+        <label class="opt"><input type="radio" name="P2_27" onchange="salvarResposta('P2_27','B')"><span>Buscar soluções diferentes</span></label>
+        <label class="opt"><input type="radio" name="P2_27" onchange="salvarResposta('P2_27','C')"><span>Observar os fatos e decidir de forma racional</span></label>
+      </div>
+    </div>
+
+    <!-- P2_28 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_28" onchange="salvarResposta('P2_28','A')"><span>Ocupar meu tempo de forma produtiva</span></label>
+        <label class="opt"><input type="radio" name="P2_28" onchange="salvarResposta('P2_28','B')"><span>Autonomia, independëncia, liberdade</span></label>
+        <label class="opt"><input type="radio" name="P2_28" onchange="salvarResposta('P2_28','C')"><span>Buscar ideias e soluções que levem ao sucesso de forma rápida</span></label>
+      </div>
+    </div>
+
+    <!-- P2_29 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_29" onchange="salvarResposta('P2_29','A')"><span>Menos emotivo e mais analítico. Mudo de ideia se compreendo as razões</span></label>
+        <label class="opt"><input type="radio" name="P2_29" onchange="salvarResposta('P2_29','B')"><span>Capaz de mudar de ideia se gostar de outras alternativas</span></label>
+        <label class="opt"><input type="radio" name="P2_29" onchange="salvarResposta('P2_29','C')"><span>Preocupado, tenso</span></label>
+      </div>
+    </div>
+
+    <!-- P2_30 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_30" onchange="salvarResposta('P2_30','A')"><span>Ser aquele que chegou na frente</span></label>
+        <label class="opt"><input type="radio" name="P2_30" onchange="salvarResposta('P2_30','B')"><span>Ser aquele que fez a coisa certa</span></label>
+        <label class="opt"><input type="radio" name="P2_30" onchange="salvarResposta('P2_30','C')"><span>Viver intensamente</span></label>
+      </div>
+    </div>
+
+    <!-- P2_31 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_31" onchange="salvarResposta('P2_31','A')"><span>Determinado, leal e comprometido</span></label>
+        <label class="opt"><input type="radio" name="P2_31" onchange="salvarResposta('P2_31','B')"><span>Sintonizado com o mercado e sempre atualizado</span></label>
+        <label class="opt"><input type="radio" name="P2_31" onchange="salvarResposta('P2_31','C')"><span>Desafiante e provocador de novas idéias</span></label>
+      </div>
+    </div>
+
+    <!-- P2_32 -->
+    <div class="question-card">
+      <p class="question-title">Me veem como <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_32" onchange="salvarResposta('P2_32','A')"><span>Uma pessoa bastante justa</span></label>
+        <label class="opt"><input type="radio" name="P2_32" onchange="salvarResposta('P2_32','B')"><span>Original, cético, dramático</span></label>
+        <label class="opt"><input type="radio" name="P2_32" onchange="salvarResposta('P2_32','C')"><span>Calmo e simples</span></label>
+      </div>
+    </div>
+
+    <!-- P2_33 -->
+    <div class="question-card">
+      <p class="question-title">Gosto e me chama a atenção <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_33" onchange="salvarResposta('P2_33','A')"><span>Novos pontos de vistas e como tornar os processos mais velozes</span></label>
+        <label class="opt"><input type="radio" name="P2_33" onchange="salvarResposta('P2_33','B')"><span>Clima alegre e interagir com as pessoas</span></label>
+        <label class="opt"><input type="radio" name="P2_33" onchange="salvarResposta('P2_33','C')"><span>Soluções conciliadoras e quando todos estão bem</span></label>
+      </div>
+    </div>
+
+    <!-- P2_34 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_34" onchange="salvarResposta('P2_34','A')"><span>Amigo e leal</span></label>
+        <label class="opt"><input type="radio" name="P2_34" onchange="salvarResposta('P2_34','B')"><span>Atencioso e colaborador</span></label>
+        <label class="opt"><input type="radio" name="P2_34" onchange="salvarResposta('P2_34','C')"><span>Criativo e veloz</span></label>
+      </div>
+    </div>
+
+    <!-- P2_35 -->
+    <div class="question-card">
+      <p class="question-title">Normalmente estou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_35" onchange="salvarResposta('P2_35','A')"><span>Inquieto e criativo na solução de problemas</span></label>
+        <label class="opt"><input type="radio" name="P2_35" onchange="salvarResposta('P2_35','B')"><span>Sorridente, descontraido e cheio de energia</span></label>
+        <label class="opt"><input type="radio" name="P2_35" onchange="salvarResposta('P2_35','C')"><span>Discreto, atencioso, compreensivo e estável</span></label>
+      </div>
+    </div>
+
+    <!-- P2_36 -->
+    <div class="question-card">
+      <p class="question-title">Reconheço que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_36" onchange="salvarResposta('P2_36','A')"><span>Competitivo</span></label>
+        <label class="opt"><input type="radio" name="P2_36" onchange="salvarResposta('P2_36','B')"><span>Responsável e disposto</span></label>
+        <label class="opt"><input type="radio" name="P2_36" onchange="salvarResposta('P2_36','C')"><span>Desbravador</span></label>
+      </div>
+    </div>
+
+    <!-- P2_37 -->
+    <div class="question-card">
+      <p class="question-title">É raro, mas as vezes <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_37" onchange="salvarResposta('P2_37','A')"><span>Sou impaciente com quem é muito apegado a rotina e regras</span></label>
+        <label class="opt"><input type="radio" name="P2_37" onchange="salvarResposta('P2_37','B')"><span>Enfrento quem não me respeita</span></label>
+        <label class="opt"><input type="radio" name="P2_37" onchange="salvarResposta('P2_37','C')"><span>Prefiro fazer de conta que não é comigo para não me incomodar</span></label>
+      </div>
+    </div>
+
+    <!-- P2_38 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_38" onchange="salvarResposta('P2_38','A')"><span>Exigente com detalhes</span></label>
+        <label class="opt"><input type="radio" name="P2_38" onchange="salvarResposta('P2_38','B')"><span>Descomplicado e simples</span></label>
+        <label class="opt"><input type="radio" name="P2_38" onchange="salvarResposta('P2_38','C')"><span>Leal e comprometido</span></label>
+      </div>
+    </div>
+
+    <!-- P2_39 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_39" onchange="salvarResposta('P2_39','A')"><span>Cativante, simpático, transparente e positivo</span></label>
+        <label class="opt"><input type="radio" name="P2_39" onchange="salvarResposta('P2_39','B')"><span>Harmonioso, discreto e tranquilo</span></label>
+        <label class="opt"><input type="radio" name="P2_39" onchange="salvarResposta('P2_39','C')"><span>Criativo e sei improvisar</span></label>
+      </div>
+    </div>
+
+    <!-- P2_40 -->
+    <div class="question-card">
+      <p class="question-title">Gosto e prefiro <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_40" onchange="salvarResposta('P2_40','A')"><span>Coisas belas e requintadas</span></label>
+        <label class="opt"><input type="radio" name="P2_40" onchange="salvarResposta('P2_40','B')"><span>Me ater ao que é mais relevante sem gastar muito tempo com o que é óbvio</span></label>
+        <label class="opt"><input type="radio" name="P2_40" onchange="salvarResposta('P2_40','C')"><span>Deixar bem clara minha posição para não ser mal interpretado</span></label>
+      </div>
+    </div>
+
+    <!-- P2_41 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_41" onchange="salvarResposta('P2_41','A')"><span>Apreensivo</span></label>
+        <label class="opt"><input type="radio" name="P2_41" onchange="salvarResposta('P2_41','B')"><span>Original</span></label>
+        <label class="opt"><input type="radio" name="P2_41" onchange="salvarResposta('P2_41','C')"><span>Reservado</span></label>
+      </div>
+    </div>
+
+    <!-- P2_42 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_42" onchange="salvarResposta('P2_42','A')"><span>Comprometido e sei que consigo meus objetivos por meio de meu esforço</span></label>
+        <label class="opt"><input type="radio" name="P2_42" onchange="salvarResposta('P2_42','B')"><span>Inquieto, adoro desafios, quanto mais mudanças melhor. Desbravador</span></label>
+        <label class="opt"><input type="radio" name="P2_42" onchange="salvarResposta('P2_42','C')"><span>Ambicioso e consigo meus objetivos por meio de minha força de vontate</span></label>
+      </div>
+    </div>
+
+    <!-- P2_43 -->
+    <div class="question-card">
+      <p class="question-title">Sou motivado muito mais <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_43" onchange="salvarResposta('P2_43','A')"><span>Pela liberdade e uma vida dinamica, com menos rotinas</span></label>
+        <label class="opt"><input type="radio" name="P2_43" onchange="salvarResposta('P2_43','B')"><span>Por ser amigável e colaborador. Por estar num time harmonico, que respeita os outros</span></label>
+        <label class="opt"><input type="radio" name="P2_43" onchange="salvarResposta('P2_43','C')"><span>Por fazer parte e sentir que minha contribuição fez a diferença</span></label>
+      </div>
+    </div>
+
+    <!-- P2_44 -->
+    <div class="question-card">
+      <p class="question-title">Dizem que <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_44" onchange="salvarResposta('P2_44','A')"><span>Sou uma eterna criança</span></label>
+        <label class="opt"><input type="radio" name="P2_44" onchange="salvarResposta('P2_44','B')"><span>Não esqueço quando sou desvalorizado. Intempestivo</span></label>
+        <label class="opt"><input type="radio" name="P2_44" onchange="salvarResposta('P2_44','C')"><span>Sou indiferente, bastante calmo</span></label>
+      </div>
+    </div>
+
+    <!-- P2_45 -->
+    <div class="question-card">
+      <p class="question-title">Sei como <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P2_45" onchange="salvarResposta('P2_45','A')"><span>Entender bem a necessidade do outro</span></label>
+        <label class="opt"><input type="radio" name="P2_45" onchange="salvarResposta('P2_45','B')"><span>Improvisar e criar conexões entre diferentes assuntos</span></label>
+        <label class="opt"><input type="radio" name="P2_45" onchange="salvarResposta('P2_45','C')"><span>Simplificar a vida, buscar a paz</span></label>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="window.location.href='page3.html'">Próxima Página →</button>
   </div>
 </body>
 </html>
