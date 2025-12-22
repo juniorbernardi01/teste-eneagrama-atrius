@@ -3,196 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quem sou eu — Página 1</title>
+  <title>Formulário de Pesquisa — Página 1</title>
 
   <link rel="stylesheet" href="../styles.css" />
   <script src="../script.js"></script>
 
   <style>
-    .page-title {
-      font-size: 34px;
-      margin: 8px 0 10px;
-      font-weight: 800;
-      color: #111;
+    .question-card{
+      background:#fff;
+      padding:22px 22px 14px;
+      border-radius:14px;
+      margin:18px 0;
+      box-shadow:0 4px 12px rgba(0,0,0,.08);
+    }
+    .question-title{
+      margin:0 0 12px;
+      font-size:16px;
+      font-weight:700;
+      color:#111;
+    }
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding-bottom:8px;
+    }
+    .opt{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e7e7e7;
+      background:#fff;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .opt:hover{ border-color:#cfcfcf; background:#fafafa; }
+
+    .opt input[type="radio"]{
+      appearance:none;
+      -webkit-appearance:none;
+      width:18px;
+      height:18px;
+      border:2px solid #c9c9c9;
+      border-radius:50%;
+      display:inline-block;
+      position:relative;
+      margin:0;
+      flex:0 0 18px;
+    }
+    .opt input[type="radio"]:checked{ border-color:#E57E25; }
+    .opt input[type="radio"]:checked::after{
+      content:"";
+      position:absolute;
+      inset:3px;
+      background:#E57E25;
+      border-radius:50%;
     }
 
-    .instructions {
-      background: #fff;
-      padding: 18px 18px;
-      border-radius: 14px;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-      margin: 14px 0 18px;
-      color: #333;
-      line-height: 1.45;
+    .opt span{ font-size:15px; color:#222; line-height:1.25; }
+
+    .page-title{ font-size:26px; margin:12px 0 6px; }
+    .page-sub{ margin:0 0 18px; color:#444; }
+
+    .next-btn{
+      margin-top:18px;
+      background:#E57E25;
+      color:#fff;
+      padding:14px 18px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      font-size:16px;
+      width:100%;
     }
-
-    .instructions p { margin: 8px 0; }
-
-    .instructions .hint {
-      margin-top: 12px;
-      font-weight: 700;
-      color: #0F2B5B;
-    }
-
-    /* barra de progresso */
-    .progress-wrap {
-      background: #fff;
-      padding: 14px 16px;
-      border-radius: 14px;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-      margin: 14px 0 16px;
-    }
-
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: #e9e9e9;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 20%; /* Página 1 de 5 */
-      background: #E57E25;
-      border-radius: 999px;
-    }
-
-    /* cards das perguntas */
-    .question-card {
-      background: #fff;
-      padding: 22px 22px 14px;
-      border-radius: 14px;
-      margin: 18px 0;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .question-title {
-      margin: 0 0 12px;
-      font-size: 16px;
-      font-weight: 700;
-      color: #111;
-    }
-
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-bottom: 8px;
-    }
-
-    .opt {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #e7e7e7;
-      background: #fff;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-
-    .opt:hover {
-      border-color: #cfcfcf;
-      background: #fafafa;
-    }
-
-    .opt input[type="radio"] {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #c9c9c9;
-      border-radius: 50%;
-      display: inline-block;
-      position: relative;
-      margin: 0;
-      flex: 0 0 18px;
-    }
-
-    .opt input[type="radio"]:checked { border-color: #E57E25; }
-    .opt input[type="radio"]:checked::after {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      background: #E57E25;
-      border-radius: 50%;
-    }
-
-    .opt span {
-      font-size: 15px;
-      color: #222;
-      line-height: 1.25;
-    }
-
-    .next-btn {
-      margin-top: 18px;
-      background: #E57E25;
-      color: #fff;
-      padding: 14px 18px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      width: 100%;
-    }
-
-    .next-btn:hover { background: #cf6d1f; }
+    .next-btn:hover{ background:#cf6d1f; }
   </style>
 </head>
 
 <body>
   <div class="container">
-
-    <h1 class="page-title">Quem sou eu</h1>
-
-    <div class="instructions">
-      <p>Reserve alguns minutos do seu tempo, concentre-se e boa pesquisa!</p>
-      <p>Estas questões fazem parte da entrevista e não têm respostas certas ou erradas.</p>
-      <p>Têm como objetivo principal conhecê-lo(a) melhor, por isso seja seja sincero(a)</p>
-      <p>Assinale as alternativas que mais motivam você ao desempenhar suas atividades profissionais.</p>
-      <p>Utilize o tempo que julgar necessário.</p>
-
-      <p class="hint">Instruções:<br>Escolha uma das três alternativas para cada questão.</p>
-    </div>
-
-    <!-- Progresso -->
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>Progresso</span>
-        <span>Página 1 de 5</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill"></div>
-      </div>
-    </div>
+    <h1 class="page-title">Formulário de Pesquisa — Página 1</h1>
+    <p class="page-sub">Assinale uma alternativa que mais se adequa a você.</p>
 
     <!-- P1_01 -->
     <div class="question-card">
       <p class="question-title">Quando tenho um trabalho difícil para entregar <span style="color:#d00">*</span></p>
       <div class="options">
-        <label class="opt">
-          <input type="radio" name="P1_01" onchange="salvarResposta('P1_01','A')" />
-          <span>Procuro fazê-lo com o grupo de forma animada</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_01" onchange="salvarResposta('P1_01','B')" />
-          <span>Estudo antes de executá-lo, gosto de analisar tudo</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_01" onchange="salvarResposta('P1_01','C')" />
-          <span>Procuro saber os detalhes para ser bem certeiro</span>
-        </label>
+        <label class="opt"><input type="radio" name="P1_01" onchange="salvarResposta('P1_01','A')"><span>Procuro fazê-lo com o grupo de forma animada</span></label>
+        <label class="opt"><input type="radio" name="P1_01" onchange="salvarResposta('P1_01','B')"><span>Estudo antes de executá-lo, gosto de analisar tudo</span></label>
+        <label class="opt"><input type="radio" name="P1_01" onchange="salvarResposta('P1_01','C')"><span>Procuro saber os detalhes para ser bem certeiro</span></label>
       </div>
     </div>
 
@@ -200,18 +101,9 @@
     <div class="question-card">
       <p class="question-title">Me considero mais <span style="color:#d00">*</span></p>
       <div class="options">
-        <label class="opt">
-          <input type="radio" name="P1_02" onchange="salvarResposta('P1_02','A')" />
-          <span>Preocupado, detalhista, analítico</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_02" onchange="salvarResposta('P1_02','B')" />
-          <span>Líder, responsável, impaciente</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_02" onchange="salvarResposta('P1_02','C')" />
-          <span>Alegre e otimista</span>
-        </label>
+        <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','A')"><span>Preocupado, detalhista, analítico</span></label>
+        <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','B')"><span>Líder, responsável, impaciente</span></label>
+        <label class="opt"><input type="radio" name="P1_02" onchange="salvarResposta('P1_02','C')"><span>Alegre e otimista</span></label>
       </div>
     </div>
 
@@ -219,18 +111,9 @@
     <div class="question-card">
       <p class="question-title">Me vejo como uma pessoa <span style="color:#d00">*</span></p>
       <div class="options">
-        <label class="opt">
-          <input type="radio" name="P1_03" onchange="salvarResposta('P1_03','A')" />
-          <span>Animada e falante</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_03" onchange="salvarResposta('P1_03','B')" />
-          <span>Independente e ousada que sabe onde quer chegar</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_03" onchange="salvarResposta('P1_03','C')" />
-          <span>Leal, original e racional</span>
-        </label>
+        <label class="opt"><input type="radio" name="P1_03" onchange="salvarResposta('P1_03','A')"><span>Animada e falante</span></label>
+        <label class="opt"><input type="radio" name="P1_03" onchange="salvarResposta('P1_03','B')"><span>Independente e ousada que sabe onde quer chegar</span></label>
+        <label class="opt"><input type="radio" name="P1_03" onchange="salvarResposta('P1_03','C')"><span>Leal, original e racional</span></label>
       </div>
     </div>
 
@@ -238,25 +121,173 @@
     <div class="question-card">
       <p class="question-title">Gosto de <span style="color:#d00">*</span></p>
       <div class="options">
-        <label class="opt">
-          <input type="radio" name="P1_04" onchange="salvarResposta('P1_04','A')" />
-          <span>Analisar, pesquisar</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_04" onchange="salvarResposta('P1_04','B')" />
-          <span>Interagir, ajudar</span>
-        </label>
-        <label class="opt">
-          <input type="radio" name="P1_04" onchange="salvarResposta('P1_04','C')" />
-          <span>Agir rapidamente</span>
-        </label>
+        <label class="opt"><input type="radio" name="P1_04" onchange="salvarResposta('P1_04','A')"><span>Analisar, pesquisar</span></label>
+        <label class="opt"><input type="radio" name="P1_04" onchange="salvarResposta('P1_04','B')"><span>Interagir, ajudar</span></label>
+        <label class="opt"><input type="radio" name="P1_04" onchange="salvarResposta('P1_04','C')"><span>Agir rapidamente</span></label>
       </div>
     </div>
 
-    <button class="next-btn" onclick="window.location.href='page2.html'">
-      Próxima Página →
-    </button>
+    <!-- P1_05 -->
+    <div class="question-card">
+      <p class="question-title">Eu sou mais <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_05" onchange="salvarResposta('P1_05','A')"><span>Gregário e empático</span></label>
+        <label class="opt"><input type="radio" name="P1_05" onchange="salvarResposta('P1_05','B')"><span>Desafiador, não me importo com conflitos</span></label>
+        <label class="opt"><input type="radio" name="P1_05" onchange="salvarResposta('P1_05','C')"><span>Estudioso e analítico, vinculado aos meus valores</span></label>
+      </div>
+    </div>
 
+    <!-- P1_06 -->
+    <div class="question-card">
+      <p class="question-title">Na maioria das vezes eu prefiro <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_06" onchange="salvarResposta('P1_06','A')"><span>Me relacionar com as pessoas de forma animada e ser cordial</span></label>
+        <label class="opt"><input type="radio" name="P1_06" onchange="salvarResposta('P1_06','B')"><span>Ser ousado e empreendedor</span></label>
+        <label class="opt"><input type="radio" name="P1_06" onchange="salvarResposta('P1_06','C')"><span>Analisar e estudar a situação antes de agir</span></label>
+      </div>
+    </div>
+
+    <!-- P1_07 -->
+    <div class="question-card">
+      <p class="question-title">Quando viajo penso primeiro <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_07" onchange="salvarResposta('P1_07','A')"><span>Se vai valer a pena</span></label>
+        <label class="opt"><input type="radio" name="P1_07" onchange="salvarResposta('P1_07','B')"><span>Em me divertir com as pessoas</span></label>
+        <label class="opt"><input type="radio" name="P1_07" onchange="salvarResposta('P1_07','C')"><span>Se não terei que socializar com desconhecidos</span></label>
+      </div>
+    </div>
+
+    <!-- P1_08 -->
+    <div class="question-card">
+      <p class="question-title">Quando busco o sucesso <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_08" onchange="salvarResposta('P1_08','A')"><span>Busco estudar, analisar e pensar antes</span></label>
+        <label class="opt"><input type="radio" name="P1_08" onchange="salvarResposta('P1_08','B')"><span>Busco fazer um plano e processos que não falhem</span></label>
+        <label class="opt"><input type="radio" name="P1_08" onchange="salvarResposta('P1_08','C')"><span>Busco o consenso, gosto de um clima alegre e prazeroso</span></label>
+      </div>
+    </div>
+
+    <!-- P1_09 -->
+    <div class="question-card">
+      <p class="question-title">Quando viajo para um lugar desconhecido <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_09" onchange="salvarResposta('P1_09','A')"><span>Me preparo antes de ir</span></label>
+        <label class="opt"><input type="radio" name="P1_09" onchange="salvarResposta('P1_09','B')"><span>Organizo um grupo para ir comigo, gosto de estar com pessoas</span></label>
+        <label class="opt"><input type="radio" name="P1_09" onchange="salvarResposta('P1_09','C')"><span>Procuro um lugar calmo, não gosto muito de aglomeração</span></label>
+      </div>
+    </div>
+
+    <!-- P1_10 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de trabalhar com <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_10" onchange="salvarResposta('P1_10','A')"><span>Pessoas legais e animadas</span></label>
+        <label class="opt"><input type="radio" name="P1_10" onchange="salvarResposta('P1_10','B')"><span>Metas claras e ousadas</span></label>
+        <label class="opt"><input type="radio" name="P1_10" onchange="salvarResposta('P1_10','C')"><span>Análises concretas</span></label>
+      </div>
+    </div>
+
+    <!-- P1_11 -->
+    <div class="question-card">
+      <p class="question-title">Diante de uma situação difícil eu procuro <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_11" onchange="salvarResposta('P1_11','A')"><span>Agir rápido e certeiro</span></label>
+        <label class="opt"><input type="radio" name="P1_11" onchange="salvarResposta('P1_11','B')"><span>Analiso bastante a situação para depois agir. Gosto de pensar antes de agir</span></label>
+        <label class="opt"><input type="radio" name="P1_11" onchange="salvarResposta('P1_11','C')"><span>Pessoas que saibam ou possam me ajudar. Gosto de conversar e encontrar soluções</span></label>
+      </div>
+    </div>
+
+    <!-- P1_12 -->
+    <div class="question-card">
+      <p class="question-title">Quando descubro que errei <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_12" onchange="salvarResposta('P1_12','A')"><span>Procuro pensar mais da próxima vez</span></label>
+        <label class="opt"><input type="radio" name="P1_12" onchange="salvarResposta('P1_12','B')"><span>Me mantenho bem humorado, sei que faz parte da vida</span></label>
+        <label class="opt"><input type="radio" name="P1_12" onchange="salvarResposta('P1_12','C')"><span>Procuro ser mais prático</span></label>
+      </div>
+    </div>
+
+    <!-- P1_13 -->
+    <div class="question-card">
+      <p class="question-title">Em situações de conflito <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_13" onchange="salvarResposta('P1_13','A')"><span>Não tenho receio de ser crítico e discutir o assunto</span></label>
+        <label class="opt"><input type="radio" name="P1_13" onchange="salvarResposta('P1_13','B')"><span>Procuro dialogar, ouvir o outro e construir o consenso</span></label>
+        <label class="opt"><input type="radio" name="P1_13" onchange="salvarResposta('P1_13','C')"><span>Analisar quais as causas do conflito e como resolvê-lo</span></label>
+      </div>
+    </div>
+
+    <!-- P1_14 -->
+    <div class="question-card">
+      <p class="question-title">Nem sempre, mas às vezes dizem que sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_14" onchange="salvarResposta('P1_14','A')"><span>Mandão, intransigente, vaidoso</span></label>
+        <label class="opt"><input type="radio" name="P1_14" onchange="salvarResposta('P1_14','B')"><span>Melancólico, distante, reservado e direto na comunicação</span></label>
+        <label class="opt"><input type="radio" name="P1_14" onchange="salvarResposta('P1_14','C')"><span>Teimoso, sonhador, um pouco desligado</span></label>
+      </div>
+    </div>
+
+    <!-- P1_15 -->
+    <div class="question-card">
+      <p class="question-title">Gosto de pessoas <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_15" onchange="salvarResposta('P1_15','A')"><span>Simpáticas e joviais</span></label>
+        <label class="opt"><input type="radio" name="P1_15" onchange="salvarResposta('P1_15','B')"><span>Interessantes e objetivas</span></label>
+        <label class="opt"><input type="radio" name="P1_15" onchange="salvarResposta('P1_15','C')"><span>Que não invadam minha privacidade</span></label>
+      </div>
+    </div>
+
+    <!-- P1_16 -->
+    <div class="question-card">
+      <p class="question-title">Na minha trajetória profissional <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_16" onchange="salvarResposta('P1_16','A')"><span>Ajudei pessoas a resolverem seus problemas</span></label>
+        <label class="opt"><input type="radio" name="P1_16" onchange="salvarResposta('P1_16','B')"><span>Resolvi problemas</span></label>
+        <label class="opt"><input type="radio" name="P1_16" onchange="salvarResposta('P1_16','C')"><span>Foquei sempre nas metas e objetivos</span></label>
+      </div>
+    </div>
+
+    <!-- P1_17 -->
+    <div class="question-card">
+      <p class="question-title">Sou <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_17" onchange="salvarResposta('P1_17','A')"><span>Perfeccionista, independente</span></label>
+        <label class="opt"><input type="radio" name="P1_17" onchange="salvarResposta('P1_17','B')"><span>Animado e otimista</span></label>
+        <label class="opt"><input type="radio" name="P1_17" onchange="salvarResposta('P1_17','C')"><span>Prudente e criativo e pensador</span></label>
+      </div>
+    </div>
+
+    <!-- P1_18 -->
+    <div class="question-card">
+      <p class="question-title">Não gosto de <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_18" onchange="salvarResposta('P1_18','A')"><span>Brigas e mal humor</span></label>
+        <label class="opt"><input type="radio" name="P1_18" onchange="salvarResposta('P1_18','B')"><span>Perder tempo</span></label>
+        <label class="opt"><input type="radio" name="P1_18" onchange="salvarResposta('P1_18','C')"><span>Ser pego de surpresa</span></label>
+      </div>
+    </div>
+
+    <!-- P1_19 -->
+    <div class="question-card">
+      <p class="question-title">Aprendo com mais facilidade se <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_19" onchange="salvarResposta('P1_19','A')"><span>Tiver tempo para analisar e estudar, prefiro antes estar sozinho para organizar meus pensamentos</span></label>
+        <label class="opt"><input type="radio" name="P1_19" onchange="salvarResposta('P1_19','B')"><span>O assunto me trouxer resultados imediatos</span></label>
+        <label class="opt"><input type="radio" name="P1_19" onchange="salvarResposta('P1_19','C')"><span>Estiver aprendendo com outras pessoas</span></label>
+      </div>
+    </div>
+
+    <!-- P1_20 -->
+    <div class="question-card">
+      <p class="question-title">Eu sou uma pessoa <span style="color:#d00">*</span></p>
+      <div class="options">
+        <label class="opt"><input type="radio" name="P1_20" onchange="salvarResposta('P1_20','A')"><span>Que age imediatamente</span></label>
+        <label class="opt"><input type="radio" name="P1_20" onchange="salvarResposta('P1_20','B')"><span>Prestativo e empático</span></label>
+        <label class="opt"><input type="radio" name="P1_20" onchange="salvarResposta('P1_20','C')"><span>Curiosa, estudiosa, analítica</span></label>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="window.location.href='page2.html'">Próxima Página →</button>
   </div>
 </body>
 </html>
