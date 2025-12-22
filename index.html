@@ -126,4 +126,12 @@
                 nascimento: document.getElementById("nascimento").value
             };
 
-            localStorage.setItem("usuario", JSON.stri
+            localStorage.setItem("usuario", JSON.stringify(usuario));
+            localStorage.removeItem("respostas");
+
+            window.location.href = "pages/page1.html";
+        }
+    </script>
+
+</body>
+</html>
