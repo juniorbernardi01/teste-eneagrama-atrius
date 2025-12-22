@@ -2,16 +2,33 @@
 //  ARMAZENAMENTO DAS RESPOSTAS
 // ======================================================
 
-// Salva uma resposta por vez
-function salvarResposta(pergunta, alternativa) {
+// Salva uma resposta por vez E marca visualmente a opção escolhida
+function salvarResposta(pergunta, alternativa, elemento) {
     let respostas = JSON.parse(localStorage.getItem("respostas")) || [];
 
+    // remove resposta anterior dessa mesma pergunta (se tiver)
+    respostas = respostas.filter(r => r.pergunta !== pergunta);
+
+    // adiciona a nova resposta
     respostas.push({
         pergunta: pergunta,
         alternativa: alternativa
     });
 
     localStorage.setItem("respostas", JSON.stringify(respostas));
+
+    // --- PARTE VISUAL: marcar o botão selecionado ---
+    if (elemento) {
+        // pega o card da pergunta
+        const card = elemento.closest('.question-card');
+        if (card) {
+            // remove a seleção de todos os botões dessa pergunta
+            const botoes = card.querySelectorAll('.option-btn');
+            botoes.forEach(btn => btn.classList.remove('selected'));
+        }
+        // marca só o clicado
+        elemento.classList.add('selected');
+    }
 }
 
 // Limpa respostas quando inicia o teste
@@ -49,7 +66,9 @@ async function calcularResultado() {
 
     respostas.forEach(r => {
         const perfil = matriz[r.pergunta][r.alternativa];
-        score[perfil] += 1;
+        if (perfil) {
+            score[perfil] += 1;
+        }
     });
 
     // salva o resultado bruto
@@ -86,14 +105,8 @@ function carregarResultadoNaPagina() {
 
     const top3 = obterTop3(score);
 
-    // Mostra no console (para testes)
-    console.log("Resultado:", score);
+    console.log("Resultado completo:", score);
     console.log("Top 3:", top3);
 
-    // Aqui você já pode montar os elementos HTML da página final,
-    // por exemplo:
-    //
-    // document.getElementById("perfil1_nome").innerText = nomesPerfis[top3[0].perfil];
-    // document.getElementById("perfil1_texto").innerText = textosPerfis[top3[0].perfil];
-    
+    // aqui depois a gente preenche o HTML da página de resultado
 }
