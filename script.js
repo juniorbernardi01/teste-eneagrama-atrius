@@ -1,50 +1,89 @@
 // ======================================================
-//  ARMAZENAMENTO DAS RESPOSTAS
+//  UTILITÁRIOS (LocalStorage)
 // ======================================================
 
-// Salva uma resposta por vez E marca visualmente a opção escolhida
-function salvarResposta(pergunta, alternativa, elemento) {
-    let respostas = JSON.parse(localStorage.getItem("respostas")) || [];
-
-    // remove resposta anterior dessa mesma pergunta (se tiver)
-    respostas = respostas.filter(r => r.pergunta !== pergunta);
-
-    // adiciona a nova resposta
-    respostas.push({
-        pergunta: pergunta,
-        alternativa: alternativa
-    });
-
-    localStorage.setItem("respostas", JSON.stringify(respostas));
-
-    // --- PARTE VISUAL: marcar o botão selecionado ---
-    if (elemento) {
-        // pega o card da pergunta
-        const card = elemento.closest('.question-card');
-        if (card) {
-            // remove a seleção de todos os botões dessa pergunta
-            const botoes = card.querySelectorAll('.option-btn');
-            botoes.forEach(btn => btn.classList.remove('selected'));
-        }
-        // marca só o clicado
-        elemento.classList.add('selected');
-    }
+function getRespostas() {
+  return JSON.parse(localStorage.getItem("respostas")) || [];
 }
 
-// Limpa respostas quando inicia o teste
-function iniciarTeste() {
-    localStorage.removeItem("respostas");
-    window.location.href = "pages/page1.html";
+function setRespostas(respostas) {
+  localStorage.setItem("respostas", JSON.stringify(respostas));
+}
+
+function setUsuario(usuario) {
+  localStorage.setItem("usuario", JSON.stringify(usuario));
+}
+
+function getUsuario() {
+  return JSON.parse(localStorage.getItem("usuario")) || null;
+}
+
+
+// ======================================================
+//  SALVAR RESPOSTA (1 por pergunta) + MARCA VISUAL
+// ======================================================
+
+function salvarResposta(pergunta, alternativa, elemento) {
+  let respostas = getRespostas();
+
+  // remove resposta anterior dessa pergunta (se existir)
+  respostas = respostas.filter(r => r.pergunta !== pergunta);
+
+  // adiciona a nova resposta
+  respostas.push({ pergunta, alternativa });
+
+  // salva
+  setRespostas(respostas);
+
+  // --- feedback visual (marcação do botão) ---
+  if (elemento) {
+    const card = elemento.closest(".question-card");
+    if (card) {
+      card.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+    }
+    elemento.classList.add("selected");
+  }
+}
+
+
+// ======================================================
+//  RESTAURAR SELEÇÕES (quando voltar para uma página)
+//  - opcional, mas deixa perfeito: ao abrir page1/page2, ele marca o que já foi clicado
+// ======================================================
+
+function restaurarSelecoes() {
+  const respostas = getRespostas();
+
+  respostas.forEach(r => {
+    const selector = `[data-pergunta="${r.pergunta}"][data-alt="${r.alternativa}"]`;
+    const btn = document.querySelector(selector);
+    if (btn) {
+      // marca visualmente
+      const card = btn.closest(".question-card");
+      if (card) card.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    }
+  });
 }
 
 
 // ======================================================
 //  CARREGAR MATRIZ DE PONTUAÇÃO
+//  Observação: pages usam "../data/..." e root usa "data/..."
+//  Aqui usamos caminho relativo padrão para as páginas dentro de /pages
 // ======================================================
 
 async function carregarMatriz() {
-    const matriz = await fetch("../data/matriz.json").then(r => r.json());
-    return matriz;
+  // Se estiver dentro de /pages, funciona:
+  // ../data/matriz.json
+  // Se estiver na raiz, funciona:
+  // data/matriz.json
+  const path = window.location.pathname.includes("/pages/")
+    ? "../data/matriz.json"
+    : "data/matriz.json";
+
+  const matriz = await fetch(path).then(r => r.json());
+  return matriz;
 }
 
 
@@ -53,60 +92,76 @@ async function carregarMatriz() {
 // ======================================================
 
 async function calcularResultado() {
-    const matriz = await carregarMatriz();
+  const matriz = await carregarMatriz();
 
-    // pontuação dos 9 perfis
-    let score = {
-        1: 0, 2: 0, 3: 0,
-        4: 0, 5: 0, 6: 0,
-        7: 0, 8: 0, 9: 0
-    };
+  // pontuação dos 9 perfis
+  const score = { 1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0 };
 
-    const respostas = JSON.parse(localStorage.getItem("respostas")) || [];
+  const respostas = getRespostas();
 
-    respostas.forEach(r => {
-        const perfil = matriz[r.pergunta][r.alternativa];
-        if (perfil) {
-            score[perfil] += 1;
-        }
-    });
+  respostas.forEach(r => {
+    const mapaPergunta = matriz[r.pergunta];
+    if (!mapaPergunta) return;
 
-    // salva o resultado bruto
-    localStorage.setItem("resultado", JSON.stringify(score));
+    const perfil = mapaPergunta[r.alternativa];
+    if (!perfil) return;
 
-    // envia para página final
+    score[perfil] += 1;
+  });
+
+  localStorage.setItem("resultado", JSON.stringify(score));
+
+  // vai para resultado (se estiver dentro de pages, resultado geralmente fica em /pages/resultado.html ou /resultado.html)
+  // Você comentou que tem "resultado.html" na pasta pages ou raiz. Vamos tentar os dois:
+  if (window.location.pathname.includes("/pages/")) {
     window.location.href = "resultado.html";
+  } else {
+    window.location.href = "pages/resultado.html";
+  }
 }
 
 
 // ======================================================
-//  FUNÇÃO PARA PEGAR OS 3 PERFIS PRINCIPAIS
+//  TOP 3 PERFIS
 // ======================================================
 
 function obterTop3(score) {
-    const ordenado = Object.entries(score)
-        .sort((a, b) => b[1] - a[1])  // ordena do maior para o menor
-        .slice(0, 3);                 // pega os 3 primeiros
-
-    return ordenado.map(item => ({
-        perfil: item[0],
-        pontos: item[1]
-    }));
+  return Object.entries(score)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([perfil, pontos]) => ({ perfil, pontos }));
 }
 
 
 // ======================================================
-//  CARREGAR RESULTADO NA PÁGINA FINAL
+//  RESULTADO (para você montar depois na tela)
 // ======================================================
 
 function carregarResultadoNaPagina() {
-    const score = JSON.parse(localStorage.getItem("resultado"));
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const score = JSON.parse(localStorage.getItem("resultado")) || null;
+  const usuario = getUsuario();
 
-    const top3 = obterTop3(score);
+  if (!score) {
+    console.warn("Sem resultado calculado ainda.");
+    return;
+  }
 
-    console.log("Resultado completo:", score);
-    console.log("Top 3:", top3);
+  const top3 = obterTop3(score);
+  console.log("Usuário:", usuario);
+  console.log("Score:", score);
+  console.log("Top3:", top3);
 
-    // aqui depois a gente preenche o HTML da página de resultado
+  // aqui você vai preencher seu HTML do resultado
+  // (a gente monta isso quando chegar na página final)
+}
+
+
+// ======================================================
+//  AJUDA: LIMPAR TUDO (se quiser reiniciar teste)
+// ======================================================
+
+function resetarTeste() {
+  localStorage.removeItem("usuario");
+  localStorage.removeItem("respostas");
+  localStorage.removeItem("resultado");
 }
