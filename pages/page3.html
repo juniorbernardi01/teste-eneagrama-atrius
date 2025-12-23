@@ -1,387 +1,225 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quem sou eu — Página 3</title>
-
-  <link rel="stylesheet" href="../styles.css" />
-  <script src="../script.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quem sou eu — Passo 3</title>
 
   <style>
-    .page-title{font-size:28px;margin:12px 0 10px;}
-    .page-sub{margin:0 0 12px;color:#444;line-height:1.5;}
-
-    .progress-container{width:100%;height:10px;background:#e6e6e6;border-radius:10px;margin:18px 0 18px;overflow:hidden;}
-    .progress-bar{height:100%;background:#E57E25;width:60%;transition:width .3s ease;}
-
-    .back-link{display:inline-block;margin:8px 0 0;color:#0F2B5B;text-decoration:none;}
-
-    .pair-card{
-      background:#fff;
-      border-radius:14px;
-      box-shadow:0 4px 12px rgba(0,0,0,.08);
-      padding:16px;
-      margin:16px 0;
-    }
-
-    .pair-grid{
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      gap:10px;
-      align-items:stretch;
-    }
-
-    .ou{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:0 6px;
-      font-weight:800;
-      color:#666;
-      user-select:none;
-    }
-
-    .opt2{
-      border:1px solid #e7e7e7;
-      border-radius:12px;
-      padding:14px 14px;
-      cursor:pointer;
-      transition:.15s;
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      background:#fff;
-      min-height:56px;
-    }
-    .opt2:hover{border-color:#cfcfcf;background:#fafafa;}
-
-    .opt2 input[type="radio"]{
-      appearance:none;
-      -webkit-appearance:none;
-      width:18px;height:18px;
-      border:2px solid #c9c9c9;
-      border-radius:50%;
-      margin-top:2px;
-      flex:0 0 18px;
-      position:relative;
-    }
-    .opt2 input[type="radio"]:checked{border-color:#E57E25;}
-    .opt2 input[type="radio"]:checked::after{
-      content:"";
-      position:absolute;
-      inset:3px;
-      background:#E57E25;
-      border-radius:50%;
-    }
-
-    .opt2 span{font-size:15px;color:#222;line-height:1.25;}
-
-    .next-btn{
-      margin-top:18px;
-      background:#E57E25;
-      color:#fff;
-      padding:14px 18px;
-      border-radius:12px;
-      border:none;
-      cursor:pointer;
-      font-size:16px;
-      width:100%;
-    }
-    .next-btn:hover{background:#cf6d1f;}
-
-    .hint{
-      font-size:14px;
-      color:#444;
-      margin:0 0 8px;
-    }
-
-    @media (max-width: 720px){
-      .pair-grid{grid-template-columns:1fr; gap:10px;}
-      .ou{display:none;}
-    }
+    :root { --accent:#f07a00; --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666; --bd:#e7e7e7; }
+    body{font-family:Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);}
+    .wrap{max-width:980px;margin:0 auto;padding:16px;}
+    .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 6px 22px rgba(0,0,0,.06);}
+    h1{margin:0 0 8px;font-size:24px;}
+    .muted{color:var(--muted);font-size:14px;line-height:1.4;margin:6px 0;}
+    .step{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 6px;}
+    .step b{font-size:14px;}
+    .bar{height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;}
+    .fill{height:100%;width:75%;background:var(--accent);border-radius:999px;}
+    .q{border:1px solid var(--bd);border-radius:14px;padding:12px;margin:12px 0;}
+    .qtitle{margin:0 0 10px;font-weight:700;font-size:14px;}
+    .qtitle .n{display:inline-block;min-width:26px;color:#888;}
+    .opt{display:block;border:1px solid var(--bd);border-radius:12px;padding:12px;margin:8px 0;background:#fafafa;cursor:pointer;}
+    .opt input{margin-right:10px;transform:scale(1.1);}
+    .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+    .btn-outline{background:#fff;border:1px solid var(--bd);color:var(--text);}
+    .btn-primary{background:var(--accent);color:#fff;flex:1;min-width:220px;text-align:center;}
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1 class="page-title">Quem sou eu</h1>
-    <p class="page-sub">
-      Você se considera uma pessoa...<br>
-      <span class="hint">Escolha a frase que mais se parece com você, a frase da primeira coluna ou a frase da segunda coluna.</span>
-    </p>
+  <div class="wrap">
+    <div class="card">
+      <h1>Quem sou eu</h1>
+      <p class="muted">Agora é escolha direta: A ou B. Confie na sua primeira impressão.</p>
 
-    <div class="progress-container"><div class="progress-bar"></div></div>
+      <div class="step">
+        <b>Passo 3 de 4 — Escolhas diretas</b>
+        <span class="muted">20 perguntas • A ou B</span>
+      </div>
+      <div class="bar"><div class="fill"></div></div>
 
-    <a class="back-link" href="page2.html">← Voltar</a>
+      <div class="muted" style="margin-top:10px;">
+        <b>Instruções:</b> Escolha <b>uma</b> opção por pergunta. Se as duas parecerem verdadeiras, marque a que mais se repete em você.
+      </div>
 
-    <!-- P3_01 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_01" onchange="salvarResposta('P3_01','A')"><span>Não gosto de decidir no calor da emoção</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_01" onchange="salvarResposta('P3_01','B')"><span>Gosto de estimular as pessoas a decidirem</span></label>
-    </div></div>
+      <form id="formP3">
+        <div class="q">
+          <div class="qtitle"><span class="n">1.</span>Eu prefiro:</div>
+          <label class="opt"><input type="radio" name="P3_01" value="A"> Garantir segurança antes de agir</label>
+          <label class="opt"><input type="radio" name="P3_01" value="B"> Agir rápido e ajustar depois</label>
+        </div>
 
-    <!-- P3_02 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_02" onchange="salvarResposta('P3_02','A')"><span>Ser aquele que fez a coisa certa</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_02" onchange="salvarResposta('P3_02','B')"><span>Gosto de ser reconhecido</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">2.</span>Em decisões importantes:</div>
+          <label class="opt"><input type="radio" name="P3_02" value="A"> Eu analiso bastante antes</label>
+          <label class="opt"><input type="radio" name="P3_02" value="B"> Eu decido e sigo em frente</label>
+        </div>
 
-    <!-- P3_03 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_03" onchange="salvarResposta('P3_03','A')"><span>Tenho sempre um "plano B" para atender aos padrões</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_03" onchange="salvarResposta('P3_03','B')"><span>Gosto de ser original, pensar diferente</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">3.</span>Me sinto melhor quando:</div>
+          <label class="opt"><input type="radio" name="P3_03" value="A"> Tenho padrões e faço o correto</label>
+          <label class="opt"><input type="radio" name="P3_03" value="B"> Tenho liberdade e faço do meu jeito</label>
+        </div>
 
-    <!-- P3_04 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_04" onchange="salvarResposta('P3_04','A')"><span>Não gosto de ter minha privacidade invadida</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_04" onchange="salvarResposta('P3_04','B')"><span>Não me importo em ter minha privacidade invadida</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">4.</span>Em situações de conflito, eu:</div>
+          <label class="opt"><input type="radio" name="P3_04" value="A"> Evito tensão e busco harmonia</label>
+          <label class="opt"><input type="radio" name="P3_04" value="B"> Encaro e imponho limites</label>
+        </div>
 
-    <!-- P3_05 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_05" onchange="salvarResposta('P3_05','A')"><span>Ofereço metas ousadas sem medo de correr riscos e errar</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_05" onchange="salvarResposta('P3_05','B')"><span>Me coloco a disposição acalmando os animos e buscando soluções conciliadoras</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">5.</span>Eu me reconheço mais como alguém:</div>
+          <label class="opt"><input type="radio" name="P3_05" value="A"> Reservado(a) e observador(a)</label>
+          <label class="opt"><input type="radio" name="P3_05" value="B"> Comunicativo(a) e orientado(a) a impacto</label>
+        </div>
 
-    <!-- P3_06 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_06" onchange="salvarResposta('P3_06','A')"><span>Gosto de independencia e liberdade</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_06" onchange="salvarResposta('P3_06','B')"><span>Gosto de saber o que é certo e o que é errado</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">6.</span>Eu tendo mais a:</div>
+          <label class="opt"><input type="radio" name="P3_06" value="A"> Ser cauteloso(a) com riscos</label>
+          <label class="opt"><input type="radio" name="P3_06" value="B"> Buscar novas possibilidades</label>
+        </div>
 
-    <!-- P3_07 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_07" onchange="salvarResposta('P3_07','A')"><span>Sou inquieto, autëntico, as vezes exagerado</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_07" onchange="salvarResposta('P3_07','B')"><span>Sou harmonioso, discreto e tranquilo</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">7.</span>Eu me incomodo mais com:</div>
+          <label class="opt"><input type="radio" name="P3_07" value="A"> Falta de cuidado e correção</label>
+          <label class="opt"><input type="radio" name="P3_07" value="B"> Falta de resultado e progresso</label>
+        </div>
 
-    <!-- P3_08 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_08" onchange="salvarResposta('P3_08','A')"><span>Gosto de ter liberdade para criar</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_08" onchange="salvarResposta('P3_08','B')"><span>Gosto de me preparar para não ser pego de surpresa</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">8.</span>Eu prefiro:</div>
+          <label class="opt"><input type="radio" name="P3_08" value="A"> Estabilidade e tranquilidade</label>
+          <label class="opt"><input type="radio" name="P3_08" value="B"> Intensidade e profundidade</label>
+        </div>
 
-    <!-- P3_09 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_09" onchange="salvarResposta('P3_09','A')"><span>Sou desafiante e provocador de novas idéias</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_09" onchange="salvarResposta('P3_09','B')"><span>Sou tolerante e compreensivo. Prefiro ceder do que impor</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">9.</span>Quando algo aperta, eu:</div>
+          <label class="opt"><input type="radio" name="P3_09" value="A"> Penso, me afasto e analiso</label>
+          <label class="opt"><input type="radio" name="P3_09" value="B"> Vou pra ação e resolvo</label>
+        </div>
 
-    <!-- P3_10 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_10" onchange="salvarResposta('P3_10','A')"><span>Sei como evitar conflitos e buscar solucoes conciliadoras</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_10" onchange="salvarResposta('P3_10','B')"><span>Sei identificar oportunidades de crescimento</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">10.</span>Eu me sinto mais confortável:</div>
+          <label class="opt"><input type="radio" name="P3_10" value="A"> Sendo útil para as pessoas</label>
+          <label class="opt"><input type="radio" name="P3_10" value="B"> Sendo reconhecido(a) pelo que faço</label>
+        </div>
 
-    <!-- P3_11 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_11" onchange="salvarResposta('P3_11','A')"><span>Gosto de ser vencedor</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_11" onchange="salvarResposta('P3_11','B')"><span>Gosto de buscar soluções diferentes</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">11.</span>Eu me considero mais:</div>
+          <label class="opt"><input type="radio" name="P3_11" value="A"> Direto(a) e firme</label>
+          <label class="opt"><input type="radio" name="P3_11" value="B"> Diplomático(a) e conciliador(a)</label>
+        </div>
 
-    <!-- P3_12 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_12" onchange="salvarResposta('P3_12','A')"><span>Gosto da minha própria companhia e de privacidade</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_12" onchange="salvarResposta('P3_12','B')"><span>Sou cativante, simpático, transparente e positivo</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">12.</span>Eu tenho mais tendência a:</div>
+          <label class="opt"><input type="radio" name="P3_12" value="A"> Questionar e prever problemas</label>
+          <label class="opt"><input type="radio" name="P3_12" value="B"> Manter otimismo e seguir leve</label>
+        </div>
 
-    <!-- P3_13 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_13" onchange="salvarResposta('P3_13','A')"><span>Sintonizado com o mercado, atualizado</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_13" onchange="salvarResposta('P3_13','B')"><span>Criativo e inovador</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">13.</span>Quando eu erro:</div>
+          <label class="opt"><input type="radio" name="P3_13" value="A"> Eu me cobro bastante</label>
+          <label class="opt"><input type="radio" name="P3_13" value="B"> Eu tento virar a página rápido</label>
+        </div>
 
-    <!-- P3_14 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_14" onchange="salvarResposta('P3_14','A')"><span>Sou empolgado e cheio de ideias, gosto de brincar</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_14" onchange="salvarResposta('P3_14','B')"><span>Deixo clara minha posição para não ser mal interpretado</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">14.</span>Eu me movo mais por:</div>
+          <label class="opt"><input type="radio" name="P3_14" value="A"> Fazer o correto</label>
+          <label class="opt"><input type="radio" name="P3_14" value="B"> Ter liberdade e experiências</label>
+        </div>
 
-    <!-- P3_15 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_15" onchange="salvarResposta('P3_15','A')"><span>Ambicioso e consigo meus objetivos por meio de minha força de vontate</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_15" onchange="salvarResposta('P3_15','B')"><span>Sou diferente, consigo meus objetivos por ser original e criativo</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">15.</span>Eu prefiro:</div>
+          <label class="opt"><input type="radio" name="P3_15" value="A"> Ter controle e decidir</label>
+          <label class="opt"><input type="radio" name="P3_15" value="B"> Deixar as coisas fluírem</label>
+        </div>
 
-    <!-- P3_16 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_16" onchange="salvarResposta('P3_16','A')"><span>Prefiro ficar só para analisar o cenário sem influencia de outras pessoas</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_16" onchange="salvarResposta('P3_16','B')"><span>Prefiro apoiar o lado mais justo, mesmo que gere embate</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">16.</span>Eu me sinto mais eu quando:</div>
+          <label class="opt"><input type="radio" name="P3_16" value="A"> Sou autêntico(a) e profundo(a)</label>
+          <label class="opt"><input type="radio" name="P3_16" value="B"> Sou eficiente(a) e resolutivo(a)</label>
+        </div>
 
-    <!-- P3_17 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_17" onchange="salvarResposta('P3_17','A')"><span>Determinado, leal e comprometido</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_17" onchange="salvarResposta('P3_17','B')"><span>Gosto de liberdade e menos rotina e regras</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">17.</span>Eu costumo ser mais:</div>
+          <label class="opt"><input type="radio" name="P3_17" value="A"> Disciplinado(a) e responsável</label>
+          <label class="opt"><input type="radio" name="P3_17" value="B"> Espontâneo(a) e flexível</label>
+        </div>
 
-    <!-- P3_18 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_18" onchange="salvarResposta('P3_18','A')"><span>Sei me adaptar a novas situações</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_18" onchange="salvarResposta('P3_18','B')"><span>Sei me colocar no lugar do outro</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">18.</span>Eu prefiro:</div>
+          <label class="opt"><input type="radio" name="P3_18" value="A"> Pensar bem antes de falar</label>
+          <label class="opt"><input type="radio" name="P3_18" value="B"> Falar direto o que precisa</label>
+        </div>
 
-    <!-- P3_19 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_19" onchange="salvarResposta('P3_19','A')"><span>Prefiro terminar o que comecei sendo um exemplo de quem faz o que é certo</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_19" onchange="salvarResposta('P3_19','B')"><span>Me considero questionador</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">19.</span>Eu me sinto melhor quando:</div>
+          <label class="opt"><input type="radio" name="P3_19" value="A"> Tenho apoio / segurança</label>
+          <label class="opt"><input type="radio" name="P3_19" value="B"> Tenho autonomia / liberdade</label>
+        </div>
 
-    <!-- P3_20 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_20" onchange="salvarResposta('P3_20','A')"><span>Gosto de autonomia, independëncia, liberdade</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_20" onchange="salvarResposta('P3_20','B')"><span>Gosto de simplificar a vida, buscar a paz</span></label>
-    </div></div>
+        <div class="q">
+          <div class="qtitle"><span class="n">20.</span>Eu me reconheço mais como alguém:</div>
+          <label class="opt"><input type="radio" name="P3_20" value="A"> Leal e cuidadoso(a) com o grupo</label>
+          <label class="opt"><input type="radio" name="P3_20" value="B"> Independente e autossuficiente</label>
+        </div>
 
-    <!-- P3_21 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_21" onchange="salvarResposta('P3_21','A')"><span>Sugiro mudanças, mesmo que ousadas</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_21" onchange="salvarResposta('P3_21','B')"><span>Me considero despretencioso e desapegado</span></label>
-    </div></div>
+        <div class="actions">
+          <a class="btn btn-outline" href="./page2.html">Voltar</a>
+          <button id="btnProximo" type="button" class="btn btn-primary">Continuar</button>
+        </div>
 
-    <!-- P3_22 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_22" onchange="salvarResposta('P3_22','A')"><span>Sou franco, direto, falo tudo o que penso</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_22" onchange="salvarResposta('P3_22','B')"><span>Sou discreto, atencioso, compreensivo e estável</span></label>
-    </div></div>
-
-    <!-- P3_23 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_23" onchange="salvarResposta('P3_23','A')"><span>Gosto de observar os fatos e decidir de forma racional</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_23" onchange="salvarResposta('P3_23','B')"><span>Gosto de entender bem a necessidade do outro</span></label>
-    </div></div>
-
-    <!-- P3_24 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_24" onchange="salvarResposta('P3_24','A')"><span>Não gosto de trabalhos mal feitos e cometer erros</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_24" onchange="salvarResposta('P3_24','B')"><span>Não gosto de me sentir preso a rotinas e processos</span></label>
-    </div></div>
-
-    <!-- P3_25 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_25" onchange="salvarResposta('P3_25','A')"><span>Gosto de viver de forma simples. De calma e harmonia</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_25" onchange="salvarResposta('P3_25','B')"><span>Não me importo em quebrar regras e ser ousado</span></label>
-    </div></div>
-
-    <!-- P3_26 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_26" onchange="salvarResposta('P3_26','A')"><span>Gosto de estar com as pessoas</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_26" onchange="salvarResposta('P3_26','B')"><span>Gosto de trabalhar com assuntos técnicos</span></label>
-    </div></div>
-
-    <!-- P3_27 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_27" onchange="salvarResposta('P3_27','A')"><span>Preciso decidir sozinho</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_27" onchange="salvarResposta('P3_27','B')"><span>Gosto de dividir meus questionamentos com outras pessoas</span></label>
-    </div></div>
-
-    <!-- P3_28 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_28" onchange="salvarResposta('P3_28','A')"><span>Gosto de ouvir a opinião dos outros para decidir o que é melhor a fazer</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_28" onchange="salvarResposta('P3_28','B')"><span>Gosto de ter liberdade para criar solucionar problemas</span></label>
-    </div></div>
-
-    <!-- P3_29 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_29" onchange="salvarResposta('P3_29','A')"><span>Sei "onde" quero chegar</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_29" onchange="salvarResposta('P3_29','B')"><span>Sei "como" chegar</span></label>
-    </div></div>
-
-    <!-- P3_30 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_30" onchange="salvarResposta('P3_30','A')"><span>Prefiro ser metódico para deixar tudo claro, sou perfeccionista</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_30" onchange="salvarResposta('P3_30','B')"><span>Sei que sou diferente e original</span></label>
-    </div></div>
-
-    <!-- P3_31 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_31" onchange="salvarResposta('P3_31','A')"><span>Busco me posicionar abertamente, de forma destemida, sem medo de errar</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_31" onchange="salvarResposta('P3_31','B')"><span>Busco soluções conciliadoras e quando todos estão bem</span></label>
-    </div></div>
-
-    <!-- P3_32 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_32" onchange="salvarResposta('P3_32','A')"><span>Gosto de saber quais são as normas e regras a seguir</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_32" onchange="salvarResposta('P3_32','B')"><span>Prefiro ter liberdade e prazer do que seguir regras</span></label>
-    </div></div>
-
-    <!-- P3_33 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_33" onchange="salvarResposta('P3_33','A')"><span>Busco ideias e soluções que levem ao sucesso de forma rápida</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_33" onchange="salvarResposta('P3_33','B')"><span>Procuro observar os fatos e decidir de forma racional</span></label>
-    </div></div>
-
-    <!-- P3_34 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_34" onchange="salvarResposta('P3_34','A')"><span>Sou exigente, organizado, rígido e teimoso porém erro pouco</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_34" onchange="salvarResposta('P3_34','B')"><span>Gosto de buscar soluções diferentes</span></label>
-    </div></div>
-
-    <!-- P3_35 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_35" onchange="salvarResposta('P3_35','A')"><span>Sou preocupado, apreensivo, tenso</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_35" onchange="salvarResposta('P3_35','B')"><span>Vivo de forma leve</span></label>
-    </div></div>
-
-    <!-- P3_36 -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_36" onchange="salvarResposta('P3_36','A')"><span>Consigo consertar falhas e melhorar os processos</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_36" onchange="salvarResposta('P3_36','B')"><span>Me considero despretencioso e desapegado</span></label>
-    </div></div>
-
-    <!-- P3_37 (CORRIGIDA) -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_37" onchange="salvarResposta('P3_37','A')"><span>Gosto de me sentir seguro no grupo de trabalho</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_37" onchange="salvarResposta('P3_37','B')"><span>Gosto de liberdade e menos rotina e regras</span></label>
-    </div></div>
-
-    <!-- P3_38 (CORRIGIDA) -->
-    <div class="pair-card"><div class="pair-grid">
-      <label class="opt2"><input type="radio" name="P3_38" onchange="salvarResposta('P3_38','A')"><span>Sou original, gosto de ser diferente</span></label>
-      <div class="ou">OU</div>
-      <label class="opt2"><input type="radio" name="P3_38" onchange="salvarResposta('P3_38','B')"><span>Sinto que estou fazendo o que é correto a ser feito</span></label>
-    </div></div>
-
-    <button class="next-btn" onclick="window.location.href='page4.html'">Próxima Página →</button>
+      </form>
+    </div>
   </div>
+
+<script>
+const STORAGE_KEY="respostas";
+
+function getList(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+function setList(l){ localStorage.setItem(STORAGE_KEY, JSON.stringify(l)); }
+
+function upsert(pergunta, alternativa){
+  const l = getList();
+  const i = l.findIndex(x => x.pergunta === pergunta);
+  if (i >= 0) l[i].alternativa = alternativa;
+  else l.push({ pergunta, alternativa });
+  setList(l);
+}
+
+function restore(){
+  const l = getList();
+  for (const r of l) {
+    const el = document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
+    if (el) el.checked = true;
+  }
+}
+
+function validateAll(){
+  const form = document.getElementById("formP3");
+  const names = [...new Set([...form.querySelectorAll('input[type="radio"]')].map(i => i.name))];
+  const missing = names.filter(n => !form.querySelector(`input[name="${n}"]:checked`));
+  if (missing.length){
+    alert("Responda todas as questões desta página antes de continuar.");
+    const first = form.querySelector(`input[name="${missing[0]}"]`);
+    if (first) first.scrollIntoView({ behavior:"smooth", block:"center" });
+    return false;
+  }
+  return true;
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  restore();
+  document.querySelectorAll('#formP3 input[type="radio"]').forEach(inp=>{
+    inp.addEventListener("change",()=>upsert(inp.name, inp.value));
+  });
+  document.getElementById("btnProximo").addEventListener("click",()=>{
+    if(!validateAll()) return;
+    document.querySelectorAll('#formP3 input[type="radio"]:checked').forEach(inp=>upsert(inp.name, inp.value));
+    window.location.href="./page4.html";
+  });
+});
+</script>
 </body>
 </html>
