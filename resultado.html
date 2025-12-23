@@ -14,113 +14,44 @@
   --text:#111;
   --muted:#666;
 }
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-.wrap{
-  max-width:1000px;
-  margin:auto;
-  padding:16px;
-}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 10px 28px rgba(0,0,0,.06);
-}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);}
+.wrap{max-width:1000px;margin:auto;padding:16px;}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(0,0,0,.06);}
 h1{margin:0 0 6px;font-size:32px;}
 .muted{color:var(--muted);font-size:14px;}
 
-.grid{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:16px;
-}
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr;}
-}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
 
-.block{
-  border:1px solid var(--bd);
-  border-radius:16px;
-  padding:14px;
+.block{border:1px solid var(--bd);border-radius:16px;padding:14px;margin-top:12px;background:#fff;}
+
+.row{display:flex;align-items:center;gap:10px;margin:10px 0;}
+.badge{min-width:34px;height:34px;border-radius:50%;background:#f1f1f1;display:flex;align-items:center;justify-content:center;font-weight:800;}
+.bar{flex:1;height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;}
+.fill{height:100%;background:var(--accent);border-radius:999px;}
+.pct{width:48px;text-align:right;font-weight:700;}
+
+.top{background:#fff7ef;border:1px solid #ffd8b3;}
+.top .item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:#fff;margin-top:8px;font-weight:800;}
+
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.btn{padding:14px;border-radius:14px;border:0;font-weight:800;cursor:pointer;}
+.btn-primary{background:var(--accent);color:#fff;flex:1;}
+.btn-outline{background:#fff;border:1px solid var(--bd);}
+
+.debug{
   margin-top:12px;
-}
-
-/* barras */
-.row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:10px 0;
-}
-.badge{
-  min-width:34px;
-  height:34px;
-  border-radius:50%;
-  background:#f1f1f1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-}
-.bar{
-  flex:1;
-  height:10px;
-  background:#e9e9e9;
-  border-radius:999px;
-  overflow:hidden;
-}
-.fill{
-  height:100%;
-  background:var(--accent);
-  border-radius:999px;
-}
-.pct{
-  width:48px;
-  text-align:right;
-  font-weight:700;
-}
-
-/* top 3 */
-.top{
-  background:#fff7ef;
-  border:1px solid #ffd8b3;
-}
-.top .item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px;
-  border-radius:12px;
-  background:#fff;
-  margin-top:8px;
-  font-weight:800;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-}
-.btn{
-  padding:14px;
+  background:#0b1220;
+  color:#e6edf3;
   border-radius:14px;
-  border:0;
-  font-weight:800;
-  cursor:pointer;
+  padding:12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size:12px;
+  line-height:1.4;
+  overflow:auto;
 }
-.btn-primary{
-  background:var(--accent);
-  color:#fff;
-}
-.btn-outline{
-  background:#fff;
-  border:1px solid var(--bd);
-}
+.debug b{color:#ffd28a;}
+.debug .warn{color:#ffb4b4;}
 </style>
 </head>
 
@@ -133,24 +64,22 @@ h1{margin:0 0 6px;font-size:32px;}
 
 <div class="grid">
 
-  <!-- ESQUERDA -->
   <div>
     <div class="block">
       <b>Pontuação por Eneatipo</b>
       <p class="muted">Quanto maior a barra, maior a compatibilidade com aquele tipo.</p>
-
       <div id="bars"></div>
-
       <p class="muted" id="warn" style="margin-top:8px;"></p>
     </div>
+
+    <!-- Diagnóstico (aparece só se der problema) -->
+    <div class="debug" id="debug" style="display:none;"></div>
   </div>
 
-  <!-- DIREITA -->
   <div>
     <div class="block top">
       <b>Top 3</b>
       <p class="muted">Os 3 tipos mais altos (ordem decrescente).</p>
-
       <div id="top3"></div>
     </div>
 
@@ -166,7 +95,7 @@ h1{margin:0 0 6px;font-size:32px;}
 
 <script>
 const STORAGE_KEY = "respostas";
-const TYPES = [1,2,3,4,5,6,7,8,9];
+const TYPES = ["1","2","3","4","5","6","7","8","9"];
 
 function getAnswers(){
   try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
@@ -174,7 +103,8 @@ function getAnswers(){
 }
 
 async function loadMatrix(){
-  const r = await fetch("./data/matriz.json");
+  const r = await fetch("./data/matriz.json", { cache: "no-store" });
+  if(!r.ok) throw new Error("Falha ao carregar matriz.json ("+r.status+")");
   return await r.json();
 }
 
@@ -182,19 +112,33 @@ function calcScores(answers, matrix){
   const score = {};
   TYPES.forEach(t => score[t] = 0);
 
-  answers.forEach(r => {
-    const key = r.pergunta + "_" + r.alternativa;
-    if(matrix[key]){
-      Object.entries(matrix[key]).forEach(([t,val])=>{
-        score[t] += val;
-      });
+  const missingKeys = [];
+  let matched = 0;
+
+  for (const r of answers){
+    // chave esperada: "P3_01_A", "P4_05_S", etc.
+    const key = `${r.pergunta}_${r.alternativa}`;
+
+    const rule = matrix[key];
+    if(rule){
+      matched++;
+      for (const [t,val] of Object.entries(rule)){
+        const tt = String(t);
+        const num = Number(val) || 0;
+        if (score[tt] === undefined) score[tt] = 0;
+        score[tt] += num;
+      }
+    } else {
+      missingKeys.push(key);
     }
-  });
-  return score;
+  }
+
+  return { score, matched, missingKeys };
 }
 
 function normalize(score){
-  const max = Math.max(...Object.values(score), 1);
+  const vals = Object.values(score);
+  const max = Math.max(...vals, 1);
   const pct = {};
   Object.entries(score).forEach(([t,v])=>{
     pct[t] = Math.round((v / max) * 100);
@@ -205,14 +149,13 @@ function normalize(score){
 function renderBars(pct){
   const el = document.getElementById("bars");
   el.innerHTML = "";
-
   TYPES.forEach(t=>{
     const row = document.createElement("div");
     row.className = "row";
     row.innerHTML = `
       <div class="badge">${t}</div>
-      <div class="bar"><div class="fill" style="width:${pct[t]}%"></div></div>
-      <div class="pct">${pct[t]}%</div>
+      <div class="bar"><div class="fill" style="width:${pct[t] || 0}%"></div></div>
+      <div class="pct">${pct[t] || 0}%</div>
     `;
     el.appendChild(row);
   });
@@ -234,19 +177,55 @@ function renderTop3(score){
   });
 }
 
+function showDebug(obj){
+  const dbg = document.getElementById("debug");
+  dbg.style.display = "block";
+
+  const missingPreview = (obj.missingKeys || []).slice(0, 20);
+  dbg.innerHTML =
+`<b>DIAGNÓSTICO</b>
+Respostas no localStorage: <b>${obj.totalAnswers}</b>
+Chaves que bateram na matriz: <b>${obj.matched}</b>
+Chaves que NÃO existem na matriz: <b class="warn">${obj.missingCount}</b>
+
+Primeiras chaves faltando (até 20):
+${missingPreview.map(k=>" - "+k).join("\n")}
+
+Dica: a matriz precisa ter exatamente essas chaves.
+Exemplo de chave correta: P3_01_A ou P4_05_S
+`;
+}
+
 (async ()=>{
   const answers = getAnswers();
-  const matrix = await loadMatrix();
 
-  const score = calcScores(answers, matrix);
+  let matrix;
+  try{
+    matrix = await loadMatrix();
+  } catch(e){
+    document.getElementById("warn").innerText =
+      "Não foi possível carregar a matriz (data/matriz.json). Verifique se o arquivo existe e está publicado.";
+    showDebug({ totalAnswers: answers.length, matched: 0, missingCount: answers.length, missingKeys: [] });
+    return;
+  }
+
+  const { score, matched, missingKeys } = calcScores(answers, matrix);
   const pct = normalize(score);
 
   renderBars(pct);
   renderTop3(score);
 
-  if(Object.values(score).every(v=>v===0)){
+  const allZero = Object.values(score).every(v => v === 0);
+
+  if(allZero){
     document.getElementById("warn").innerText =
-      "Observação: este resultado depende da matriz (data/matriz.json). Se a matriz estiver incompleta, algumas perguntas podem não contar.";
+      "Observação: nenhuma pontuação foi calculada. Isso acontece quando a matriz está vazia/incompleta ou com chaves diferentes das respostas.";
+    showDebug({ totalAnswers: answers.length, matched, missingCount: missingKeys.length, missingKeys });
+  } else if (missingKeys.length > 0){
+    // Não trava o resultado, mas avisa que algumas não contaram
+    document.getElementById("warn").innerText =
+      "Observação: algumas respostas não foram encontradas na matriz. O resultado pode ficar menos preciso.";
+    showDebug({ totalAnswers: answers.length, matched, missingCount: missingKeys.length, missingKeys });
   }
 })();
 </script>
