@@ -1,216 +1,530 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quem sou eu — Passo 4</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quem sou eu — Passo 3</title>
 
-<style>
-:root{
-  --accent:#f07a00;
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --bd:#e7e7e7;
-  --text:#111;
-  --muted:#666;
-}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-.wrap{
-  max-width:960px;
-  margin:auto;
-  padding:16px;
-}
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 6px 20px rgba(0,0,0,.06);
-}
-h1{margin:0 0 6px}
-.muted{color:var(--muted);font-size:14px;line-height:1.4}
+  <style>
+    :root { --accent:#f07a00; --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666; --bd:#e7e7e7; }
+    body{font-family:Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);}
+    .wrap{max-width:980px;margin:0 auto;padding:16px;}
+    .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 6px 22px rgba(0,0,0,.06);}
+    h1{margin:0 0 8px;font-size:24px;}
+    .muted{color:var(--muted);font-size:14px;line-height:1.4;margin:6px 0;}
+    .step{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 6px;}
+    .step b{font-size:14px;}
+    .bar{height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;}
+    .fill{height:100%;width:75%;background:var(--accent);border-radius:999px;}
 
-.step{margin:12px 0}
-.bar{
-  height:10px;
-  background:#e9e9e9;
-  border-radius:999px;
-  overflow:hidden;
-  margin-top:6px;
-}
-.fill{
-  height:100%;
-  width:100%;
-  background:var(--accent);
-}
+    .q{border:1px solid var(--bd);border-radius:14px;padding:12px;margin:12px 0;}
+    .qhead{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+    .n{display:inline-block;min-width:26px;color:#888;font-weight:700;}
+    .qtitle{font-weight:700;font-size:14px;margin:0;}
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-@media(max-width:768px){
-  .grid{grid-template-columns:1fr}
-}
+    /* layout A OU B */
+    .ab{
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap:10px;
+      align-items:stretch;
+    }
+    .ou{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 6px;
+      color:#888;
+      font-weight:800;
+      letter-spacing:.5px;
+      user-select:none;
+    }
+    .opt{
+      border:1px solid var(--bd);
+      border-radius:12px;
+      padding:14px;
+      background:#fafafa;
+      cursor:pointer;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-height:56px;
+    }
+    .opt input{transform:scale(1.15);}
+    .opt strong{font-weight:700;}
+    .opt:has(input:checked){
+      border-color: rgba(240,122,0,.55);
+      box-shadow: 0 0 0 3px rgba(240,122,0,.12);
+      background:#fff;
+    }
 
-.word{
-  border:1px solid var(--bd);
-  border-radius:14px;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  cursor:pointer;
-  background:#fafafa;
-}
-.word span{
-  font-weight:700;
-}
-.word small{
-  color:#888;
-  margin-right:6px;
-}
-.word input{
-  transform:scale(1.2);
-}
+    /* mobile: empilha */
+    @media(max-width:720px){
+      .ab{grid-template-columns:1fr;}
+      .ou{display:none;}
+    }
 
-.counter{
-  margin-top:10px;
-  font-weight:700;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-}
-.btn{
-  padding:14px;
-  border-radius:12px;
-  border:0;
-  font-weight:700;
-  cursor:pointer;
-}
-.btn-primary{
-  background:var(--accent);
-  color:#fff;
-  flex:1;
-}
-.btn-outline{
-  background:#fff;
-  border:1px solid var(--bd);
-}
-</style>
+    .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+    .btn-outline{background:#fff;border:1px solid var(--bd);color:var(--text);}
+    .btn-primary{background:var(--accent);color:#fff;flex:1;min-width:220px;text-align:center;}
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-<div class="card">
+  <div class="wrap">
+    <div class="card">
+      <h1>Quem sou eu</h1>
+      <p class="muted">Agora é escolha direta: A ou B. Confie na sua primeira impressão.</p>
 
-<h1>Quem sou eu</h1>
-<p class="muted">
-Marque apenas as palavras ou expressões que realmente combinam com você ao longo da vida.
-</p>
+      <div class="step">
+        <b>Passo 3 de 4 — Escolhas diretas</b>
+        <span class="muted">20 perguntas • A ou B</span>
+      </div>
+      <div class="bar"><div class="fill"></div></div>
 
-<div class="step">
-<b>Passo 4 de 4 — Identificação pessoal</b>
-<div class="bar"><div class="fill"></div></div>
-</div>
+      <div class="muted" style="margin-top:10px;">
+        <b>Instruções:</b> Escolha <b>uma</b> opção por pergunta. Se as duas parecerem verdadeiras, marque a que mais se repete em você.
+      </div>
 
-<p class="muted">
-<b>Instruções:</b> Selecione as palavras que mais se parecem com você.  
-Para continuar, selecione pelo menos <b>6 opções</b>.
-</p>
+      <form id="formP3">
 
-<form id="formP4">
-<div class="grid">
+        <!-- 1 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">1.</span>
+            <p class="qtitle">Eu prefiro:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_01" value="A">
+              <strong>Garantir segurança antes de agir</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_01" value="B">
+              <strong>Agir rápido e ajustar depois</strong>
+            </label>
+          </div>
+        </div>
 
-<!-- BLOCO DE PALAVRAS -->
+        <!-- 2 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">2.</span>
+            <p class="qtitle">Em decisões importantes:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_02" value="A">
+              <strong>Eu analiso bastante antes</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_02" value="B">
+              <strong>Eu decido e sigo em frente</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">3.</span>
+            <p class="qtitle">Me sinto melhor quando:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_03" value="A">
+              <strong>Tenho padrões e faço o correto</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_03" value="B">
+              <strong>Tenho liberdade e faço do meu jeito</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">4.</span>
+            <p class="qtitle">Em situações de conflito, eu:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_04" value="A">
+              <strong>Evito tensão e busco harmonia</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_04" value="B">
+              <strong>Encaro e imponho limites</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">5.</span>
+            <p class="qtitle">Eu me reconheço mais como alguém:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_05" value="A">
+              <strong>Reservado(a) e observador(a)</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_05" value="B">
+              <strong>Comunicativo(a) e orientado(a) a impacto</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">6.</span>
+            <p class="qtitle">Eu tendo mais a:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_06" value="A">
+              <strong>Ser cauteloso(a) com riscos</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_06" value="B">
+              <strong>Buscar novas possibilidades</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">7.</span>
+            <p class="qtitle">Eu me incomodo mais com:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_07" value="A">
+              <strong>Falta de cuidado e correção</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_07" value="B">
+              <strong>Falta de resultado e progresso</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">8.</span>
+            <p class="qtitle">Eu prefiro:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_08" value="A">
+              <strong>Estabilidade e tranquilidade</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_08" value="B">
+              <strong>Intensidade e profundidade</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">9.</span>
+            <p class="qtitle">Quando algo aperta, eu:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_09" value="A">
+              <strong>Penso, me afasto e analiso</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_09" value="B">
+              <strong>Vou pra ação e resolvo</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">10.</span>
+            <p class="qtitle">Eu me sinto mais confortável:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_10" value="A">
+              <strong>Sendo útil para as pessoas</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_10" value="B">
+              <strong>Sendo reconhecido(a) pelo que faço</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 11 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">11.</span>
+            <p class="qtitle">Eu me considero mais:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_11" value="A">
+              <strong>Direto(a) e firme</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_11" value="B">
+              <strong>Diplomático(a) e conciliador(a)</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 12 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">12.</span>
+            <p class="qtitle">Eu tenho mais tendência a:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_12" value="A">
+              <strong>Questionar e prever problemas</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_12" value="B">
+              <strong>Manter otimismo e seguir leve</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 13 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">13.</span>
+            <p class="qtitle">Quando eu erro:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_13" value="A">
+              <strong>Eu me cobro bastante</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_13" value="B">
+              <strong>Eu tento virar a página rápido</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 14 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">14.</span>
+            <p class="qtitle">Eu me movo mais por:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_14" value="A">
+              <strong>Fazer o correto</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_14" value="B">
+              <strong>Ter liberdade e experiências</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 15 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">15.</span>
+            <p class="qtitle">Eu prefiro:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_15" value="A">
+              <strong>Ter controle e decidir</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_15" value="B">
+              <strong>Deixar as coisas fluírem</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 16 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">16.</span>
+            <p class="qtitle">Eu me sinto mais eu quando:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_16" value="A">
+              <strong>Sou autêntico(a) e profundo(a)</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_16" value="B">
+              <strong>Sou eficiente(a) e resolutivo(a)</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 17 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">17.</span>
+            <p class="qtitle">Eu costumo ser mais:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_17" value="A">
+              <strong>Disciplinado(a) e responsável</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_17" value="B">
+              <strong>Espontâneo(a) e flexível</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 18 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">18.</span>
+            <p class="qtitle">Eu prefiro:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_18" value="A">
+              <strong>Pensar bem antes de falar</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_18" value="B">
+              <strong>Falar direto o que precisa</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 19 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">19.</span>
+            <p class="qtitle">Eu me sinto melhor quando:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_19" value="A">
+              <strong>Tenho apoio / segurança</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_19" value="B">
+              <strong>Tenho autonomia / liberdade</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- 20 -->
+        <div class="q">
+          <div class="qhead">
+            <span class="n">20.</span>
+            <p class="qtitle">Eu me reconheço mais como alguém:</p>
+          </div>
+          <div class="ab">
+            <label class="opt">
+              <input type="radio" name="P3_20" value="A">
+              <strong>Leal e cuidadoso(a) com o grupo</strong>
+            </label>
+            <div class="ou">OU</div>
+            <label class="opt">
+              <input type="radio" name="P3_20" value="B">
+              <strong>Independente e autossuficiente</strong>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-outline" href="./page2.html">Voltar</a>
+          <button id="btnProximo" type="button" class="btn btn-primary">Continuar</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 <script>
-const palavras = [
-"Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
-"Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
-"Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
-"Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
-"Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)",
-"Exigente consigo mesmo(a)","Prestativo(a)","Ambicioso(a)","Intuitivo(a)","Discreto(a)","Visionário(a)"
-];
+const STORAGE_KEY="respostas";
 
-document.write(
-  palavras.map((p,i)=>`
-    <label class="word">
-      <span><small>${i+1}.</small>${p}</span>
-      <input type="checkbox" name="P4_${String(i+1).padStart(2,"0")}">
-    </label>
-  `).join("")
-);
-</script>
+function getList(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+function setList(l){ localStorage.setItem(STORAGE_KEY, JSON.stringify(l)); }
 
-</div>
-
-<div class="counter" id="counter">Selecionados: 0</div>
-
-<div class="actions">
-  <button type="button" class="btn btn-outline" onclick="history.back()">Voltar</button>
-  <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
-</div>
-
-</form>
-</div>
-</div>
-
-<script>
-const KEY="respostas";
-const MIN=6;
-
-function getList(){
-  try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
-  catch{ return []; }
-}
-function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
-
-function update(name,checked){
-  let l=getList().filter(x=>x.pergunta!==name);
-  if(checked) l.push({pergunta:name,alternativa:"S"});
+function upsert(pergunta, alternativa){
+  const l = getList();
+  const i = l.findIndex(x => x.pergunta === pergunta);
+  if (i >= 0) l[i].alternativa = alternativa;
+  else l.push({ pergunta, alternativa });
   setList(l);
 }
 
 function restore(){
-  getList().forEach(r=>{
-    const el=document.querySelector(`input[name="${r.pergunta}"]`);
-    if(el) el.checked=true;
-  });
+  const l = getList();
+  for (const r of l) {
+    const el = document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
+    if (el) el.checked = true;
+  }
 }
 
-function count(){
-  return document.querySelectorAll('#formP4 input[type=checkbox]:checked').length;
-}
-function refresh(){
-  document.getElementById("counter").innerText="Selecionados: "+count();
+function validateAll(){
+  const form = document.getElementById("formP3");
+  const names = [...new Set([...form.querySelectorAll('input[type="radio"]')].map(i => i.name))];
+  const missing = names.filter(n => !form.querySelector(`input[name="${n}"]:checked`));
+  if (missing.length){
+    alert("Responda todas as questões desta página antes de continuar.");
+    const first = form.querySelector(`input[name="${missing[0]}"]`);
+    if (first) first.closest(".q").scrollIntoView({ behavior:"smooth", block:"center" });
+    return false;
+  }
+  return true;
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
-  restore(); refresh();
-  document.querySelectorAll('#formP4 input[type=checkbox]').forEach(cb=>{
-    cb.addEventListener("change",()=>{
-      update(cb.name,cb.checked);
-      refresh();
-    });
+  restore();
+  document.querySelectorAll('#formP3 input[type="radio"]').forEach(inp=>{
+    inp.addEventListener("change",()=>upsert(inp.name, inp.value));
   });
-  document.getElementById("btnFinish").onclick=()=>{
-    if(count()<MIN){
-      alert("Selecione pelo menos "+MIN+" opções.");
-      return;
-    }
-    location.href="../resultado.html";
-  };
+
+  document.getElementById("btnProximo").addEventListener("click",()=>{
+    if(!validateAll()) return;
+    document.querySelectorAll('#formP3 input[type="radio"]:checked').forEach(inp=>upsert(inp.name, inp.value));
+    window.location.href="./page4.html";
+  });
 });
 </script>
-
 </body>
 </html>
