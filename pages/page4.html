@@ -1,78 +1,111 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Quem sou eu — Passo 4</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quem sou eu — Passo 4</title>
 
-  <style>
-    :root { --accent:#f07a00; --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666; --bd:#e7e7e7; }
-    body{font-family:Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);}
-    .wrap{max-width:980px;margin:0 auto;padding:16px;}
-    .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 6px 22px rgba(0,0,0,.06);}
-    h1{margin:0 0 8px;font-size:24px;}
-    .muted{color:var(--muted);font-size:14px;line-height:1.4;margin:6px 0;}
+<style>
+:root{
+  --accent:#f07a00;
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --bd:#e7e7e7;
+  --text:#111;
+  --muted:#666;
+}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.wrap{
+  max-width:960px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.06);
+}
+h1{margin:0 0 6px}
+.muted{color:var(--muted);font-size:14px;line-height:1.4}
 
-    .step{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 6px;}
-    .bar{height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;}
-    .fill{height:100%;width:100%;background:var(--accent);border-radius:999px;}
+.step{margin:12px 0}
+.bar{
+  height:10px;
+  background:#e9e9e9;
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:6px;
+}
+.fill{
+  height:100%;
+  width:100%;
+  background:var(--accent);
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      margin-top:14px;
-    }
-    @media (max-width:800px){
-      .grid{grid-template-columns:repeat(1,minmax(0,1fr));}
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr}
+}
 
-    .word{
-      border:1px solid var(--bd);
-      border-radius:14px;
-      padding:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      cursor:pointer;
-      background:#fff;
-    }
-    .word span{
-      font-weight:600;
-    }
-    .word input{
-      transform:scale(1.3);
-    }
+.word{
+  border:1px solid var(--bd);
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  background:#fafafa;
+}
+.word span{
+  font-weight:700;
+}
+.word small{
+  color:#888;
+  margin-right:6px;
+}
+.word input{
+  transform:scale(1.2);
+}
 
-    .counter{
-      margin-top:10px;
-      font-weight:700;
-    }
+.counter{
+  margin-top:10px;
+  font-weight:700;
+}
 
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:16px;
-      flex-wrap:wrap;
-    }
-    .btn{
-      border:0;
-      border-radius:12px;
-      padding:14px 16px;
-      font-weight:700;
-      cursor:pointer;
-    }
-    .btn-outline{
-      background:#fff;
-      border:1px solid var(--bd);
-    }
-    .btn-primary{
-      background:var(--accent);
-      color:#fff;
-      flex:1;
-      min-width:220px;
-    }
-  </style>
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+.btn{
+  padding:14px;
+  border-radius:12px;
+  border:0;
+  font-weight:700;
+  cursor:pointer;
+}
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+  flex:1;
+}
+.btn-outline{
+  background:#fff;
+  border:1px solid var(--bd);
+}
+</style>
 </head>
 
 <body>
@@ -81,129 +114,130 @@
 
 <h1>Quem sou eu</h1>
 <p class="muted">
-Marque as palavras ou pequenas frases que realmente se parecem com você.
-Se não se identificar, <b>não marque</b>.
+Marque apenas as palavras ou expressões que realmente combinam com você ao longo da vida.
 </p>
 
 <div class="step">
-  <b>Passo 4 de 4 — Identificação pessoal</b>
-  <span class="muted">Seleção livre</span>
-</div>
+<b>Passo 4 de 4 — Identificação pessoal</b>
 <div class="bar"><div class="fill"></div></div>
+</div>
 
-<p class="muted" style="margin-top:10px;">
-<b>Instruções:</b> Selecione apenas o que faz sentido para você ao longo da vida.
-Para avançar, é necessário marcar <b>pelo menos 6 opções</b>.
+<p class="muted">
+<b>Instruções:</b> Selecione as palavras que mais se parecem com você.  
+Para continuar, selecione pelo menos <b>6 opções</b>.
 </p>
 
-<div class="grid" id="grid">
+<form id="formP4">
 
-  <!-- 1 -->
-  <label class="word">
-    <span>1. Responsável</span>
-    <input type="checkbox" name="P4_01">
-  </label>
+<div class="grid">
 
-  <!-- 2 -->
-  <label class="word">
-    <span>2. Ambicioso(a)</span>
-    <input type="checkbox" name="P4_02">
-  </label>
+<label class="word">
+  <span><small>1.</small>Comprometido(a)</span>
+  <input type="checkbox" name="P4_01">
+</label>
 
-  <!-- 3 -->
-  <label class="word">
-    <span>3. Analítico(a)</span>
-    <input type="checkbox" name="P4_03">
-  </label>
+<label class="word">
+  <span><small>2.</small>Cuidadoso(a)</span>
+  <input type="checkbox" name="P4_02">
+</label>
 
-  <!-- 4 -->
-  <label class="word">
-    <span>4. Prestativo(a)</span>
-    <input type="checkbox" name="P4_04">
-  </label>
+<label class="word">
+  <span><small>3.</small>Determinado(a)</span>
+  <input type="checkbox" name="P4_03">
+</label>
 
-  <!-- 5 -->
-  <label class="word">
-    <span>5. Leal</span>
-    <input type="checkbox" name="P4_05">
-  </label>
+<label class="word">
+  <span><small>4.</small>Competitivo(a)</span>
+  <input type="checkbox" name="P4_04">
+</label>
 
-  <!-- 6 -->
-  <label class="word">
-    <span>6. Calmo(a)</span>
-    <input type="checkbox" name="P4_06">
-  </label>
+<label class="word">
+  <span><small>5.</small>Analítico(a)</span>
+  <input type="checkbox" name="P4_05">
+</label>
 
-  <!-- 7 -->
-  <label class="word">
-    <span>7. Otimista</span>
-    <input type="checkbox" name="P4_07">
-  </label>
+<label class="word">
+  <span><small>6.</small>Reservado(a)</span>
+  <input type="checkbox" name="P4_06">
+</label>
 
-  <!-- 8 -->
-  <label class="word">
-    <span>8. Determinado(a)</span>
-    <input type="checkbox" name="P4_08">
-  </label>
+<label class="word">
+  <span><small>7.</small>Organizado(a)</span>
+  <input type="checkbox" name="P4_07">
+</label>
 
-  <!-- 9 -->
-  <label class="word">
-    <span>9. Sensível</span>
-    <input type="checkbox" name="P4_09">
-  </label>
+<label class="word">
+  <span><small>8.</small>Prático(a)</span>
+  <input type="checkbox" name="P4_08">
+</label>
 
-  <!-- 10 -->
-  <label class="word">
-    <span>10. Organizado(a)</span>
-    <input type="checkbox" name="P4_10">
-  </label>
+<label class="word">
+  <span><small>9.</small>Independente</span>
+  <input type="checkbox" name="P4_09">
+</label>
 
-  <!-- 11 -->
-  <label class="word">
-    <span>11. Prudente</span>
-    <input type="checkbox" name="P4_11">
-  </label>
+<label class="word">
+  <span><small>10.</small>Leal</span>
+  <input type="checkbox" name="P4_10">
+</label>
 
-  <!-- 12 -->
-  <label class="word">
-    <span>12. Independente</span>
-    <input type="checkbox" name="P4_12">
-  </label>
+<label class="word">
+  <span><small>11.</small>Intenso(a)</span>
+  <input type="checkbox" name="P4_11">
+</label>
+
+<label class="word">
+  <span><small>12.</small>Flexível</span>
+  <input type="checkbox" name="P4_12">
+</label>
+
+<label class="word">
+  <span><small>13.</small>Persistente</span>
+  <input type="checkbox" name="P4_13">
+</label>
+
+<label class="word">
+  <span><small>14.</small>Disciplinado(a)</span>
+  <input type="checkbox" name="P4_14">
+</label>
+
+<label class="word">
+  <span><small>15.</small>Observador(a)</span>
+  <input type="checkbox" name="P4_15">
+</label>
 
 </div>
 
 <div class="counter" id="counter">Selecionados: 0</div>
 
 <div class="actions">
-  <a class="btn btn-outline" href="./page3.html">Voltar</a>
-  <button class="btn btn-primary" id="btnFinish" type="button">Ver resultado</button>
+  <button type="button" class="btn btn-outline" onclick="history.back()">Voltar</button>
+  <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
 </div>
 
+</form>
 </div>
 </div>
 
 <script>
-const STORAGE_KEY = "respostas";
-const MIN_SELECT = 6;
+const KEY = "respostas";
+const MIN = 6;
 
 function getList(){
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  try { return JSON.parse(localStorage.getItem(KEY)) || []; }
   catch { return []; }
 }
+
 function setList(l){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(l));
+  localStorage.setItem(KEY, JSON.stringify(l));
 }
 
-function upsert(pergunta, alternativa){
-  const l = getList();
-  const i = l.findIndex(x => x.pergunta === pergunta);
-  if (i >= 0) l[i].alternativa = alternativa;
-  else l.push({ pergunta, alternativa });
-  setList(l);
-}
-
-function removePergunta(pergunta){
-  const l = getList().filter(x => x.pergunta !== pergunta);
+function updateCheckbox(name, checked){
+  let l = getList();
+  l = l.filter(x => x.pergunta !== name);
+  if(checked){
+    l.push({ pergunta:name, alternativa:"S" });
+  }
   setList(l);
 }
 
@@ -211,35 +245,36 @@ function restore(){
   const l = getList();
   l.forEach(r=>{
     const el = document.querySelector(`input[name="${r.pergunta}"]`);
-    if(el && r.alternativa === "S") el.checked = true;
+    if(el) el.checked = true;
   });
-  updateCounter();
+}
+
+function countChecked(){
+  return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
 }
 
 function updateCounter(){
-  const count = document.querySelectorAll('#grid input:checked').length;
-  document.getElementById("counter").innerText = `Selecionados: ${count}`;
-  return count;
+  document.getElementById("counter").innerText =
+    "Selecionados: " + countChecked();
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
   restore();
+  updateCounter();
 
-  document.querySelectorAll('#grid input[type="checkbox"]').forEach(cb=>{
+  document.querySelectorAll('#formP4 input[type="checkbox"]').forEach(cb=>{
     cb.addEventListener("change",()=>{
-      if(cb.checked) upsert(cb.name,"S");
-      else removePergunta(cb.name);
+      updateCheckbox(cb.name, cb.checked);
       updateCounter();
     });
   });
 
   document.getElementById("btnFinish").addEventListener("click",()=>{
-    const total = updateCounter();
-    if(total < MIN_SELECT){
-      alert(`Selecione pelo menos ${MIN_SELECT} opções para continuar.`);
+    if(countChecked() < MIN){
+      alert("Selecione pelo menos " + MIN + " opções para continuar.");
       return;
     }
-    window.location.href="../resultado.html";
+    window.location.href = "../resultado.html";
   });
 });
 </script>
