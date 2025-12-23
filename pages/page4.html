@@ -128,83 +128,28 @@ Para continuar, selecione pelo menos <b>6 opções</b>.
 </p>
 
 <form id="formP4">
-
 <div class="grid">
 
-<label class="word">
-  <span><small>1.</small>Comprometido(a)</span>
-  <input type="checkbox" name="P4_01">
-</label>
+<!-- BLOCO DE PALAVRAS -->
+<script>
+const palavras = [
+"Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
+"Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
+"Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
+"Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
+"Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)",
+"Exigente consigo mesmo(a)","Prestativo(a)","Ambicioso(a)","Intuitivo(a)","Discreto(a)","Visionário(a)"
+];
 
-<label class="word">
-  <span><small>2.</small>Cuidadoso(a)</span>
-  <input type="checkbox" name="P4_02">
-</label>
-
-<label class="word">
-  <span><small>3.</small>Determinado(a)</span>
-  <input type="checkbox" name="P4_03">
-</label>
-
-<label class="word">
-  <span><small>4.</small>Competitivo(a)</span>
-  <input type="checkbox" name="P4_04">
-</label>
-
-<label class="word">
-  <span><small>5.</small>Analítico(a)</span>
-  <input type="checkbox" name="P4_05">
-</label>
-
-<label class="word">
-  <span><small>6.</small>Reservado(a)</span>
-  <input type="checkbox" name="P4_06">
-</label>
-
-<label class="word">
-  <span><small>7.</small>Organizado(a)</span>
-  <input type="checkbox" name="P4_07">
-</label>
-
-<label class="word">
-  <span><small>8.</small>Prático(a)</span>
-  <input type="checkbox" name="P4_08">
-</label>
-
-<label class="word">
-  <span><small>9.</small>Independente</span>
-  <input type="checkbox" name="P4_09">
-</label>
-
-<label class="word">
-  <span><small>10.</small>Leal</span>
-  <input type="checkbox" name="P4_10">
-</label>
-
-<label class="word">
-  <span><small>11.</small>Intenso(a)</span>
-  <input type="checkbox" name="P4_11">
-</label>
-
-<label class="word">
-  <span><small>12.</small>Flexível</span>
-  <input type="checkbox" name="P4_12">
-</label>
-
-<label class="word">
-  <span><small>13.</small>Persistente</span>
-  <input type="checkbox" name="P4_13">
-</label>
-
-<label class="word">
-  <span><small>14.</small>Disciplinado(a)</span>
-  <input type="checkbox" name="P4_14">
-</label>
-
-<label class="word">
-  <span><small>15.</small>Observador(a)</span>
-  <input type="checkbox" name="P4_15">
-</label>
+document.write(
+  palavras.map((p,i)=>`
+    <label class="word">
+      <span><small>${i+1}.</small>${p}</span>
+      <input type="checkbox" name="P4_${String(i+1).padStart(2,"0")}">
+    </label>
+  `).join("")
+);
+</script>
 
 </div>
 
@@ -220,62 +165,50 @@ Para continuar, selecione pelo menos <b>6 opções</b>.
 </div>
 
 <script>
-const KEY = "respostas";
-const MIN = 6;
+const KEY="respostas";
+const MIN=6;
 
 function getList(){
-  try { return JSON.parse(localStorage.getItem(KEY)) || []; }
-  catch { return []; }
+  try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
+  catch{ return []; }
 }
+function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
 
-function setList(l){
-  localStorage.setItem(KEY, JSON.stringify(l));
-}
-
-function updateCheckbox(name, checked){
-  let l = getList();
-  l = l.filter(x => x.pergunta !== name);
-  if(checked){
-    l.push({ pergunta:name, alternativa:"S" });
-  }
+function update(name,checked){
+  let l=getList().filter(x=>x.pergunta!==name);
+  if(checked) l.push({pergunta:name,alternativa:"S"});
   setList(l);
 }
 
 function restore(){
-  const l = getList();
-  l.forEach(r=>{
-    const el = document.querySelector(`input[name="${r.pergunta}"]`);
-    if(el) el.checked = true;
+  getList().forEach(r=>{
+    const el=document.querySelector(`input[name="${r.pergunta}"]`);
+    if(el) el.checked=true;
   });
 }
 
-function countChecked(){
-  return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
+function count(){
+  return document.querySelectorAll('#formP4 input[type=checkbox]:checked').length;
 }
-
-function updateCounter(){
-  document.getElementById("counter").innerText =
-    "Selecionados: " + countChecked();
+function refresh(){
+  document.getElementById("counter").innerText="Selecionados: "+count();
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
-  restore();
-  updateCounter();
-
-  document.querySelectorAll('#formP4 input[type="checkbox"]').forEach(cb=>{
+  restore(); refresh();
+  document.querySelectorAll('#formP4 input[type=checkbox]').forEach(cb=>{
     cb.addEventListener("change",()=>{
-      updateCheckbox(cb.name, cb.checked);
-      updateCounter();
+      update(cb.name,cb.checked);
+      refresh();
     });
   });
-
-  document.getElementById("btnFinish").addEventListener("click",()=>{
-    if(countChecked() < MIN){
-      alert("Selecione pelo menos " + MIN + " opções para continuar.");
+  document.getElementById("btnFinish").onclick=()=>{
+    if(count()<MIN){
+      alert("Selecione pelo menos "+MIN+" opções.");
       return;
     }
-    window.location.href = "../resultado.html";
-  });
+    location.href="../resultado.html";
+  };
 });
 </script>
 
