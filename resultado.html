@@ -1,71 +1,383 @@
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resultado - Eneagrama</title>
+
+  <style>
+    :root{
+      --bg:#f3f5f8;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --border:#e5e7eb;
+      --shadow:0 10px 30px rgba(15,23,42,.10);
+      --accent:#f07a00;
+      --accentHover:#d96f00;
+      --error:#dc2626;
+      --ok:#16a34a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .page{
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:16px 16px 40px;
+    }
+    .container{
+      width:min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+    .logo img{
+      max-width:220px;
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .card{
+      width:100%;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+    h1{
+      margin:0 0 6px;
+      text-align:center;
+      font-size:28px;
+      color:#0b2a5b;
+    }
+    .sub{
+      margin:0 0 16px;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width:780px){
+      .grid{grid-template-columns:1fr;}
+      .logo img{max-width:160px;}
+      .card{padding:18px;}
+    }
+    .box{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+    }
+    .box h3{
+      margin:0 0 10px;
+      font-size:16px;
+      color:#0b2a5b;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    th, td{
+      border:1px solid var(--border);
+      padding:10px;
+      text-align:center;
+    }
+    th{ background:#f8fafc; }
+    .top3{
+      font-size:14px;
+      color:#0f172a;
+      margin-top:6px;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:14px;
+    }
+    .btn{
+      border:0;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:900;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+    }
+    .btn:hover{ background:var(--accentHover); }
+    .btn.secondary{
+      background:#fff;
+      color:#0f172a;
+      border:1px solid var(--border);
+    }
+    .msg{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      display:none;
+    }
+    .msg.err{ display:block; background:#fff7f7; border:1px solid rgba(220,38,38,.25); color:var(--error); }
+    .msg.ok{ display:block; background:#f7fff9; border:1px solid rgba(22,163,74,.25); color:var(--ok); }
+    .small{
+      font-size:12px;
+      color:#64748b;
+      margin-top:10px;
+      text-align:center;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      background:#0b1220;
+      color:#e5e7eb;
+      border-radius:12px;
+      padding:12px;
+      overflow:auto;
+      display:none;
+      margin-top:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="container">
+
+      <div class="logo">
+        <img src="logo-atrius.png" alt="Atrius">
+      </div>
+
+      <div class="card">
+        <h1>Resultado - Eneagrama</h1>
+        <p class="sub">Abaixo está o resumo do seu resultado. (Top 3 e pontuação completa 1 a 9)</p>
+
+        <div id="msg" class="msg err" style="display:none;"></div>
+
+        <div class="grid">
+          <div class="box">
+            <h3>Dados do participante</h3>
+            <div id="dados" style="font-size:14px;color:#0f172a;"></div>
+          </div>
+
+          <div class="box">
+            <h3>Símbolo do Eneagrama (9 no topo)</h3>
+            <div id="eneagrama" style="text-align:center;"></div>
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:12px;">
+          <h3>Top 3</h3>
+          <div id="top3" class="top3"></div>
+        </div>
+
+        <div class="box" style="margin-top:12px;">
+          <h3>Pontuação completa (1 a 9)</h3>
+          <div id="tabela"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn secondary" id="btnRefazer">Refazer teste</button>
+          <button class="btn" id="btnDebug">Mostrar debug</button>
+        </div>
+
+        <div class="small">Atrius • Teste de Competências Emocionais</div>
+        <pre id="debug" class="mono"></pre>
+      </div>
+
+    </div>
+  </div>
+
 <script>
-  // SEUS DADOS
-  const SERVICE_ID = "service_676gehg";
-  const TEMPLATE_ID = "template_jkxxqz5";
-  const PUBLIC_KEY = "dMy7jYWSeALMDD7TI";
+  // ===== Keys =====
+  const LEAD_KEY = "atrius_eneagrama_lead_v1";
+  const RESPOSTAS_KEY = "respostas";
 
-  const STORAGE_KEY = "atrius_eneagrama_lead_v1";
-
-  emailjs.init(PUBLIC_KEY);
-
-  function getLeadOrThrow() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) throw new Error("Lead não encontrado no localStorage.");
-    const lead = JSON.parse(raw);
-
-    // valida mínimo para não enviar vazio
-    if (!lead.email || !lead.nome_completo) throw new Error("Lead incompleto (email/nome_completo).");
-    return lead;
+  // ===== Helpers UI =====
+  function setError(msg){
+    const el = document.getElementById("msg");
+    el.style.display = "block";
+    el.className = "msg err";
+    el.textContent = msg;
+  }
+  function clearError(){
+    const el = document.getElementById("msg");
+    el.style.display = "none";
+    el.textContent = "";
   }
 
-  async function enviarEmailRelatorio({ triade, relatorioHtml, relatorioTexto }) {
-    const lead = getLeadOrThrow();
+  function eneagramaSvg(){
+    return `
+      <svg width="240" height="240" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Símbolo do Eneagrama">
+        <defs>
+          <style>
+            .c{fill:none;stroke:#111827;stroke-width:3}
+            .l{fill:none;stroke:#111827;stroke-width:2}
+            .n{font: 700 14px Arial, sans-serif; fill:#111827}
+          </style>
+        </defs>
 
-    const templateParams = {
-      // ✅ Campos do lead
-      nome: lead.nome || "",
-      sobrenome: lead.sobrenome || "",
-      nome_completo: lead.nome_completo || "",
-      telefone: lead.telefone || "",
-      email: lead.email || "",
+        <circle class="c" cx="130" cy="130" r="102"/>
+        <!-- triângulo 9-3-6 (9 topo) -->
+        <path class="l" d="M130 28 L209 175 L51 175 Z"/>
+        <!-- estrela simples -->
+        <path class="l" d="M206 88 L157 220 L245 142 L15 142 L103 220 L54 88 L206 88"/>
 
-      // ✅ Destinatário (alguns templates usam isso)
-      to_email: lead.email || "",
-      to_name: lead.nome_completo || "",
-
-      // ✅ Assunto (como você pediu antes)
-      subject: `Resultado eneagrama - ${lead.nome_completo || "Participante"}`,
-
-      // ✅ Dados do resultado
-      triade: triade || "",
-
-      // ✅ Conteúdo do relatório
-      // (use 1 ou os 2, conforme seu template)
-      relatorio_html: relatorioHtml || "",
-      relatorio_texto: relatorioTexto || "",
-    };
-
-    console.log("DEBUG templateParams:", templateParams); // <-- veja no console se está preenchendo
-
-    return emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
+        <!-- números com 9 no topo -->
+        <text class="n" x="124" y="20">9</text>
+        <text class="n" x="187" y="40">1</text>
+        <text class="n" x="227" y="95">2</text>
+        <text class="n" x="220" y="165">3</text>
+        <text class="n" x="165" y="232">4</text>
+        <text class="n" x="124" y="248">5</text>
+        <text class="n" x="78"  y="232">6</text>
+        <text class="n" x="24"  y="165">7</text>
+        <text class="n" x="18"  y="95">8</text>
+      </svg>
+    `;
   }
 
-  // EXEMPLO DE USO:
-  // chamar isso quando você já tiver triade e relatório pronto
-  async function exemploDisparo() {
-    try {
-      const triade = "3-1-6"; // exemplo
-      const relatorioHtml = "<h2>Seu resultado</h2><p>Conteúdo...</p>";
-      const relatorioTexto = "Seu resultado: ...";
+  function getLead(){
+    const raw = localStorage.getItem(LEAD_KEY);
+    if(!raw) return null;
+    try{
+      const lead = JSON.parse(raw);
+      const nomeCompleto =
+        lead.nome_completo ||
+        `${lead.nome || ""} ${lead.sobrenome || ""}`.trim();
 
-      await enviarEmailRelatorio({ triade, relatorioHtml, relatorioTexto });
-      alert("E-mail enviado com sucesso!");
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao enviar e-mail: " + (err?.message || err));
+      return {
+        ...lead,
+        nome_completo: (nomeCompleto || "Participante").trim(),
+        email: (lead.email || "").trim(),
+        telefone: (lead.telefone || "").trim()
+      };
+    }catch{
+      return null;
     }
   }
 
-  // exemploDisparo();
+  function getRespostas(){
+    const raw = localStorage.getItem(RESPOSTAS_KEY);
+    if(!raw) return [];
+    try{ return JSON.parse(raw) || []; }
+    catch{ return []; }
+  }
+
+  function buildTabela(score){
+    let rows = "";
+    for(let i=1;i<=9;i++){
+      rows += `
+        <tr>
+          <td style="font-weight:900;">${i}</td>
+          <td>${score[i] ?? 0}</td>
+        </tr>
+      `;
+    }
+    return `
+      <table>
+        <thead><tr><th>Tipo</th><th>Quantidade</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  function computeTop3(score){
+    const arr = [];
+    for(let i=1;i<=9;i++) arr.push({tipo:i, qtd: Number(score[i]||0)});
+    arr.sort((a,b)=>b.qtd-a.qtd);
+    return arr.slice(0,3);
+  }
+
+  async function calcularScore(){
+    const respostas = getRespostas();
+    if(respostas.length === 0){
+      throw new Error("Não encontrei respostas salvas. Volte e faça o teste novamente.");
+    }
+
+    const res = await fetch("/data/matriz.json", { cache:"no-store" });
+    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json (verifique o caminho e o arquivo no GitHub).");
+    const matriz = await res.json();
+
+    const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+
+    respostas.forEach(r=>{
+      const key = `${r.pergunta}_${r.alternativa}`;
+      const w = matriz[key];
+      if(!w) return;
+      for(const t in w){
+        score[t] += w[t];
+      }
+    });
+
+    return { score, respostasCount: respostas.length };
+  }
+
+  async function init(){
+    document.getElementById("eneagrama").innerHTML = eneagramaSvg();
+
+    const lead = getLead();
+    document.getElementById("dados").innerHTML = `
+      <div><b>Nome:</b> ${lead?.nome_completo || "-"}</div>
+      <div><b>Email:</b> ${lead?.email || "-"}</div>
+      <div><b>Telefone:</b> ${lead?.telefone || "-"}</div>
+    `;
+
+    const debugEl = document.getElementById("debug");
+    const dbg = {
+      lead,
+      respostasCount: getRespostas().length
+    };
+
+    try{
+      clearError();
+      const { score, respostasCount } = await calcularScore();
+      dbg.score = score;
+      dbg.respostasCount = respostasCount;
+
+      const top3 = computeTop3(score);
+      document.getElementById("top3").innerHTML = `
+        <div><b>1º:</b> Tipo ${top3[0].tipo} — ${top3[0].qtd}</div>
+        <div><b>2º:</b> Tipo ${top3[1].tipo} — ${top3[1].qtd}</div>
+        <div><b>3º:</b> Tipo ${top3[2].tipo} — ${top3[2].qtd}</div>
+      `;
+
+      document.getElementById("tabela").innerHTML = buildTabela(score);
+    }catch(err){
+      setError(err.message || String(err));
+    }
+
+    debugEl.textContent = JSON.stringify(dbg, null, 2);
+  }
+
+  // Buttons
+  document.getElementById("btnRefazer").addEventListener("click", ()=>{
+    // opcional: limpar respostas do teste, mantendo lead (se quiser)
+    // localStorage.removeItem("respostas");
+    window.location.href = "/";
+  });
+
+  document.getElementById("btnDebug").addEventListener("click", ()=>{
+    const el = document.getElementById("debug");
+    el.style.display = (el.style.display === "block") ? "none" : "block";
+  });
+
+  document.addEventListener("DOMContentLoaded", init);
 </script>
+</body>
+</html>
