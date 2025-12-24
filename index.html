@@ -19,7 +19,7 @@
       --ok:#16a34a;
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box }
 
     body{
       margin:0;
@@ -28,7 +28,7 @@
       color:var(--text);
     }
 
-    /* Topo menor + responsivo */
+    /* Layout */
     .page{
       min-height:100vh;
       display:flex;
@@ -43,21 +43,12 @@
       flex-direction:column;
       align-items:center;
       gap:10px;
-      padding-top:4px;
-    }
-
-    .logo{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      margin-top:0;
     }
 
     .logo img{
       max-width:220px;
       width:100%;
       height:auto;
-      display:block;
     }
 
     .card{
@@ -93,21 +84,20 @@
 
     .row{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns:1fr 1fr;
       gap:12px;
     }
 
     label{
       display:block;
       font-size:14px;
-      color:#334155;
       margin:14px 0 6px;
     }
 
     .req{
       color:var(--error);
       font-weight:800;
-      margin-left:6px;
+      margin-left:4px;
     }
 
     input{
@@ -117,16 +107,10 @@
       border:1px solid var(--border);
       font-size:15px;
       outline:none;
-      transition: border-color .15s, box-shadow .15s, background-color .15s;
       background:#fff;
+      transition:.15s;
     }
 
-    input:focus{
-      border-color:#94a3b8;
-      box-shadow:0 0 0 3px rgba(148,163,184,.25);
-    }
-
-    /* ✅ estados visuais */
     input.is-invalid{
       border-color:var(--error);
       box-shadow:0 0 0 3px rgba(220,38,38,.15);
@@ -168,15 +152,13 @@
       color:#64748b;
     }
 
-    /* MOBILE */
+    /* Mobile */
     @media (max-width:600px){
-      .page{ padding:12px 12px 28px; }
-      .container{ gap:8px; padding-top:2px; }
       .card{ padding:26px 18px; }
       h1{ font-size:24px; }
       .logo img{ max-width:160px; }
       .subtitle{ font-size:14px; margin-bottom:18px; }
-      .row{ grid-template-columns: 1fr; }
+      .row{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -190,6 +172,7 @@
         <img src="logo-atrius.png" alt="Logo da Empresa">
       </div>
 
+      <!-- CARD -->
       <div class="card">
         <h1>Teste - Competências Emocionais</h1>
 
@@ -203,25 +186,25 @@ Utilize o tempo que julgar necessário.
         <form id="leadForm" novalidate>
           <div class="row">
             <div>
-              <label for="nome">Nome<span class="req">*</span></label>
-              <input id="nome" autocomplete="given-name" placeholder="Ex: Maria">
+              <label>Nome<span class="req">*</span></label>
+              <input id="nome" placeholder="Ex: Maria">
               <div class="error" id="errNome">Informe seu nome.</div>
             </div>
 
             <div>
-              <label for="sobrenome">Sobrenome<span class="req">*</span></label>
-              <input id="sobrenome" autocomplete="family-name" placeholder="Ex: Silva">
+              <label>Sobrenome<span class="req">*</span></label>
+              <input id="sobrenome" placeholder="Ex: Silva">
               <div class="error" id="errSobrenome">Informe seu sobrenome.</div>
             </div>
           </div>
 
-          <label for="email">Email<span class="req">*</span></label>
-          <input id="email" autocomplete="email" placeholder="ex: maria@empresa.com">
+          <label>Email<span class="req">*</span></label>
+          <input id="email" placeholder="ex: maria@empresa.com">
           <div class="error" id="errEmail">Informe um e-mail válido.</div>
 
-          <label for="telefone">Telefone (DDD + número)<span class="req">*</span></label>
-          <input id="telefone" inputmode="numeric" autocomplete="tel" placeholder="(51) 99999-9999" maxlength="15">
-          <div class="error" id="errTelefone">Informe um telefone válido (10 ou 11 dígitos com DDD).</div>
+          <label>Telefone (DDD + número)<span class="req">*</span></label>
+          <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
+          <div class="error" id="errTelefone">Informe um telefone válido.</div>
 
           <button class="btn" type="submit">Iniciar Teste</button>
 
@@ -230,132 +213,80 @@ Utilize o tempo que julgar necessário.
           </div>
         </form>
       </div>
-
     </div>
   </div>
 
   <script>
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
-    const nomeEl = document.getElementById("nome");
-    const sobrenomeEl = document.getElementById("sobrenome");
-    const emailEl = document.getElementById("email");
-    const telEl   = document.getElementById("telefone");
+    const nome = document.getElementById("nome");
+    const sobrenome = document.getElementById("sobrenome");
+    const email = document.getElementById("email");
+    const telefone = document.getElementById("telefone");
 
     const errNome = document.getElementById("errNome");
     const errSobrenome = document.getElementById("errSobrenome");
     const errEmail = document.getElementById("errEmail");
     const errTelefone = document.getElementById("errTelefone");
 
-    // ====== Helpers: marca campo em vermelho/verde ======
-    function setValid(el, isValid) {
-      el.classList.remove("is-valid", "is-invalid");
-      if (isValid === true) el.classList.add("is-valid");
-      if (isValid === false) el.classList.add("is-invalid");
+    function setValid(el, ok){
+      el.classList.remove("is-valid","is-invalid");
+      if(ok === true) el.classList.add("is-valid");
+      if(ok === false) el.classList.add("is-invalid");
     }
 
-    function showErr(errEl, show) {
-      errEl.style.display = show ? "block" : "none";
-    }
-
-    // ====== Máscara de telefone (DDD + número) enquanto digita ======
-    function formatPhoneBR(rawDigits) {
-      let v = (rawDigits || "").replace(/\D/g, "");
-      if (v.length > 11) v = v.slice(0, 11);
-
-      // (DD) NNNN-NNNN  -> 10 dígitos
-      // (DD) NNNNN-NNNN -> 11 dígitos
-      if (v.length === 0) return "";
-      if (v.length < 3) return `(${v}`;
-      if (v.length < 7) return `(${v.slice(0,2)}) ${v.slice(2)}`;
-      if (v.length < 11) {
-        return `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
-      }
-      return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
-    }
-
-    telEl.addEventListener("input", () => {
-      const digits = telEl.value.replace(/\D/g, "");
-      telEl.value = formatPhoneBR(digits);
-
-      // valida ao digitar (sem ficar “brigando” no começo)
-      if (digits.length === 0) {
-        setValid(telEl, null);
-        showErr(errTelefone, false);
-        return;
-      }
-      const ok = (digits.length === 10 || digits.length === 11);
-      setValid(telEl, ok);
-      showErr(errTelefone, !ok);
-    });
-
-    // ====== Validações ======
-    function validarNome() {
-      const ok = nomeEl.value.trim().length >= 2;
-      setValid(nomeEl, ok);
-      showErr(errNome, !ok);
+    function validarNome(){
+      const ok = nome.value.trim().length >= 2;
+      setValid(nome, ok); errNome.style.display = ok ? "none":"block";
       return ok;
     }
 
-    function validarSobrenome() {
-      const ok = sobrenomeEl.value.trim().length >= 2;
-      setValid(sobrenomeEl, ok);
-      showErr(errSobrenome, !ok);
+    function validarSobrenome(){
+      const ok = sobrenome.value.trim().length >= 2;
+      setValid(sobrenome, ok); errSobrenome.style.display = ok ? "none":"block";
       return ok;
     }
 
-    function validarEmail() {
-      const v = emailEl.value.trim();
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const ok = regex.test(v);
-      setValid(emailEl, ok);
-      showErr(errEmail, !ok);
+    function validarEmail(){
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+      setValid(email, ok); errEmail.style.display = ok ? "none":"block";
       return ok;
     }
 
-    function validarTelefone() {
-      const digits = telEl.value.replace(/\D/g, "");
-      const ok = (digits.length === 10 || digits.length === 11);
-      setValid(telEl, ok);
-      showErr(errTelefone, !ok);
+    function validarTelefone(){
+      const digits = telefone.value.replace(/\D/g,"");
+      const ok = digits.length === 10 || digits.length === 11;
+      setValid(telefone, ok); errTelefone.style.display = ok ? "none":"block";
       return ok;
     }
 
-    // valida em tempo real ao sair do campo
-    nomeEl.addEventListener("blur", validarNome);
-    sobrenomeEl.addEventListener("blur", validarSobrenome);
-    emailEl.addEventListener("blur", validarEmail);
-    telEl.addEventListener("blur", validarTelefone);
+    function formatarTelefone(){
+      let v = telefone.value.replace(/\D/g,"");
+      if(v.length > 11) v = v.slice(0,11);
+      if(v.length < 3) telefone.value = v;
+      else if(v.length < 7) telefone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
+      else if(v.length < 11) telefone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+      else telefone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    }
 
-    document.getElementById("leadForm").addEventListener("submit", (e) => {
+    telefone.addEventListener("input", formatarTelefone);
+
+    document.getElementById("leadForm").addEventListener("submit", (e)=>{
       e.preventDefault();
 
-      const okNome = validarNome();
-      const okSobrenome = validarSobrenome();
-      const okEmail = validarEmail();
-      const okTel = validarTelefone();
-
-      if (!okNome || !okSobrenome || !okEmail || !okTel) {
-        // foca no primeiro inválido
-        const firstBad = [nomeEl, sobrenomeEl, emailEl, telEl].find(el => el.classList.contains("is-invalid"));
-        if (firstBad) firstBad.focus();
-        return;
-      }
-
-      // Salva já separado e também "nome completo" se você quiser usar no relatório
-      const nomeCompleto = `${nomeEl.value.trim()} ${sobrenomeEl.value.trim()}`.trim();
+      if(!validarNome() || !validarSobrenome() || !validarEmail() || !validarTelefone()) return;
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        nome: nomeEl.value.trim(),
-        sobrenome: sobrenomeEl.value.trim(),
-        nome_completo: nomeCompleto,
-        email: emailEl.value.trim(),
-        telefone: telEl.value.trim(),
-        telefone_digits: telEl.value.replace(/\D/g, ""),
+        nome: nome.value.trim(),
+        sobrenome: sobrenome.value.trim(),
+        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`,
+        email: email.value.trim(),
+        telefone: telefone.value.trim(),
         createdAt: new Date().toISOString()
       }));
 
-      window.location.href = "teste.html";
+      // ✅ REDIRECIONA APENAS PARA page1.html
+      window.location.href = "page1.html";
     });
   </script>
 </body>
