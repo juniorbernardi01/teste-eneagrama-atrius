@@ -21,44 +21,23 @@ body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text
 .card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06);}
 h1{margin:0 0 6px;font-size:34px;letter-spacing:-.2px}
 .muted{color:var(--muted);font-size:14px;line-height:1.45}
-hr{border:0;border-top:1px solid var(--bd);margin:16px 0}
 
 .grid{
   display:grid;
-  grid-template-columns: 1.4fr .9fr;
+  grid-template-columns: 1.2fr .9fr;
   gap:14px;
   align-items:start;
 }
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr}
-}
+@media(max-width:900px){ .grid{grid-template-columns:1fr} }
 
 .panel{
   border:1px solid var(--bd);
   border-radius:16px;
   padding:14px;
+  background:#fff;
 }
-
 .h2{margin:0 0 6px;font-size:18px}
 .small{font-size:13px;color:var(--muted);line-height:1.4}
-
-.row{
-  display:grid;
-  grid-template-columns:44px 1fr 64px;
-  align-items:center;
-  gap:10px;
-  margin:10px 0;
-}
-.badge{
-  width:36px;height:36px;border-radius:999px;
-  background:#f1f1f1;display:flex;align-items:center;justify-content:center;
-  font-weight:800;
-}
-.bar{
-  height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;
-}
-.fill{height:100%;background:var(--accent);border-radius:999px}
-.pct{font-weight:800;text-align:right}
 
 .topbox{
   border:1px solid rgba(240,122,0,.25);
@@ -74,7 +53,12 @@ hr{border:0;border-top:1px solid var(--bd);margin:16px 0}
 .topitem b{font-size:16px}
 .score{font-weight:900}
 
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.btn{padding:14px 16px;border-radius:14px;border:0;font-weight:900;cursor:pointer;}
+.btn-outline{background:#fff;border:1px solid var(--bd)}
+.btn-primary{background:var(--accent);color:#fff;flex:1;min-width:220px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .chip{
   border:1px solid var(--bd);
   border-radius:999px;
@@ -83,29 +67,14 @@ hr{border:0;border-top:1px solid var(--bd);margin:16px 0}
   background:var(--soft);
 }
 
-.box{
-  border:1px solid var(--bd);
-  border-radius:16px;
-  padding:14px;
-  margin-top:14px;
-  background:#fff;
+.two{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
 }
-.box h3{margin:0 0 8px;font-size:16px}
-ul{margin:8px 0 0 18px;padding:0}
-li{margin:6px 0;color:#222;line-height:1.35}
+@media(max-width:900px){ .two{grid-template-columns:1fr} }
 
-.actions{
-  display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;
-}
-.btn{
-  padding:14px 16px;
-  border-radius:14px;
-  border:0;
-  font-weight:900;
-  cursor:pointer;
-}
-.btn-outline{background:#fff;border:1px solid var(--bd)}
-.btn-primary{background:var(--accent);color:#fff;flex:1;min-width:220px}
+hr{border:0;border-top:1px solid var(--bd);margin:14px 0}
 </style>
 </head>
 
@@ -116,39 +85,64 @@ li{margin:6px 0;color:#222;line-height:1.35}
     <p class="muted">Abaixo está o seu resultado com base nas respostas do formulário.</p>
 
     <div class="grid">
-      <!-- LEFT: barras -->
+      <!-- LEFT -->
       <div class="panel">
-        <div class="h2">Pontuação por Eneatipo</div>
-        <div class="small">Quanto maior a barra, maior a compatibilidade com aquele tipo.</div>
+        <div class="h2">Sua tríade principal (Top 3)</div>
+        <div class="small">Os 3 tipos mais altos (ordem decrescente).</div>
+        <div id="top3"></div>
 
-        <div id="bars"></div>
+        <hr>
+
+        <div class="two">
+          <div class="panel" style="background:#fff">
+            <div class="h2">Gráfico</div>
+            <div class="small">Visualização simples das suas pontuações.</div>
+            <div id="chart" style="margin-top:10px"></div>
+          </div>
+
+          <div class="panel" style="background:#fff">
+            <div class="h2">Eneagrama</div>
+            <div class="small">Seu Top 3 destacado no símbolo do Eneagrama.</div>
+            <div id="ennea" style="margin-top:10px"></div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="h2">Como você tende a funcionar</div>
+        <div id="funciona" class="chips"></div>
+
+        <div style="margin-top:10px">
+          <div class="h2">Subtipos (como “colorem” seu tipo principal)</div>
+          <div id="subtipos" class="chips"></div>
+        </div>
 
         <div id="diag" class="small" style="margin-top:10px;color:#b00020;display:none;"></div>
       </div>
 
-      <!-- RIGHT: top 3 + resumo -->
+      <!-- RIGHT -->
       <div class="topbox">
-        <div class="h2">Top 3</div>
-        <div class="small">Os 3 tipos mais altos (ordem decrescente).</div>
-
-        <div id="top3"></div>
+        <div class="h2">Ações</div>
+        <div class="small">Você pode voltar, ou refazer o teste do zero.</div>
 
         <div class="actions">
           <button class="btn btn-outline" id="btnBack">Voltar</button>
           <button class="btn btn-primary" id="btnReset">Refazer teste</button>
         </div>
+
+        <hr>
+
+        <div class="h2">Resumo rápido</div>
+        <div id="resumoRapido" class="small"></div>
       </div>
     </div>
-
-    <!-- blocos explicativos -->
-    <div id="insights"></div>
 
   </div>
 </div>
 
 <script>
 const STORAGE_KEY = "respostas";
-const MATRIX_URL = "./data/matriz.json"; // raiz/resultado.html -> data/matriz.json
+const MATRIX_URL = "./data/matriz.json";
 
 const typeNames = {
   1: {title:"Tipo 1", nick:"O Perfeccionista / Reformador"},
@@ -167,107 +161,114 @@ const shortDesc = {
   2: "Busca ajudar, ser útil e manter vínculo com as pessoas.",
   3: "Busca alcançar resultados, ser reconhecido e vencer desafios.",
   4: "Busca autenticidade, profundidade e identidade própria.",
-  5: "Busca entender, analisar e ter autonomia intelectual/energia.",
-  6: "Busca segurança, previsibilidade e confiança no ambiente.",
+  5: "Busca entender, analisar e preservar energia/privacidade.",
+  6: "Busca segurança, previsibilidade e confiança.",
   7: "Busca liberdade, possibilidades e experiências positivas.",
-  8: "Busca força, controle e não ser dominado por ninguém.",
-  9: "Busca harmonia, estabilidade e evitar conflitos desnecessários."
+  8: "Busca força, controle e independência.",
+  9: "Busca harmonia, estabilidade e evitar conflitos."
 };
 
-const strengths = {
-  1: ["Capricho, padrão e qualidade", "Senso de justiça e coerência", "Responsabilidade e disciplina"],
-  2: ["Cuidado e suporte ao outro", "Boa leitura de pessoas", "Lealdade e presença"],
-  3: ["Foco em meta e execução", "Competitividade saudável", "Capacidade de liderança e entrega"],
-  4: ["Profundidade e sensibilidade", "Criatividade e visão estética", "Autenticidade"],
-  5: ["Análise, estratégia e concentração", "Independência e clareza", "Racionalidade em pressão"],
-  6: ["Prevenção de riscos", "Lealdade e comprometimento", "Consistência e prudência"],
-  7: ["Otimismo e energia", "Criatividade e alternativas", "Adaptabilidade"],
-  8: ["Coragem e decisão", "Proteção e força", "Objetividade e firmeza"],
-  9: ["Equilíbrio e paciência", "Capacidade de conciliar", "Estabilidade emocional"]
+// “Como funciona” (bem curto e que faz sentido pro usuário)
+const funciona = {
+  1: ["Move-se por padrões e correção", "Ganha força com clareza e qualidade", "Pode travar em autocobrança"],
+  2: ["Move-se por vínculo e utilidade", "Ganha força ajudando e conectando", "Pode travar agradando demais"],
+  3: ["Move-se por meta e realização", "Ganha força com desafio e entrega", "Pode travar em performance constante"],
+  4: ["Move-se por autenticidade", "Ganha força com significado", "Pode travar em oscilação emocional"],
+  5: ["Move-se por compreensão", "Ganha força com tempo/privacidade", "Pode travar em distanciamento"],
+  6: ["Move-se por segurança", "Ganha força com previsibilidade", "Pode travar em dúvida/ansiedade"],
+  7: ["Move-se por liberdade", "Ganha força com variedade", "Pode travar em dispersão/fuga do incômodo"],
+  8: ["Move-se por autonomia", "Ganha força com franqueza", "Pode travar em controle/rigidez"],
+  9: ["Move-se por paz", "Ganha força com estabilidade", "Pode travar em procrastinação/conflito evitado"]
 };
 
-const watchouts = {
-  1: ["Rigidez e autocobrança", "Irritação com erros alheios", "Dificuldade em relaxar"],
-  2: ["Excesso de doação", "Querer agradar para ser aceito", "Dificuldade em dizer 'não'"],
-  3: ["Viver no modo performance", "Comparação e ansiedade por resultado", "Desconectar de emoções reais"],
-  4: ["Oscilar emocionalmente", "Sensação de falta/insatisfação", "Idealização"],
-  5: ["Isolamento e distanciamento", "Superanálise e procrastinação", "Cansaço social"],
-  6: ["Dúvida e antecipação negativa", "Necessidade de confirmação", "Tensão e alerta"],
-  7: ["Dispersão e fuga do incômodo", "Impulsos/excessos", "Dificuldade em concluir"],
-  8: ["Controlar demais", "Confronto desnecessário", "Dureza e impaciência"],
-  9: ["Evitar conflito por padrão", "Adiar decisões", "Desligar do próprio desejo"]
+// Subtipos (sem cravar qual é)
+const subtiposPorTipo = {
+  1: {
+    sp:"SP: mais detalhista e cauteloso; foca em ‘fazer certo’ no dia a dia.",
+    so:"SO: mais exigente com regras/grupo; cobra padrão coletivo.",
+    sx:"SX: mais intenso no certo/errado; pode ser mais crítico e direto."
+  },
+  2: {
+    sp:"SP: cuida ‘fazendo’; ajuda prática e proteção.",
+    so:"SO: ajuda para pertencer e manter laços; muito presente no grupo.",
+    sx:"SX: ajuda com intensidade; pode querer exclusividade e proximidade."
+  },
+  3: {
+    sp:"SP: performance silenciosa; foco em eficiência e resultado consistente.",
+    so:"SO: imagem e influência; busca reconhecimento no grupo/posição.",
+    sx:"SX: carisma e impacto; quer vencer e marcar presença."
+  },
+  4: {
+    sp:"SP: mais contido; sente muito, mas segura e aguenta.",
+    so:"SO: compara-se e busca lugar; quer ser visto sem se expor demais.",
+    sx:"SX: intensidade emocional e autenticidade forte; tudo é ‘no máximo’."
+  },
+  5: {
+    sp:"SP: reserva energia, privacidade e autonomia; foco em segurança pessoal.",
+    so:"SO: especialista; busca domínio e respeito por conhecimento.",
+    sx:"SX: conexão seletiva e profunda; abre para poucos, mas muito."
+  },
+  6: {
+    sp:"SP: prudente e prevenido; pensa em riscos e segurança material.",
+    so:"SO: leal ao grupo; protege a equipe e segue regras/alianças.",
+    sx:"SX: ‘contra-fóbico’ em alguns momentos; enfrenta para provar coragem."
+  },
+  7: {
+    sp:"SP: curte conforto e prazer; busca opções e bem-estar.",
+    so:"SO: anima o ambiente; networking e entusiasmo social.",
+    sx:"SX: intensidade e novidade; vai com tudo no que empolga."
+  },
+  8: {
+    sp:"SP: firme e independente; protege recursos e território.",
+    so:"SO: líder protetor; assume o comando e defende os seus.",
+    sx:"SX: intenso e direto; ‘tudo ou nada’ na presença e no confronto."
+  },
+  9: {
+    sp:"SP: rotina e estabilidade; paz no corpo/ambiente.",
+    so:"SO: mediador do grupo; mantém harmonia coletiva.",
+    sx:"SX: funde-se com a relação; busca conexão e unidade."
+  }
 };
 
 function getRespostas(){
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
   catch { return []; }
 }
-
 async function loadMatrix(){
   const res = await fetch(MATRIX_URL, { cache:"no-store" });
   if(!res.ok) throw new Error("Não foi possível carregar matriz.json ("+res.status+")");
   return await res.json();
 }
-
 function calcScores(respostas, matriz){
   const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
   let matched = 0;
-  let missingKeys = [];
-
   for(const r of respostas){
     const key = `${r.pergunta}_${r.alternativa}`;
     const w = matriz[key];
-    if(!w){ missingKeys.push(key); continue; }
+    if(!w) continue;
     matched++;
-    for(const t in w){
-      score[t] += Number(w[t]) || 0;
-    }
+    for(const t in w) score[t] += Number(w[t]) || 0;
   }
-  return {score, matched, missingKeys};
+  return {score, matched};
 }
-
-function toPercent(scores){
-  const max = Math.max(...Object.values(scores));
-  const pct = {};
-  for(let i=1;i<=9;i++){
-    pct[i] = max ? Math.round((scores[i]/max)*100) : 0;
-  }
-  return {pct, max};
-}
-
-function renderBars(pct){
-  const el = document.getElementById("bars");
-  el.innerHTML = "";
-  for(let i=1;i<=9;i++){
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <div class="badge">${i}</div>
-      <div class="bar"><div class="fill" style="width:${pct[i]}%"></div></div>
-      <div class="pct">${pct[i]}%</div>
-    `;
-    el.appendChild(row);
-  }
-}
-
-function sortTop3(scores){
+function sortTop(scores){
   const arr = [];
   for(let i=1;i<=9;i++) arr.push({t:i, v:scores[i]});
   arr.sort((a,b)=>b.v-a.v);
-  return arr.slice(0,3);
+  return arr;
 }
 
-function renderTop3(top){
+function renderTop3(top3){
   const el = document.getElementById("top3");
   el.innerHTML = "";
-  top.forEach((x, idx)=>{
-    const t = x.t;
-    const box = document.createElement("div");
-    box.className = "topitem";
+  top3.forEach((x, idx)=>{
+    const t=x.t;
+    const box=document.createElement("div");
+    box.className="topitem";
     box.innerHTML = `
       <div>
         <b>${idx+1}º — ${typeNames[t].title}</b>
-        <div class="small">${typeNames[t].nick}</div>
+        <div class="small">${typeNames[t].nick}<br>${shortDesc[t]}</div>
       </div>
       <div class="score">${x.v}</div>
     `;
@@ -275,45 +276,134 @@ function renderTop3(top){
   });
 }
 
-function renderInsights(top){
-  const [a,b,c] = top.map(x=>x.t);
-  const main = a;
+function renderResumoRapido(top3){
+  const [a,b,c]=top3.map(x=>x.t);
+  document.getElementById("resumoRapido").innerHTML =
+    `<b>${typeNames[a].title}</b> aparece como o mais provável, com influência de <b>${typeNames[b].title}</b> e <b>${typeNames[c].title}</b>.`;
+}
 
-  const el = document.getElementById("insights");
+function renderFunciona(mainType){
+  const el=document.getElementById("funciona");
+  el.innerHTML = funciona[mainType].map(x=>`<span class="chip">${x}</span>`).join("");
+}
+
+function renderSubtipos(mainType){
+  const el=document.getElementById("subtipos");
+  const s = subtiposPorTipo[mainType];
   el.innerHTML = `
-    <div class="box">
-      <h3>Leitura rápida do seu Top 3</h3>
-      <div class="chips">
-        <span class="chip"><b>${typeNames[a].title}:</b> ${shortDesc[a]}</span>
-        <span class="chip"><b>${typeNames[b].title}:</b> ${shortDesc[b]}</span>
-        <span class="chip"><b>${typeNames[c].title}:</b> ${shortDesc[c]}</span>
-      </div>
-    </div>
-
-    <div class="box">
-      <h3>O que aparece mais forte em você (Tipo ${main})</h3>
-      <div class="small" style="margin-top:2px">${shortDesc[main]}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
-        <div class="panel" style="background:#fff">
-          <div class="h2">Forças</div>
-          <ul>${strengths[main].map(x=>`<li>${x}</li>`).join("")}</ul>
-        </div>
-        <div class="panel" style="background:#fff">
-          <div class="h2">Pontos de atenção</div>
-          <ul>${watchouts[main].map(x=>`<li>${x}</li>`).join("")}</ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="box">
-      <h3>Próximos passos (auto-observação)</h3>
-      <ul>
-        <li>Quando você sente <b>pressa por resultado</b>, o que você está tentando provar ou garantir?</li>
-        <li>Em que momentos você entra em <b>rigidez/autocobrança</b> (Tipo 1 aparecendo)?</li>
-        <li>Onde você busca <b>segurança/certeza</b> antes de agir (Tipo 6 aparecendo)?</li>
-      </ul>
-    </div>
+    <span class="chip"><b>Auto-preservação (SP):</b> ${s.sp}</span>
+    <span class="chip"><b>Social (SO):</b> ${s.so}</span>
+    <span class="chip"><b>Um-a-um (SX):</b> ${s.sx}</span>
   `;
+}
+
+/* ====== GRÁFICO (polar simples em SVG) ====== */
+function renderPolarChart(scores){
+  // normaliza 0..1
+  const max = Math.max(...Object.values(scores)) || 1;
+  const vals = [];
+  for(let i=1;i<=9;i++) vals.push(scores[i]/max);
+
+  const size = 260;
+  const cx=size/2, cy=size/2;
+  const R=105;
+  const steps=9;
+  const ang0 = -Math.PI/2; // começa em cima
+
+  function pt(r, i){
+    const a = ang0 + (i*(2*Math.PI/steps));
+    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  }
+
+  // polígono
+  const poly = vals.map((v,i)=>{
+    const [x,y]=pt(R*v,i);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
+  // linhas base
+  let spokes = "";
+  for(let i=0;i<steps;i++){
+    const [x,y]=pt(R,i);
+    spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e5e5e5" stroke-width="1"/>`;
+  }
+
+  // labels
+  let labels="";
+  for(let i=0;i<steps;i++){
+    const [x,y]=pt(R+18,i);
+    labels += `<text x="${x}" y="${y}" font-size="12" fill="#666" text-anchor="middle" dominant-baseline="middle">${i+1}</text>`;
+  }
+
+  document.getElementById("chart").innerHTML = `
+  <svg width="100%" viewBox="0 0 ${size} ${size}" role="img" aria-label="Gráfico de pontuações">
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#e9e9e9" stroke-width="2"/>
+    ${spokes}
+    <polygon points="${poly}" fill="rgba(240,122,0,.18)" stroke="rgba(240,122,0,.95)" stroke-width="2"/>
+    <circle cx="${cx}" cy="${cy}" r="3" fill="rgba(240,122,0,.95)"/>
+    ${labels}
+  </svg>`;
+}
+
+/* ====== ENEAGRAMA (SVG do símbolo + destaque Top3) ====== */
+function renderEnneagram(top3){
+  const size=260, cx=size/2, cy=size/2, R=110;
+  const steps=9;
+  const ang0=-Math.PI/2;
+
+  const topSet = new Set(top3.map(x=>String(x.t)));
+
+  function polar(r, i){
+    const a = ang0 + (i*(2*Math.PI/steps));
+    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  }
+
+  // pontos 1..9
+  const pts=[];
+  for(let i=0;i<steps;i++){
+    const [x,y]=polar(R,i);
+    pts.push({n:i+1, x, y});
+  }
+
+  // círculo
+  const circle = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#cfcfcf" stroke-width="4"/>`;
+
+  // triângulo 9-3-6
+  const p9=pts[8], p3=pts[2], p6=pts[5];
+  const tri = `<polyline points="${p9.x},${p9.y} ${p3.x},${p3.y} ${p6.x},${p6.y} ${p9.x},${p9.y}"
+    fill="none" stroke="#9aa4b2" stroke-width="3" />`;
+
+  // hexágono/linhas (1-4-2-8-5-7-1)
+  const order=[1,4,2,8,5,7,1];
+  const hxPts = order.map(n=>{
+    const p=pts[n-1];
+    return `${p.x},${p.y}`;
+  }).join(" ");
+  const hex = `<polyline points="${hxPts}" fill="none" stroke="#9aa4b2" stroke-width="3" />`;
+
+  // nós numerados + destaque top3
+  const nodes = pts.map(p=>{
+    const isTop = topSet.has(String(p.n));
+    return `
+    <g>
+      <circle cx="${p.x}" cy="${p.y}" r="16"
+        fill="${isTop ? "rgba(240,122,0,.16)" : "#fff"}"
+        stroke="${isTop ? "rgba(240,122,0,.95)" : "#cfcfcf"}"
+        stroke-width="${isTop ? 3 : 2}"/>
+      <text x="${p.x}" y="${p.y}" font-size="12"
+        fill="${isTop ? "#b65300" : "#555"}"
+        text-anchor="middle" dominant-baseline="middle"
+        font-weight="${isTop ? 900 : 700}">${p.n}</text>
+    </g>`;
+  }).join("");
+
+  document.getElementById("ennea").innerHTML = `
+  <svg width="100%" viewBox="0 0 ${size} ${size}" role="img" aria-label="Símbolo do Eneagrama">
+    ${circle}
+    ${tri}
+    ${hex}
+    ${nodes}
+  </svg>`;
 }
 
 function bindActions(){
@@ -331,33 +421,38 @@ function bindActions(){
 
   const respostas = getRespostas();
   if(!respostas.length){
-    document.getElementById("diag").style.display = "block";
-    document.getElementById("diag").textContent = "Nenhuma resposta encontrada. Volte e faça o teste.";
+    const d=document.getElementById("diag");
+    d.style.display="block";
+    d.textContent="Nenhuma resposta encontrada. Volte e faça o teste.";
     return;
   }
 
   let matriz;
-  try{
-    matriz = await loadMatrix();
-  }catch(e){
-    document.getElementById("diag").style.display = "block";
-    document.getElementById("diag").textContent = "Erro ao carregar matriz: " + e.message;
+  try{ matriz = await loadMatrix(); }
+  catch(e){
+    const d=document.getElementById("diag");
+    d.style.display="block";
+    d.textContent="Erro ao carregar matriz: "+e.message;
     return;
   }
 
-  const {score, matched, missingKeys} = calcScores(respostas, matriz);
-  const {pct, max} = toPercent(score);
+  const {score, matched} = calcScores(respostas, matriz);
+  const all = sortTop(score);
+  const top3 = all.slice(0,3);
 
-  renderBars(pct);
-  const top = sortTop3(score);
-  renderTop3(top);
-  renderInsights(top);
+  renderTop3(top3);
+  renderResumoRapido(top3);
+  renderPolarChart(score);
+  renderEnneagram(top3);
 
-  // diagnóstico suave (só mostra se algo estiver muito errado)
-  if(max === 0 || matched === 0){
-    const d = document.getElementById("diag");
-    d.style.display = "block";
-    d.textContent = "Nenhuma pontuação foi calculada. Verifique se a matriz tem as mesmas chaves das respostas.";
+  const mainType = top3[0].t;
+  renderFunciona(mainType);
+  renderSubtipos(mainType);
+
+  if(matched===0){
+    const d=document.getElementById("diag");
+    d.style.display="block";
+    d.textContent="Nenhuma pontuação foi calculada. Verifique se a matriz tem as mesmas chaves das respostas.";
   }
 })();
 </script>
