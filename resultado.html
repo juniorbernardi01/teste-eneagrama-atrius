@@ -166,11 +166,6 @@
       justify-content:space-between;
       gap:10px;
     }
-    .pieTitle{
-      font-weight:900;
-      font-size:13px;
-      color:#0f172a;
-    }
     .pieHint{
       font-size:12px;
       color:var(--muted);
@@ -334,15 +329,11 @@
           </div>
 
           <div class="pieCard">
-            <div>
-              <div class="pieTitle">Distribuição (pizza)</div>
-              <div class="pieHint">Proporção dos 3 tipos mais altos.</div>
-            </div>
+            <!-- REMOVIDO: título “Distribuição (pizza)” -->
+            <div class="pieHint">Proporção dos 3 tipos mais altos.</div>
             <div id="pieWrap" style="display:flex;justify-content:center;align-items:center;"></div>
-            <!-- REMOVIDO: legenda em texto abaixo do gráfico -->
           </div>
         </div>
-        <!-- REMOVIDO: miniCards coloridos -->
       </div>
 
       <!-- RIGHT -->
@@ -369,12 +360,12 @@
 
     <div class="gridBottom">
       <div class="listBox">
-        <h4>Pontos fortes (da tríade)</h4>
+        <h4>Pontos fortes</h4> <!-- REMOVIDO: (da tríade) -->
         <ul id="listaFortes"></ul>
       </div>
 
       <div class="listBox">
-        <h4>Pontos a melhorar (da tríade)</h4>
+        <h4>Pontos a melhorar</h4> <!-- REMOVIDO: (da tríade) -->
         <ul id="listaMelhorar"></ul>
       </div>
     </div>
@@ -412,25 +403,26 @@
     9: { nome: "Pacificador",                curta: "Busca harmonia, estabilidade e evitar conflitos." }
   };
 
+  // Melhorado: pontos mais “humanos” e úteis (3-1-6)
   const TRIADE_MAP = {
     "3-1-6": {
       resumo: "Tipo 3 aparece como o mais provável, com influência de Tipo 1 e Tipo 6.",
-      funciona: "Isso costuma gerar um estilo de funcionar com foco em resultado e execução, apoiado por padrão e correção e segurança e lealdade.",
+      funciona: "Isso costuma gerar um estilo de funcionar com foco em execução e entrega, com padrão/qualidade e preocupação com segurança e previsibilidade.",
       fortes: [
-        "Foco, velocidade e entrega",
-        "Orientação a metas e performance",
-        "Qualidade, capricho e responsabilidade",
-        "Consistência e melhoria contínua",
-        "Confiabilidade e comprometimento com o time",
-        "Antecipação de riscos e responsabilidade"
+        "Entrega com ritmo e senso de prioridade",
+        "Foco em resultado sem perder o cuidado com qualidade",
+        "Capacidade de organizar, padronizar e melhorar processos",
+        "Responsabilidade e confiabilidade (as pessoas contam com você)",
+        "Percepção de riscos e preparo antes de agir",
+        "Postura de dono: iniciativa, cobrança e “fazer acontecer”"
       ],
       melhorar: [
-        "Pressa e ansiedade por resultado",
-        "Confundir valor pessoal com desempenho",
-        "Autocrítica e rigidez",
-        "Dificuldade em aceitar erro/imperfeição",
-        "Ansiedade e dúvida excessiva",
-        "Necessidade de garantias o tempo todo"
+        "Apressar decisões por pressão de resultado",
+        "Autocrítica alta e dificuldade em aceitar imperfeição",
+        "Confundir desempenho com valor pessoal (se cobrar demais)",
+        "Dúvida/ansiedade que leva a revisar demais e travar o avanço",
+        "Ficar reativo a críticas, buscando provar valor o tempo todo",
+        "Excesso de controle/rigidez quando o cenário está instável"
       ]
     }
   };
