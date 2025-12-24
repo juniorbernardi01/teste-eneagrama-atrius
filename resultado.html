@@ -1,461 +1,719 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quem sou eu — Resultado</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quem sou eu — Resultado</title>
 
-<style>
-:root{
-  --accent:#f07a00;
-  --bg:#f6f7fb;
-  --card:#fff;
-  --bd:#e7e7e7;
-  --text:#111;
-  --muted:#666;
-  --soft:#fafafa;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);}
-.wrap{max-width:1100px;margin:0 auto;padding:16px;}
-.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06);}
-h1{margin:0 0 6px;font-size:34px;letter-spacing:-.2px}
-.muted{color:var(--muted);font-size:14px;line-height:1.45}
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-.grid{
-  display:grid;
-  grid-template-columns: 1.2fr .9fr;
-  gap:14px;
-  align-items:start;
-}
-@media(max-width:900px){ .grid{grid-template-columns:1fr} }
+  <style>
+    :root{
+      --accent:#f07a00;
+      --accent-weak: rgba(240,122,0,.12);
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --bd:#e7e7e7;
+      --text:#111;
+      --muted:#666;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:16px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 28px rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.02);
+    }
+    h1{margin:0 0 8px; font-size:40px; letter-spacing:-.5px;}
+    .muted{color:var(--muted); font-size:14px; line-height:1.4}
 
-.panel{
-  border:1px solid var(--bd);
-  border-radius:16px;
-  padding:14px;
-  background:#fff;
-}
-.h2{margin:0 0 6px;font-size:18px}
-.small{font-size:13px;color:var(--muted);line-height:1.4}
+    .gridTop{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+      margin-top:14px;
+      align-items:start;
+    }
+    @media(max-width:900px){
+      .gridTop{grid-template-columns:1fr}
+      h1{font-size:32px}
+    }
 
-.topbox{
-  border:1px solid rgba(240,122,0,.25);
-  background:rgba(240,122,0,.06);
-  border-radius:16px;
-  padding:14px;
-}
-.topitem{
-  display:flex;align-items:center;justify-content:space-between;
-  background:#fff;border:1px solid rgba(0,0,0,.06);
-  border-radius:14px;padding:12px 12px;margin-top:10px;
-}
-.topitem b{font-size:16px}
-.score{font-weight:900}
+    .box{
+      border:1px solid var(--bd);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+    }
+    .boxTitle{
+      font-weight:900;
+      font-size:18px;
+      margin:0 0 8px;
+    }
 
-.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
-.btn{padding:14px 16px;border-radius:14px;border:0;font-weight:900;cursor:pointer;}
-.btn-outline{background:#fff;border:1px solid var(--bd)}
-.btn-primary{background:var(--accent);color:#fff;flex:1;min-width:220px}
+    .triadItem{
+      border:1px solid #efefef;
+      background:#fff;
+      border-radius:14px;
+      padding:12px 12px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      margin-top:10px;
+    }
+    .triadItem h3{margin:0; font-size:16px}
+    .triadItem .desc{margin:2px 0 0; color:#555; font-size:13px}
+    .triadItem .score{
+      font-weight:900;
+      font-size:18px;
+      min-width:42px;
+      text-align:right;
+      align-self:center;
+    }
+    .triadItem .sub{
+      color:#666;
+      font-size:13px;
+      margin-top:2px;
+    }
 
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chip{
-  border:1px solid var(--bd);
-  border-radius:999px;
-  padding:8px 10px;
-  font-size:13px;
-  background:var(--soft);
-}
+    .actionsBox{
+      border:1px solid rgba(240,122,0,.35);
+      background:rgba(240,122,0,.10);
+      border-radius:16px;
+      padding:14px;
+    }
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .btn-outline{
+      background:#fff;
+      border:1px solid var(--bd);
+    }
+    .btn-primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1;
+      min-width:220px;
+    }
 
-.two{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:12px;
-}
-@media(max-width:900px){ .two{grid-template-columns:1fr} }
+    .twoCharts{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    @media(max-width:900px){
+      .twoCharts{grid-template-columns:1fr}
+    }
 
-hr{border:0;border-top:1px solid var(--bd);margin:14px 0}
-</style>
+    .chartWrap{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+    }
+    canvas{max-width:100%}
+
+    .section{
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid #eee;
+    }
+    .h2{
+      font-size:18px;
+      font-weight:900;
+      margin:0 0 6px;
+    }
+    .pill{
+      display:inline-block;
+      border:1px solid var(--bd);
+      background:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:800;
+      font-size:12px;
+      color:#333;
+      margin:6px 6px 0 0;
+    }
+
+    .cols{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:12px;
+    }
+    @media(max-width:900px){
+      .cols{grid-template-columns:1fr}
+    }
+    ul{margin:8px 0 0 18px}
+    li{margin:6px 0}
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="card">
-    <h1>Quem sou eu</h1>
-    <p class="muted">Abaixo está o seu resultado com base nas respostas do formulário.</p>
+  <div class="wrap">
+    <div class="card">
+      <h1>Quem sou eu</h1>
+      <p class="muted">Abaixo está o seu resultado com base nas respostas do formulário.</p>
 
-    <div class="grid">
-      <!-- LEFT -->
-      <div class="panel">
-        <div class="h2">Sua tríade principal (Top 3)</div>
-        <div class="small">Os 3 tipos mais altos (ordem decrescente).</div>
-        <div id="top3"></div>
+      <div class="gridTop">
+        <!-- ESQUERDA: TOP 3 -->
+        <div class="box">
+          <div class="boxTitle">Sua tríade principal (Top 3)</div>
+          <div class="muted">Os 3 tipos mais altos (ordem decrescente).</div>
 
-        <hr>
-
-        <div class="two">
-          <div class="panel" style="background:#fff">
-            <div class="h2">Gráfico</div>
-            <div class="small">Visualização simples das suas pontuações.</div>
-            <div id="chart" style="margin-top:10px"></div>
-          </div>
-
-          <div class="panel" style="background:#fff">
-            <div class="h2">Eneagrama</div>
-            <div class="small">Seu Top 3 destacado no símbolo do Eneagrama.</div>
-            <div id="ennea" style="margin-top:10px"></div>
-          </div>
+          <div id="top3List"></div>
         </div>
 
-        <hr>
+        <!-- DIREITA: AÇÕES + RESUMO -->
+        <div class="actionsBox">
+          <div style="font-weight:900;font-size:18px;">Ações</div>
+          <div class="muted">Você pode voltar, ou refazer o teste do zero.</div>
 
-        <div class="h2">Como você tende a funcionar</div>
-        <div id="funciona" class="chips"></div>
+          <div class="btnRow">
+            <button class="btn btn-outline" id="btnBack">Voltar</button>
+            <button class="btn btn-primary" id="btnReset">Refazer teste</button>
+          </div>
 
-        <div style="margin-top:10px">
-          <div class="h2">Subtipos (como “colorem” seu tipo principal)</div>
-          <div id="subtipos" class="chips"></div>
+          <div style="margin-top:12px; border-top:1px solid rgba(0,0,0,.08); padding-top:12px;">
+            <div style="font-weight:900;margin-bottom:6px;">Resumo rápido</div>
+            <div class="muted" id="quickSummary">—</div>
+          </div>
         </div>
-
-        <div id="diag" class="small" style="margin-top:10px;color:#b00020;display:none;"></div>
       </div>
 
-      <!-- RIGHT -->
-      <div class="topbox">
-        <div class="h2">Ações</div>
-        <div class="small">Você pode voltar, ou refazer o teste do zero.</div>
-
-        <div class="actions">
-          <button class="btn btn-outline" id="btnBack">Voltar</button>
-          <button class="btn btn-primary" id="btnReset">Refazer teste</button>
+      <div class="twoCharts">
+        <!-- Radar -->
+        <div class="box">
+          <div class="boxTitle">Gráfico</div>
+          <div class="muted">Visualização simples das suas pontuações.</div>
+          <div class="chartWrap" style="margin-top:10px;">
+            <canvas id="radar" width="340" height="260"></canvas>
+          </div>
         </div>
 
-        <hr>
+        <!-- Eneagrama (SVG) -->
+        <div class="box">
+          <div class="boxTitle">Eneagrama</div>
+          <div class="muted">Seu Top 3 destacado no símbolo do Eneagrama.</div>
+          <div class="chartWrap" style="margin-top:10px;">
+            <div id="eneagramSvg"></div>
+          </div>
+        </div>
+      </div>
 
-        <div class="h2">Resumo rápido</div>
-        <div id="resumoRapido" class="small"></div>
+      <div class="section">
+        <div class="h2">Como você tende a funcionar</div>
+        <div class="muted" id="triadIntro">—</div>
+
+        <div class="cols">
+          <div class="box">
+            <div style="font-weight:900">Pontos fortes (da tríade)</div>
+            <ul id="strengths"></ul>
+          </div>
+          <div class="box">
+            <div style="font-weight:900">Pontos a melhorar (da tríade)</div>
+            <ul id="improvements"></ul>
+          </div>
+        </div>
+
+        <div class="cols" style="margin-top:14px;">
+          <div class="box">
+            <div style="font-weight:900">Leitura dos 3 tipos</div>
+            <div id="typeBreakdown"></div>
+          </div>
+          <div class="box">
+            <div style="font-weight:900">Nota rápida</div>
+            <div class="muted">
+              Este resultado é baseado em padrões de resposta. Use como base para reflexão e conversa.
+            </div>
+          </div>
+        </div>
+
+        <!-- Diagnóstico opcional -->
+        <div id="debug" style="display:none;margin-top:12px;" class="box"></div>
       </div>
     </div>
-
   </div>
-</div>
 
 <script>
-const STORAGE_KEY = "respostas";
-const MATRIX_URL = "./data/matriz.json";
+/* ================== CONFIG EMAILJS ================== */
+const EMAILJS_PUBLIC_KEY = "dMy7jYWSeALMDD7TI";
+const EMAILJS_SERVICE_ID = "service_676gehg";
+const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
 
-const typeNames = {
-  1: {title:"Tipo 1", nick:"O Perfeccionista / Reformador"},
-  2: {title:"Tipo 2", nick:"O Prestativo"},
-  3: {title:"Tipo 3", nick:"O Realizador"},
-  4: {title:"Tipo 4", nick:"O Individualista"},
-  5: {title:"Tipo 5", nick:"O Investigador"},
-  6: {title:"Tipo 6", nick:"O Leal"},
-  7: {title:"Tipo 7", nick:"O Entusiasta"},
-  8: {title:"Tipo 8", nick:"O Desafiador"},
-  9: {title:"Tipo 9", nick:"O Pacificador"}
-};
+/* ================== STORAGE ================== */
+const KEY_ANS = "respostas";
+const KEY_USER = "usuario";
+const KEY_SENT = "email_sent_hash";
 
-const shortDesc = {
-  1: "Busca fazer o correto, melhorar padrões e evitar erros.",
-  2: "Busca ajudar, ser útil e manter vínculo com as pessoas.",
-  3: "Busca alcançar resultados, ser reconhecido e vencer desafios.",
-  4: "Busca autenticidade, profundidade e identidade própria.",
-  5: "Busca entender, analisar e preservar energia/privacidade.",
-  6: "Busca segurança, previsibilidade e confiança.",
-  7: "Busca liberdade, possibilidades e experiências positivas.",
-  8: "Busca força, controle e independência.",
-  9: "Busca harmonia, estabilidade e evitar conflitos."
-};
-
-// “Como funciona” (bem curto e que faz sentido pro usuário)
-const funciona = {
-  1: ["Move-se por padrões e correção", "Ganha força com clareza e qualidade", "Pode travar em autocobrança"],
-  2: ["Move-se por vínculo e utilidade", "Ganha força ajudando e conectando", "Pode travar agradando demais"],
-  3: ["Move-se por meta e realização", "Ganha força com desafio e entrega", "Pode travar em performance constante"],
-  4: ["Move-se por autenticidade", "Ganha força com significado", "Pode travar em oscilação emocional"],
-  5: ["Move-se por compreensão", "Ganha força com tempo/privacidade", "Pode travar em distanciamento"],
-  6: ["Move-se por segurança", "Ganha força com previsibilidade", "Pode travar em dúvida/ansiedade"],
-  7: ["Move-se por liberdade", "Ganha força com variedade", "Pode travar em dispersão/fuga do incômodo"],
-  8: ["Move-se por autonomia", "Ganha força com franqueza", "Pode travar em controle/rigidez"],
-  9: ["Move-se por paz", "Ganha força com estabilidade", "Pode travar em procrastinação/conflito evitado"]
-};
-
-// Subtipos (sem cravar qual é)
-const subtiposPorTipo = {
-  1: {
-    sp:"SP: mais detalhista e cauteloso; foca em ‘fazer certo’ no dia a dia.",
-    so:"SO: mais exigente com regras/grupo; cobra padrão coletivo.",
-    sx:"SX: mais intenso no certo/errado; pode ser mais crítico e direto."
-  },
-  2: {
-    sp:"SP: cuida ‘fazendo’; ajuda prática e proteção.",
-    so:"SO: ajuda para pertencer e manter laços; muito presente no grupo.",
-    sx:"SX: ajuda com intensidade; pode querer exclusividade e proximidade."
-  },
-  3: {
-    sp:"SP: performance silenciosa; foco em eficiência e resultado consistente.",
-    so:"SO: imagem e influência; busca reconhecimento no grupo/posição.",
-    sx:"SX: carisma e impacto; quer vencer e marcar presença."
-  },
-  4: {
-    sp:"SP: mais contido; sente muito, mas segura e aguenta.",
-    so:"SO: compara-se e busca lugar; quer ser visto sem se expor demais.",
-    sx:"SX: intensidade emocional e autenticidade forte; tudo é ‘no máximo’."
-  },
-  5: {
-    sp:"SP: reserva energia, privacidade e autonomia; foco em segurança pessoal.",
-    so:"SO: especialista; busca domínio e respeito por conhecimento.",
-    sx:"SX: conexão seletiva e profunda; abre para poucos, mas muito."
-  },
-  6: {
-    sp:"SP: prudente e prevenido; pensa em riscos e segurança material.",
-    so:"SO: leal ao grupo; protege a equipe e segue regras/alianças.",
-    sx:"SX: ‘contra-fóbico’ em alguns momentos; enfrenta para provar coragem."
-  },
-  7: {
-    sp:"SP: curte conforto e prazer; busca opções e bem-estar.",
-    so:"SO: anima o ambiente; networking e entusiasmo social.",
-    sx:"SX: intensidade e novidade; vai com tudo no que empolga."
-  },
-  8: {
-    sp:"SP: firme e independente; protege recursos e território.",
-    so:"SO: líder protetor; assume o comando e defende os seus.",
-    sx:"SX: intenso e direto; ‘tudo ou nada’ na presença e no confronto."
-  },
-  9: {
-    sp:"SP: rotina e estabilidade; paz no corpo/ambiente.",
-    so:"SO: mediador do grupo; mantém harmonia coletiva.",
-    sx:"SX: funde-se com a relação; busca conexão e unidade."
-  }
-};
-
-function getRespostas(){
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
+/* ================== HELPERS ================== */
+function getList(){
+  try{ return JSON.parse(localStorage.getItem(KEY_ANS)) || []; } catch { return []; }
 }
-async function loadMatrix(){
-  const res = await fetch(MATRIX_URL, { cache:"no-store" });
-  if(!res.ok) throw new Error("Não foi possível carregar matriz.json ("+res.status+")");
-  return await res.json();
+function getUser(){
+  try{ return JSON.parse(localStorage.getItem(KEY_USER)) || {}; } catch { return {}; }
 }
-function calcScores(respostas, matriz){
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
+}
+function tipoNome(t){
+  const map = {
+    1:"O Perfeccionista / Reformador",
+    2:"O Prestativo",
+    3:"O Realizador",
+    4:"O Individualista",
+    5:"O Investigador",
+    6:"O Leal",
+    7:"O Entusiasta",
+    8:"O Desafiador",
+    9:"O Mediador"
+  };
+  return map[t] || ("Tipo " + t);
+}
+function tipoResumoCurto(t){
+  const map = {
+    1:"Busca fazer o correto, melhorar padrões e evitar erros.",
+    2:"Busca ser útil, apoiar pessoas e criar conexão.",
+    3:"Busca alcançar resultados, ser reconhecido e vencer desafios.",
+    4:"Busca autenticidade, significado e expressão pessoal.",
+    5:"Busca entender profundamente, manter autonomia e preservar energia.",
+    6:"Busca segurança, previsibilidade e confiança.",
+    7:"Busca liberdade, possibilidades e leveza.",
+    8:"Busca controle, força e proteção; enfrenta desafios.",
+    9:"Busca harmonia, estabilidade e paz."
+  };
+  return map[t] || "";
+}
+
+/* ===== TRÍADE (Top 3) — texto pronto ===== */
+function triadReport(top3){
+  const [a,b,c] = top3; // {t,v}
+  const tri = `${a.t}-${b.t}-${c.t}`;
+
+  // Base por tipo (pontos fortes + alertas)
+  const perType = {
+    1:{
+      title:"Padrão e correção",
+      forte:["Qualidade, capricho e responsabilidade","Consistência e melhoria contínua"],
+      melhora:["Autocrítica e rigidez","Dificuldade em aceitar erro/imperfeição"]
+    },
+    2:{
+      title:"Apoio e conexão",
+      forte:["Empatia e leitura de pessoas","Disponibilidade para ajudar e colaborar"],
+      melhora:["Agradar demais e se sobrecarregar","Ressentimento quando não é reconhecido"]
+    },
+    3:{
+      title:"Resultado e execução",
+      forte:["Foco, velocidade e entrega","Orientação a metas e performance"],
+      melhora:["Pressa e ansiedade por resultado","Confundir valor pessoal com desempenho"]
+    },
+    4:{
+      title:"Identidade e profundidade",
+      forte:["Criatividade e autenticidade","Sensibilidade e percepção de nuances"],
+      melhora:["Oscilações de humor e comparação","Levar críticas para o pessoal"]
+    },
+    5:{
+      title:"Análise e autonomia",
+      forte:["Raciocínio e profundidade","Independência e foco em qualidade intelectual"],
+      melhora:["Isolamento e “sumir” sob pressão","Excesso de análise e demora para agir"]
+    },
+    6:{
+      title:"Segurança e lealdade",
+      forte:["Confiabilidade e comprometimento com o time","Antecipação de riscos e responsabilidade"],
+      melhora:["Ansiedade e dúvida excessiva","Necessidade de garantias o tempo todo"]
+    },
+    7:{
+      title:"Possibilidades e energia",
+      forte:["Otimismo e criatividade prática","Capacidade de iniciar e destravar caminhos"],
+      melhora:["Dispersão e prometer demais","Evitar desconforto e rotina"]
+    },
+    8:{
+      title:"Força e decisão",
+      forte:["Coragem e firmeza","Proteção do time e decisão rápida"],
+      melhora:["Dureza e confronto desnecessário","Controlar demais e atropelar pessoas"]
+    },
+    9:{
+      title:"Harmonia e estabilidade",
+      forte:["Mediação e equilíbrio","Calma sob pressão e visão de vários lados"],
+      melhora:["Procrastinar para evitar conflito","Dificuldade em priorizar e dizer não"]
+    }
+  };
+
+  const A = perType[a.t], B = perType[b.t], C = perType[c.t];
+
+  const intro =
+    `Sua tríade principal é <b>${tri}</b>. ` +
+    `Você combina <b>${tipoNome(a.t).split("—")[0].trim() || "Tipo "+a.t}</b> (dominante) com influências de <b>Tipo ${b.t}</b> e <b>Tipo ${c.t}</b>. ` +
+    `Isso costuma gerar um estilo de funcionar com foco em <b>${A?.title || ""}</b>, apoiado por <b>${B?.title || ""}</b> e <b>${C?.title || ""}</b>.`;
+
+  // Junta forças/melhorias (sem ficar repetitivo)
+  const strengths = [...(A?.forte||[]), ...(B?.forte||[]), ...(C?.forte||[])].slice(0,8);
+  const improvements = [...(A?.melhora||[]), ...(B?.melhora||[]), ...(C?.melhora||[])].slice(0,8);
+
+  const breakdown = [a.t,b.t,c.t].map(t=>{
+    return `
+      <div style="margin-top:10px; padding:10px; border:1px solid #eee; border-radius:14px; background:#fff">
+        <div style="font-weight:900">Tipo ${t} — ${esc(tipoNome(t))}</div>
+        <div class="muted" style="margin-top:4px">${esc(tipoResumoCurto(t))}</div>
+      </div>
+    `;
+  }).join("");
+
+  return { intro, strengths, improvements, breakdown };
+}
+
+/* ================== SCORING ================== */
+async function calcScore(){
+  const respostas = getList();
   const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-  let matched = 0;
+
+  const res = await fetch("./data/matriz.json", { cache:"no-store" });
+  const matriz = await res.json();
+
+  // chave padrão: "P1_01_A" etc
+  let hit = 0, miss = 0;
+  const missKeys = [];
+
   for(const r of respostas){
     const key = `${r.pergunta}_${r.alternativa}`;
     const w = matriz[key];
-    if(!w) continue;
-    matched++;
+    if(!w){ miss++; if(missKeys.length<30) missKeys.push(key); continue; }
+    hit++;
     for(const t in w) score[t] += Number(w[t]) || 0;
   }
-  return {score, matched};
-}
-function sortTop(scores){
-  const arr = [];
-  for(let i=1;i<=9;i++) arr.push({t:i, v:scores[i]});
-  arr.sort((a,b)=>b.v-a.v);
-  return arr;
+
+  const top = Object.entries(score)
+    .map(([t,v])=>({t:Number(t), v:Number(v)}))
+    .sort((a,b)=>b.v-a.v);
+
+  return { score, top, debug:{hit, miss, missKeys, total: respostas.length} };
 }
 
+/* ================== UI RENDER ================== */
 function renderTop3(top3){
-  const el = document.getElementById("top3");
-  el.innerHTML = "";
-  top3.forEach((x, idx)=>{
-    const t=x.t;
-    const box=document.createElement("div");
-    box.className="topitem";
-    box.innerHTML = `
+  const el = document.getElementById("top3List");
+  el.innerHTML = top3.map((x, i)=>`
+    <div class="triadItem">
       <div>
-        <b>${idx+1}º — ${typeNames[t].title}</b>
-        <div class="small">${typeNames[t].nick}<br>${shortDesc[t]}</div>
+        <h3>${i+1}º — Tipo ${x.t}</h3>
+        <div class="sub">${esc(tipoNome(x.t).replace("O ",""))}</div>
+        <div class="desc">${esc(tipoResumoCurto(x.t))}</div>
       </div>
       <div class="score">${x.v}</div>
-    `;
-    el.appendChild(box);
-  });
+    </div>
+  `).join("");
 }
 
-function renderResumoRapido(top3){
-  const [a,b,c]=top3.map(x=>x.t);
-  document.getElementById("resumoRapido").innerHTML =
-    `<b>${typeNames[a].title}</b> aparece como o mais provável, com influência de <b>${typeNames[b].title}</b> e <b>${typeNames[c].title}</b>.`;
+function renderQuickSummary(top3){
+  const a = top3[0], b = top3[1], c = top3[2];
+  document.getElementById("quickSummary").innerHTML =
+    `Tipo ${a.t} aparece como o mais provável, com influência de Tipo ${b.t} e Tipo ${c.t}.`;
 }
 
-function renderFunciona(mainType){
-  const el=document.getElementById("funciona");
-  el.innerHTML = funciona[mainType].map(x=>`<span class="chip">${x}</span>`).join("");
+function renderTriadText(top3){
+  const rep = triadReport(top3);
+  document.getElementById("triadIntro").innerHTML = rep.intro;
+
+  const s = document.getElementById("strengths");
+  s.innerHTML = rep.strengths.map(x=>`<li>${esc(x)}</li>`).join("");
+
+  const im = document.getElementById("improvements");
+  im.innerHTML = rep.improvements.map(x=>`<li>${esc(x)}</li>`).join("");
+
+  document.getElementById("typeBreakdown").innerHTML = rep.breakdown;
 }
 
-function renderSubtipos(mainType){
-  const el=document.getElementById("subtipos");
-  const s = subtiposPorTipo[mainType];
-  el.innerHTML = `
-    <span class="chip"><b>Auto-preservação (SP):</b> ${s.sp}</span>
-    <span class="chip"><b>Social (SO):</b> ${s.so}</span>
-    <span class="chip"><b>Um-a-um (SX):</b> ${s.sx}</span>
-  `;
-}
+/* ================== RADAR (CANVAS) ================== */
+function drawRadar(score){
+  const canvas = document.getElementById("radar");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
 
-/* ====== GRÁFICO (polar simples em SVG) ====== */
-function renderPolarChart(scores){
-  // normaliza 0..1
-  const max = Math.max(...Object.values(scores)) || 1;
+  const cx = W/2, cy = H/2 + 10;
+  const R = Math.min(W,H)*0.38;
+
   const vals = [];
-  for(let i=1;i<=9;i++) vals.push(scores[i]/max);
+  for(let i=1;i<=9;i++) vals.push(score[i]||0);
+  const max = Math.max(...vals, 1);
 
-  const size = 260;
-  const cx=size/2, cy=size/2;
-  const R=105;
-  const steps=9;
-  const ang0 = -Math.PI/2; // começa em cima
+  // grades
+  ctx.strokeStyle = "#e7e7e7";
+  ctx.lineWidth = 1;
+  for(let k=1;k<=4;k++){
+    const r = (R*k/4);
+    ctx.beginPath();
+    for(let i=0;i<9;i++){
+      const ang = (-Math.PI/2) + (i*2*Math.PI/9);
+      const x = cx + r*Math.cos(ang);
+      const y = cy + r*Math.sin(ang);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath(); ctx.stroke();
+  }
 
-  function pt(r, i){
-    const a = ang0 + (i*(2*Math.PI/steps));
-    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  // eixos + labels
+  ctx.fillStyle = "#888";
+  ctx.font = "12px Arial";
+  for(let i=0;i<9;i++){
+    const ang = (-Math.PI/2) + (i*2*Math.PI/9);
+    const x = cx + (R+18)*Math.cos(ang);
+    const y = cy + (R+18)*Math.sin(ang);
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx + R*Math.cos(ang), cy + R*Math.sin(ang));
+    ctx.strokeStyle="#ededed";
+    ctx.stroke();
+    ctx.fillText(String(i+1), x-4, y+4);
   }
 
   // polígono
-  const poly = vals.map((v,i)=>{
-    const [x,y]=pt(R*v,i);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(" ");
-
-  // linhas base
-  let spokes = "";
-  for(let i=0;i<steps;i++){
-    const [x,y]=pt(R,i);
-    spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e5e5e5" stroke-width="1"/>`;
+  ctx.beginPath();
+  for(let i=0;i<9;i++){
+    const ang = (-Math.PI/2) + (i*2*Math.PI/9);
+    const r = (R * (vals[i]/max));
+    const x = cx + r*Math.cos(ang);
+    const y = cy + r*Math.sin(ang);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   }
-
-  // labels
-  let labels="";
-  for(let i=0;i<steps;i++){
-    const [x,y]=pt(R+18,i);
-    labels += `<text x="${x}" y="${y}" font-size="12" fill="#666" text-anchor="middle" dominant-baseline="middle">${i+1}</text>`;
-  }
-
-  document.getElementById("chart").innerHTML = `
-  <svg width="100%" viewBox="0 0 ${size} ${size}" role="img" aria-label="Gráfico de pontuações">
-    <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#e9e9e9" stroke-width="2"/>
-    ${spokes}
-    <polygon points="${poly}" fill="rgba(240,122,0,.18)" stroke="rgba(240,122,0,.95)" stroke-width="2"/>
-    <circle cx="${cx}" cy="${cy}" r="3" fill="rgba(240,122,0,.95)"/>
-    ${labels}
-  </svg>`;
+  ctx.closePath();
+  ctx.fillStyle = "rgba(240,122,0,.18)";
+  ctx.strokeStyle = "rgba(240,122,0,.9)";
+  ctx.lineWidth = 2;
+  ctx.fill(); ctx.stroke();
 }
 
-/* ====== ENEAGRAMA (SVG do símbolo + destaque Top3) ====== */
-function renderEnneagram(top3){
-  const size=260, cx=size/2, cy=size/2, R=110;
-  const steps=9;
-  const ang0=-Math.PI/2;
+/* ================== ENEAGRAMA (SVG) ================== */
+function buildEneagramSVG(top3){
+  const topSet = new Set(top3.map(x=>x.t));
+  const size = 280;
+  const cx = size/2, cy = size/2;
+  const R = 110;
 
-  const topSet = new Set(top3.map(x=>String(x.t)));
-
-  function polar(r, i){
-    const a = ang0 + (i*(2*Math.PI/steps));
-    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  // posições 1..9 (sentido horário)
+  function pos(n){
+    const i = n-1;
+    const ang = (-Math.PI/2) + (i*2*Math.PI/9);
+    return { x: cx + R*Math.cos(ang), y: cy + R*Math.sin(ang) };
   }
 
-  // pontos 1..9
-  const pts=[];
-  for(let i=0;i<steps;i++){
-    const [x,y]=polar(R,i);
-    pts.push({n:i+1, x, y});
+  // linhas tradicionais do eneagrama (1-4-2-8-5-7-1 e 3-6-9-3)
+  const seqA = [1,4,2,8,5,7,1];
+  const seqB = [3,6,9,3];
+
+  function poly(seq){
+    return seq.map(n=>{
+      const p = pos(n);
+      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }).join(" ");
   }
 
-  // círculo
-  const circle = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#cfcfcf" stroke-width="4"/>`;
+  const nodes = [];
+  for(let n=1;n<=9;n++){
+    const p = pos(n);
+    const isTop = topSet.has(n);
+    nodes.push(`
+      <g>
+        <circle cx="${p.x}" cy="${p.y}" r="${isTop?14:13}" fill="${isTop?'rgba(240,122,0,.18)':'#fff'}" stroke="${isTop?'#f07a00':'#cfd3d8'}" stroke-width="${isTop?3:2}"></circle>
+        <text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-family="Arial" font-size="12" font-weight="900" fill="#333">${n}</text>
+      </g>
+    `);
+  }
 
-  // triângulo 9-3-6
-  const p9=pts[8], p3=pts[2], p6=pts[5];
-  const tri = `<polyline points="${p9.x},${p9.y} ${p3.x},${p3.y} ${p6.x},${p6.y} ${p9.x},${p9.y}"
-    fill="none" stroke="#9aa4b2" stroke-width="3" />`;
+  const svg = `
+  <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="Eneagrama">
+    <circle cx="${cx}" cy="${cy}" r="${R+18}" fill="#fff" stroke="#e7e7e7" stroke-width="2"></circle>
 
-  // hexágono/linhas (1-4-2-8-5-7-1)
-  const order=[1,4,2,8,5,7,1];
-  const hxPts = order.map(n=>{
-    const p=pts[n-1];
-    return `${p.x},${p.y}`;
-  }).join(" ");
-  const hex = `<polyline points="${hxPts}" fill="none" stroke="#9aa4b2" stroke-width="3" />`;
+    <polyline points="${poly(seqA)}" fill="none" stroke="#7f8a99" stroke-width="3" opacity="0.9"></polyline>
+    <polyline points="${poly(seqB)}" fill="none" stroke="#7f8a99" stroke-width="3" opacity="0.9"></polyline>
 
-  // nós numerados + destaque top3
-  const nodes = pts.map(p=>{
-    const isTop = topSet.has(String(p.n));
-    return `
-    <g>
-      <circle cx="${p.x}" cy="${p.y}" r="16"
-        fill="${isTop ? "rgba(240,122,0,.16)" : "#fff"}"
-        stroke="${isTop ? "rgba(240,122,0,.95)" : "#cfcfcf"}"
-        stroke-width="${isTop ? 3 : 2}"/>
-      <text x="${p.x}" y="${p.y}" font-size="12"
-        fill="${isTop ? "#b65300" : "#555"}"
-        text-anchor="middle" dominant-baseline="middle"
-        font-weight="${isTop ? 900 : 700}">${p.n}</text>
-    </g>`;
-  }).join("");
-
-  document.getElementById("ennea").innerHTML = `
-  <svg width="100%" viewBox="0 0 ${size} ${size}" role="img" aria-label="Símbolo do Eneagrama">
-    ${circle}
-    ${tri}
-    ${hex}
-    ${nodes}
-  </svg>`;
+    ${nodes.join("")}
+  </svg>
+  `;
+  document.getElementById("eneagramSvg").innerHTML = svg;
 }
 
-function bindActions(){
+/* ================== EMAIL (TRÍADE COMPLETA) ================== */
+function makeEmailHtml(nome, usuario, top3, score){
+  const tri = triadReport(top3);
+
+  const s = [];
+  for(let i=1;i<=9;i++){
+    s.push(`<li><b>Tipo ${i}:</b> ${score[i] || 0}</li>`);
+  }
+
+  // relatório gestão (focado em tríade)
+  const triStr = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+  const gestao = `
+    <div style="margin-top:10px;padding:12px;border:1px solid #eee;border-radius:12px;background:#fafafa">
+      <div style="font-weight:900;margin-bottom:6px">Relatório para gestão (Atrius) — Tríade ${triStr}</div>
+      <div style="font-size:13px;color:#333">
+        <b>Como conduzir:</b>
+        <ul style="margin:6px 0 0 18px">
+          <li>Defina metas claras e mensuráveis (Tipo ${top3[0].t}).</li>
+          <li>Combine padrão/qualidade e critérios objetivos (Tipo ${top3[1].t}).</li>
+          <li>Traga previsibilidade: plano, prazo e “se der errado faremos X” (Tipo ${top3[2].t}).</li>
+        </ul>
+        <div style="height:8px"></div>
+        <b>O que esperar (lado negativo):</b>
+        <ul style="margin:6px 0 0 18px">
+          <li>Pressão interna alta, ansiedade e autocobrança.</li>
+          <li>Rigidez ou impaciência com erros e lentidão.</li>
+          <li>Necessidade de garantias em cenários incertos.</li>
+        </ul>
+      </div>
+    </div>
+  `;
+
+  return `
+  <div style="font-family:Arial,sans-serif;color:#111;line-height:1.45">
+    <div style="padding:14px 16px;border:1px solid #eee;border-radius:14px;background:#fff">
+      <div style="font-size:20px;font-weight:900;margin:0 0 4px">Resultado Eneagrama — ${esc(nome)}</div>
+      <div style="color:#666;font-size:13px">
+        <b>Email:</b> ${esc(usuario?.email || "-")} &nbsp;|&nbsp;
+        <b>Empresa:</b> ${esc(usuario?.empresa || "-")} &nbsp;|&nbsp;
+        <b>Telefone:</b> ${esc(usuario?.telefone || "-")} &nbsp;|&nbsp;
+        <b>Nascimento:</b> ${esc(usuario?.nascimento || "-")}
+      </div>
+    </div>
+
+    <div style="height:12px"></div>
+
+    <div style="padding:14px 16px;border:1px solid #eee;border-radius:14px;background:#fff">
+      <div style="font-size:16px;font-weight:900;margin:0 0 8px">Resumo (visão do participante)</div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:260px;padding:12px;border:1px solid #f2f2f2;border-radius:12px;background:#fafafa">
+          <div style="font-weight:900;margin-bottom:8px">Top 3</div>
+          <ol style="margin:0 0 0 18px;padding:0">
+            <li><b>Tipo ${top3[0].t}</b> — ${esc(tipoNome(top3[0].t))} (${top3[0].v})</li>
+            <li><b>Tipo ${top3[1].t}</b> — ${esc(tipoNome(top3[1].t))} (${top3[1].v})</li>
+            <li><b>Tipo ${top3[2].t}</b> — ${esc(tipoNome(top3[2].t))} (${top3[2].v})</li>
+          </ol>
+        </div>
+
+        <div style="flex:2;min-width:280px;padding:12px;border:1px solid #f2f2f2;border-radius:12px;background:#fafafa">
+          <div style="font-weight:900;margin-bottom:6px">Como a pessoa tende a funcionar (TRÍADE)</div>
+          <div style="font-size:13px;color:#333">${tri.intro}</div>
+
+          <div style="height:10px"></div>
+          <div style="font-weight:900">Pontos fortes</div>
+          <ul style="margin:6px 0 0 18px">${tri.strengths.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+
+          <div style="height:10px"></div>
+          <div style="font-weight:900">Pontos a melhorar</div>
+          <ul style="margin:6px 0 0 18px">${tri.improvements.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+        </div>
+      </div>
+
+      ${gestao}
+
+      <div style="height:12px"></div>
+      <div style="padding:12px;border:1px solid #f2f2f2;border-radius:12px;background:#fafafa">
+        <div style="font-weight:900;margin-bottom:6px">Pontuação completa</div>
+        <ul style="margin:0 0 0 18px;padding:0">${s.join("")}</ul>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function simpleHash(obj){
+  // hash simples para evitar email duplicado
+  const str = JSON.stringify(obj);
+  let h = 0;
+  for(let i=0;i<str.length;i++){
+    h = (h<<5) - h + str.charCodeAt(i);
+    h |= 0;
+  }
+  return String(h);
+}
+
+async function maybeSendEmail(top3, score){
+  const usuario = getUser();
+  const nome = (usuario?.nome || "Pessoa").trim() || "Pessoa";
+
+  // hash baseado em score + nome
+  const h = simpleHash({nome, score});
+  const sent = localStorage.getItem(KEY_SENT);
+  if(sent === h) return; // já enviou para este resultado
+
+  // inicializa EmailJS
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  const html = makeEmailHtml(nome, usuario, top3, score);
+
+  const params = {
+    subject: `Resultado Eneagrama - ${nome}`,
+    to_email: usuario?.email || "",   // se seu template usar
+    to_name: nome,                   // se seu template usar
+    nome: nome,                      // se seu template usar
+    conteudo_html: html              // recomendo usar {{conteudo_html}} no template
+  };
+
+  // Envia
+  await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+
+  localStorage.setItem(KEY_SENT, h);
+}
+
+/* ================== INIT ================== */
+(async function init(){
+  // botões
   document.getElementById("btnBack").onclick = ()=> history.back();
   document.getElementById("btnReset").onclick = ()=>{
-    if(confirm("Deseja apagar suas respostas e refazer o teste?")){
-      localStorage.removeItem(STORAGE_KEY);
-      window.location.href = "./index.html";
-    }
+    localStorage.removeItem(KEY_ANS);
+    localStorage.removeItem(KEY_SENT);
+    // volta para início do fluxo
+    window.location.href = "./index.html";
   };
-}
 
-(async function main(){
-  bindActions();
-
-  const respostas = getRespostas();
-  if(!respostas.length){
-    const d=document.getElementById("diag");
-    d.style.display="block";
-    d.textContent="Nenhuma resposta encontrada. Volte e faça o teste.";
-    return;
-  }
-
-  let matriz;
-  try{ matriz = await loadMatrix(); }
-  catch(e){
-    const d=document.getElementById("diag");
-    d.style.display="block";
-    d.textContent="Erro ao carregar matriz: "+e.message;
-    return;
-  }
-
-  const {score, matched} = calcScores(respostas, matriz);
-  const all = sortTop(score);
-  const top3 = all.slice(0,3);
+  const {score, top, debug} = await calcScore();
+  const top3 = top.slice(0,3);
 
   renderTop3(top3);
-  renderResumoRapido(top3);
-  renderPolarChart(score);
-  renderEnneagram(top3);
+  renderQuickSummary(top3);
+  renderTriadText(top3);
+  drawRadar(score);
+  buildEneagramSVG(top3);
 
-  const mainType = top3[0].t;
-  renderFunciona(mainType);
-  renderSubtipos(mainType);
+  // diagnóstico (se quiser ligar depois)
+  // document.getElementById("debug").style.display = "block";
+  // document.getElementById("debug").innerText = JSON.stringify(debug,null,2);
 
-  if(matched===0){
-    const d=document.getElementById("diag");
-    d.style.display="block";
-    d.textContent="Nenhuma pontuação foi calculada. Verifique se a matriz tem as mesmas chaves das respostas.";
+  // envia email automaticamente
+  try{
+    await maybeSendEmail(top3, score);
+  }catch(err){
+    console.error("Falha ao enviar email:", err);
   }
 })();
 </script>
-
 </body>
 </html>
