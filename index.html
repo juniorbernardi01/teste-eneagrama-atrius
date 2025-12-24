@@ -15,10 +15,10 @@
       --shadow:0 10px 30px rgba(15,23,42,.10);
       --btn:#e67e22;
       --btnHover:#d87018;
-      --radius:14px;
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family: Arial, Helvetica, sans-serif;
@@ -31,11 +31,33 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:28px 14px;
+      padding:40px 16px;
     }
 
-    .card{
+    .container{
       width:min(920px, 100%);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:22px;
+    }
+
+    /* LOGO */
+    .logo{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .logo img{
+      max-width:220px;
+      width:100%;
+      height:auto;
+    }
+
+    /* CARD */
+    .card{
+      width:100%;
       background:var(--card);
       border:1px solid var(--border);
       border-radius:18px;
@@ -47,7 +69,6 @@
       margin:0;
       text-align:center;
       font-size:34px;
-      letter-spacing:.2px;
       color:#0b2a5b;
     }
 
@@ -62,10 +83,8 @@
     }
 
     form{
-      margin-top:6px;
       max-width:740px;
-      margin-left:auto;
-      margin-right:auto;
+      margin:0 auto;
     }
 
     label{
@@ -77,23 +96,22 @@
 
     input{
       width:100%;
-      padding:14px 14px;
+      padding:14px;
       border-radius:10px;
       border:1px solid var(--border);
-      outline:none;
       font-size:15px;
-      background:#fff;
     }
 
     input:focus{
-      border-color:#9aa6b2;
+      border-color:#94a3b8;
       box-shadow:0 0 0 3px rgba(148,163,184,.25);
+      outline:none;
     }
 
     .btn{
       margin-top:26px;
       width:100%;
-      padding:14px 16px;
+      padding:14px;
       border:0;
       border-radius:12px;
       background:var(--btn);
@@ -111,42 +129,65 @@
       font-size:12px;
       color:#64748b;
     }
+
+    @media (max-width:600px){
+      .card{
+        padding:28px 22px;
+      }
+
+      h1{
+        font-size:26px;
+      }
+
+      .logo img{
+        max-width:180px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="page">
-    <div class="card">
-      <h1>Teste - Competências Emocionais</h1>
+    <div class="container">
 
-      <div class="subtitle">
+      <!-- LOGO DA EMPRESA -->
+      <div class="logo">
+        <img src="logo-atrius.png" alt="Logo da Empresa">
+      </div>
+
+      <!-- CARD -->
+      <div class="card">
+        <h1>Teste - Competências Emocionais</h1>
+
+        <div class="subtitle">
 Estas questões fazem parte da entrevista e não têm respostas certas ou erradas
 Têm como objetivo principal conhecê-lo(a) melhor, por isso responda com muita sinceridade!
 
 Utilize o tempo que julgar necessário.
+        </div>
+
+        <form id="leadForm">
+          <label for="nome">Nome e sobrenome</label>
+          <input id="nome" required placeholder="Ex: Maria Silva" />
+
+          <label for="email">Email:</label>
+          <input id="email" type="email" required placeholder="ex: maria@empresa.com" />
+
+          <label for="telefone">Telefone:</label>
+          <input id="telefone" required placeholder="(51) 99999-9999" />
+
+          <button class="btn" type="submit">Iniciar Teste</button>
+
+          <div class="hint">
+            Ao continuar, seus dados serão utilizados junto do resultado final.
+          </div>
+        </form>
       </div>
 
-      <form id="leadForm" autocomplete="on">
-        <label for="nome">Nome e sobrenome</label>
-        <input id="nome" name="nome" required placeholder="Ex: Maria Silva" />
-
-        <label for="email">Email:</label>
-        <input id="email" name="email" type="email" required placeholder="ex: maria@empresa.com" />
-
-        <label for="telefone">Telefone:</label>
-        <input id="telefone" name="telefone" required placeholder="(51) 99999-9999" />
-
-        <button class="btn" type="submit">Iniciar Teste</button>
-
-        <div class="hint">
-          Ao continuar, seus dados serão utilizados junto do resultado final.
-        </div>
-      </form>
     </div>
   </div>
 
   <script>
-    // Mantém compatibilidade com o fluxo anterior (lead -> teste.html)
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
     document.getElementById("leadForm").addEventListener("submit", (e) => {
@@ -156,22 +197,16 @@ Utilize o tempo que julgar necessário.
       const email = document.getElementById("email").value.trim();
       const telefone = document.getElementById("telefone").value.trim();
 
-      // validação simples extra
       if (!nome || nome.split(" ").length < 2) {
-        alert("Por favor, informe seu nome e sobrenome.");
+        alert("Informe nome e sobrenome.");
         return;
       }
 
-      const data = {
-        nome,
-        email,
-        telefone,
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        nome, email, telefone,
         createdAt: new Date().toISOString()
-      };
+      }));
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-      // Ajuste se sua próxima página tiver outro nome/rota
       window.location.href = "teste.html";
     });
   </script>
