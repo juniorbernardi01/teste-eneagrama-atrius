@@ -28,7 +28,6 @@
       color:var(--text);
     }
 
-    /* Layout */
     .page{
       min-height:100vh;
       display:flex;
@@ -49,6 +48,7 @@
       max-width:220px;
       width:100%;
       height:auto;
+      display:block;
     }
 
     .card{
@@ -92,6 +92,7 @@
       display:block;
       font-size:14px;
       margin:14px 0 6px;
+      color:#334155;
     }
 
     .req{
@@ -108,18 +109,25 @@
       font-size:15px;
       outline:none;
       background:#fff;
-      transition:.15s;
+      transition:border-color .15s, box-shadow .15s, background .15s;
     }
 
+    input:focus{
+      border-color:#94a3b8;
+      box-shadow:0 0 0 3px rgba(148,163,184,.25);
+    }
+
+    /* ✅ vermelho */
     input.is-invalid{
       border-color:var(--error);
       box-shadow:0 0 0 3px rgba(220,38,38,.15);
       background:#fff7f7;
     }
 
+    /* ✅ verde */
     input.is-valid{
-      border-color:rgba(22,163,74,.55);
-      box-shadow:0 0 0 3px rgba(22,163,74,.10);
+      border-color:rgba(22,163,74,.60);
+      box-shadow:0 0 0 3px rgba(22,163,74,.12);
       background:#f7fff9;
     }
 
@@ -141,9 +149,16 @@
       font-weight:800;
       font-size:16px;
       cursor:pointer;
+      transition:filter .15s, opacity .15s;
     }
 
     .btn:hover{ background:var(--btnHover); }
+
+    .btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      filter:grayscale(.1);
+    }
 
     .hint{
       margin-top:12px;
@@ -152,7 +167,6 @@
       color:#64748b;
     }
 
-    /* Mobile */
     @media (max-width:600px){
       .card{ padding:26px 18px; }
       h1{ font-size:24px; }
@@ -167,12 +181,10 @@
   <div class="page">
     <div class="container">
 
-      <!-- LOGO -->
       <div class="logo">
         <img src="logo-atrius.png" alt="Logo da Empresa">
       </div>
 
-      <!-- CARD -->
       <div class="card">
         <h1>Teste - Competências Emocionais</h1>
 
@@ -186,43 +198,49 @@ Utilize o tempo que julgar necessário.
         <form id="leadForm" novalidate>
           <div class="row">
             <div>
-              <label>Nome<span class="req">*</span></label>
-              <input id="nome" placeholder="Ex: Maria">
+              <label for="nome">Nome<span class="req">*</span></label>
+              <input id="nome" autocomplete="given-name" placeholder="Ex: Maria">
               <div class="error" id="errNome">Informe seu nome.</div>
             </div>
 
             <div>
-              <label>Sobrenome<span class="req">*</span></label>
-              <input id="sobrenome" placeholder="Ex: Silva">
+              <label for="sobrenome">Sobrenome<span class="req">*</span></label>
+              <input id="sobrenome" autocomplete="family-name" placeholder="Ex: Silva">
               <div class="error" id="errSobrenome">Informe seu sobrenome.</div>
             </div>
           </div>
 
-          <label>Email<span class="req">*</span></label>
-          <input id="email" placeholder="ex: maria@empresa.com">
+          <label for="email">Email<span class="req">*</span></label>
+          <input id="email" autocomplete="email" inputmode="email" placeholder="ex: maria@empresa.com">
           <div class="error" id="errEmail">Informe um e-mail válido.</div>
 
-          <label>Telefone (DDD + número)<span class="req">*</span></label>
-          <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
-          <div class="error" id="errTelefone">Informe um telefone válido.</div>
+          <label for="telefone">Telefone (DDD + número)<span class="req">*</span></label>
+          <input id="telefone" autocomplete="tel" inputmode="numeric" placeholder="(51) 99999-9999" maxlength="15">
+          <div class="error" id="errTelefone">Informe um telefone válido (10 ou 11 dígitos com DDD).</div>
 
-          <button class="btn" type="submit">Iniciar Teste</button>
+          <button class="btn" id="btnStart" type="submit" disabled>Iniciar Teste</button>
 
           <div class="hint">
             Ao continuar, seus dados serão utilizados junto do resultado final.
           </div>
         </form>
       </div>
+
     </div>
   </div>
 
   <script>
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
+    // ✅ REDIRECIONA APENAS PRA PAGE1 (caminho absoluto)
+    // Se estiver em pasta, altere para: "/pasta/page1.html"
+    const NEXT_PAGE = "/page1.html";
+
     const nome = document.getElementById("nome");
     const sobrenome = document.getElementById("sobrenome");
     const email = document.getElementById("email");
     const telefone = document.getElementById("telefone");
+    const btnStart = document.getElementById("btnStart");
 
     const errNome = document.getElementById("errNome");
     const errSobrenome = document.getElementById("errSobrenome");
@@ -234,60 +252,110 @@ Utilize o tempo que julgar necessário.
       if(ok === true) el.classList.add("is-valid");
       if(ok === false) el.classList.add("is-invalid");
     }
+    function showErr(el, show){ el.style.display = show ? "block" : "none"; }
 
-    function validarNome(){
+    function validarNome(silent=false){
       const ok = nome.value.trim().length >= 2;
-      setValid(nome, ok); errNome.style.display = ok ? "none":"block";
+      setValid(nome, ok);
+      if(!silent) showErr(errNome, !ok);
       return ok;
     }
 
-    function validarSobrenome(){
+    function validarSobrenome(silent=false){
       const ok = sobrenome.value.trim().length >= 2;
-      setValid(sobrenome, ok); errSobrenome.style.display = ok ? "none":"block";
+      setValid(sobrenome, ok);
+      if(!silent) showErr(errSobrenome, !ok);
       return ok;
     }
 
-    function validarEmail(){
-      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
-      setValid(email, ok); errEmail.style.display = ok ? "none":"block";
+    function validarEmail(silent=false){
+      const v = email.value.trim();
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const ok = regex.test(v);
+      setValid(email, ok);
+      if(!silent) showErr(errEmail, !ok);
       return ok;
     }
 
-    function validarTelefone(){
+    function validarTelefone(silent=false){
       const digits = telefone.value.replace(/\D/g,"");
       const ok = digits.length === 10 || digits.length === 11;
-      setValid(telefone, ok); errTelefone.style.display = ok ? "none":"block";
+      setValid(telefone, ok);
+      if(!silent) showErr(errTelefone, !ok);
       return ok;
     }
 
-    function formatarTelefone(){
-      let v = telefone.value.replace(/\D/g,"");
-      if(v.length > 11) v = v.slice(0,11);
-      if(v.length < 3) telefone.value = v;
-      else if(v.length < 7) telefone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
-      else if(v.length < 11) telefone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
-      else telefone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    // ✅ Habilita/desabilita botão conforme validação
+    function updateButtonState(){
+      const okAll =
+        validarNome(true) &&
+        validarSobrenome(true) &&
+        validarEmail(true) &&
+        validarTelefone(true);
+
+      btnStart.disabled = !okAll;
     }
 
-    telefone.addEventListener("input", formatarTelefone);
+    // ✅ Máscara telefone conforme digita (DDD + número)
+    function formatPhoneBR(digits){
+      let v = String(digits || "").replace(/\D/g,"");
+      if(v.length > 11) v = v.slice(0,11);
 
+      if(v.length === 0) return "";
+      if(v.length < 3) return `(${v}`;
+      if(v.length < 7) return `(${v.slice(0,2)}) ${v.slice(2)}`;
+      if(v.length < 11) return `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+      return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    }
+
+    telefone.addEventListener("input", () => {
+      const d = telefone.value.replace(/\D/g,"");
+      telefone.value = formatPhoneBR(d);
+      validarTelefone(true);
+      updateButtonState();
+    });
+
+    // ✅ valida enquanto digita (nome/sobrenome/email) sem ficar “gritando” erro
+    nome.addEventListener("input", () => { validarNome(true); updateButtonState(); });
+    sobrenome.addEventListener("input", () => { validarSobrenome(true); updateButtonState(); });
+    email.addEventListener("input", () => { validarEmail(true); updateButtonState(); });
+
+    // ✅ mostra erro no blur (quando sai do campo)
+    nome.addEventListener("blur", () => validarNome(false));
+    sobrenome.addEventListener("blur", () => validarSobrenome(false));
+    email.addEventListener("blur", () => validarEmail(false));
+    telefone.addEventListener("blur", () => validarTelefone(false));
+
+    // ✅ submit final
     document.getElementById("leadForm").addEventListener("submit", (e)=>{
       e.preventDefault();
 
-      if(!validarNome() || !validarSobrenome() || !validarEmail() || !validarTelefone()) return;
+      const okNome = validarNome(false);
+      const okSobrenome = validarSobrenome(false);
+      const okEmail = validarEmail(false);
+      const okTel = validarTelefone(false);
+
+      if(!okNome || !okSobrenome || !okEmail || !okTel){
+        const firstBad = [nome, sobrenome, email, telefone].find(el => el.classList.contains("is-invalid"));
+        if(firstBad) firstBad.focus();
+        return;
+      }
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         nome: nome.value.trim(),
         sobrenome: sobrenome.value.trim(),
-        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`,
+        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`.trim(),
         email: email.value.trim(),
         telefone: telefone.value.trim(),
+        telefone_digits: telefone.value.replace(/\D/g,""),
         createdAt: new Date().toISOString()
       }));
 
-      // ✅ REDIRECIONA APENAS PARA page1.html
-      window.location.href = "page1.html";
+      window.location.href = NEXT_PAGE;
     });
+
+    // inicializa estado do botão
+    updateButtonState();
   </script>
 </body>
 </html>
