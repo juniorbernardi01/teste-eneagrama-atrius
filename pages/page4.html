@@ -118,6 +118,10 @@ emailjs.init("dMy7jYWSeALMDD7TI");
 const STORAGE_KEY = "respostas";
 const MIN = 6;
 
+// Lead + Totais (para resultado.html)
+const LEAD_KEY = "atrius_eneagrama_lead_v1";
+const TOTAIS_KEY = "atrius_eneagrama_totais_v1";
+
 /* ================= PALAVRAS ================= */
 const palavras = [
   "Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
@@ -142,6 +146,26 @@ function upsertCheckbox(name, checked){
 
 function countSelected(){
   return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
+}
+
+function getLead(){
+  const raw = localStorage.getItem(LEAD_KEY);
+  if(!raw) return null;
+  try{
+    const lead = JSON.parse(raw);
+    const nomeCompleto =
+      lead.nome_completo ||
+      `${lead.nome || ""} ${lead.sobrenome || ""}`.trim();
+
+    return {
+      ...lead,
+      nome_completo: nomeCompleto || "Participante",
+      email: (lead.email || "").trim(),
+      telefone: (lead.telefone || "").trim()
+    };
+  }catch{
+    return null;
+  }
 }
 
 /* ================= BUILD ================= */
@@ -182,45 +206,151 @@ function restore(){
   });
 }
 
+/* ================= EMAIL CONTENT (9 no topo) ================= */
+function eneagramaSvgEmail(){
+  return `
+    <div style="text-align:center;margin:18px 0;">
+      <svg width="260" height="260" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Símbolo do Eneagrama">
+        <defs>
+          <style>
+            .c{fill:none;stroke:#111827;stroke-width:3}
+            .l{fill:none;stroke:#111827;stroke-width:2}
+            .n{font: 700 14px Arial, sans-serif; fill:#111827}
+          </style>
+        </defs>
+
+        <circle class="c" cx="130" cy="130" r="102"/>
+        <!-- triângulo 9-3-6 (9 topo) -->
+        <path class="l" d="M130 28 L209 175 L51 175 Z"/>
+        <!-- estrela simples -->
+        <path class="l" d="M206 88 L157 220 L245 142 L15 142 L103 220 L54 88 L206 88"/>
+
+        <!-- números com 9 no topo -->
+        <text class="n" x="124" y="20">9</text>
+        <text class="n" x="187" y="40">1</text>
+        <text class="n" x="227" y="95">2</text>
+        <text class="n" x="220" y="165">3</text>
+        <text class="n" x="165" y="232">4</text>
+        <text class="n" x="124" y="248">5</text>
+        <text class="n" x="78"  y="232">6</text>
+        <text class="n" x="24"  y="165">7</text>
+        <text class="n" x="18"  y="95">8</text>
+      </svg>
+    </div>
+  `;
+}
+
+function tabelaTotaisEmail(score){
+  let rows = "";
+  for(let i=1;i<=9;i++){
+    rows += `
+      <tr>
+        <td style="padding:10px;border:1px solid #e5e7eb;text-align:center;font-weight:800;">${i}</td>
+        <td style="padding:10px;border:1px solid #e5e7eb;text-align:center;">${score[i] ?? 0}</td>
+      </tr>
+    `;
+  }
+  return `
+    <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+      <thead>
+        <tr>
+          <th style="padding:10px;border:1px solid #e5e7eb;background:#f8fafc;">Tipo</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;background:#f8fafc;">Quantidade</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
 /* ================= EMAIL ================= */
 async function sendEmailReport(){
+  const lead = getLead();
+  if(!lead || !lead.email){
+    // Se você preferir bloquear sem lead:
+    // throw new Error("Lead não encontrado. Volte ao início e preencha Nome/Email/Telefone.");
+    console.warn("Lead não encontrado ou sem email. Envio vai usar nome padrão.");
+  }
+
   const respostas = getList();
 
-  const res = await fetch("../data/matriz.json",{cache:"no-store"});
+  const res = await fetch("../data/matriz.json", { cache:"no-store" });
   const matriz = await res.json();
 
+  // Score 1..9
   const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+
   respostas.forEach(r=>{
     const key = `${r.pergunta}_${r.alternativa}`;
     const w = matriz[key];
     if(!w) return;
-    for(const t in w) score[t] += w[t];
+    for(const t in w){
+      score[t] += w[t];
+    }
   });
+
+  // Salva para o resultado.html
+  localStorage.setItem(TOTAIS_KEY, JSON.stringify(score));
 
   const top = Object.entries(score)
     .map(([t,v])=>({t, v}))
     .sort((a,b)=>b.v-a.v)
     .slice(0,3);
 
+  const nomeCompleto = (lead?.nome_completo || "Participante").trim();
+  const emailReply = (lead?.email || "").trim();
+  const telefoneTxt = (lead?.telefone || "-").trim();
+
   const html = `
-    <h2>Resultado Eneagrama</h2>
-    <p><b>Top 3:</b></p>
-    <ul>
-      <li>Tipo ${top[0].t} — ${top[0].v}</li>
-      <li>Tipo ${top[1].t} — ${top[1].v}</li>
-      <li>Tipo ${top[2].t} — ${top[2].v}</li>
-    </ul>
-    <p><b>Pontuação completa:</b></p>
-    <pre>${JSON.stringify(score,null,2)}</pre>
+    <div style="font-family:Arial,sans-serif;color:#0f172a;line-height:1.5;">
+      <h2 style="margin:0 0 10px;">Resultado Eneagrama</h2>
+
+      <div style="font-size:14px;color:#334155;margin-bottom:14px;">
+        <div><b>Nome:</b> ${nomeCompleto}</div>
+        <div><b>Email:</b> ${emailReply || "-"}</div>
+        <div><b>Telefone:</b> ${telefoneTxt}</div>
+      </div>
+
+      ${eneagramaSvgEmail()}
+
+      <div style="margin:12px 0; font-size:14px;">
+        <b>Top 3:</b>
+        <ul style="margin:8px 0 0; padding-left:18px;">
+          <li>Tipo ${top[0]?.t ?? "-"} — ${top[0]?.v ?? "-"}</li>
+          <li>Tipo ${top[1]?.t ?? "-"} — ${top[1]?.v ?? "-"}</li>
+          <li>Tipo ${top[2]?.t ?? "-"} — ${top[2]?.v ?? "-"}</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:14px;">
+        <h3 style="margin:0 0 8px; font-size:16px;">Pontuação completa (1 a 9)</h3>
+        ${tabelaTotaisEmail(score)}
+      </div>
+
+      <div style="margin-top:14px;font-size:12px;color:#64748b;">
+        Atrius • Teste de Competências Emocionais
+      </div>
+    </div>
   `;
+
+  // ✅ TEMPLATE PARAMS EXATOS DO SEU TEMPLATE (print)
+  // Subject: {{subject}}
+  // Content: {{{conteudo_html}}}
+  // From Name: {{name}}
+  // Reply To: {{email}}
+  const templateParams = {
+    subject: `Resultado eneagrama - ${nomeCompleto}`,
+    conteudo_html: html,
+    name: nomeCompleto,
+    email: emailReply || "nao-informado@atrius.ind.br"
+  };
+
+  console.log("DEBUG templateParams:", templateParams);
 
   await emailjs.send(
     "service_676gehg",
     "template_jkxxqz5",
-    {
-      subject: "Resultado Eneagrama — Novo teste concluído",
-      message_html: html
-    }
+    templateParams
   );
 }
 
@@ -235,12 +365,19 @@ document.addEventListener("DOMContentLoaded",()=>{
       return;
     }
 
+    const btn = document.getElementById("btnFinish");
+    btn.disabled = true;
+    btn.textContent = "Calculando...";
+
     try{
       await sendEmailReport();
     }catch(err){
       console.error("Erro ao enviar email:", err);
+      // mesmo se der erro, você pode seguir pro resultado
+      // se quiser bloquear, troque para: alert(...) e return;
     }
 
+    // Vai para o resultado
     window.location.href = "../resultado.html";
   });
 });
