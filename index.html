@@ -16,6 +16,7 @@
       --btn:#e67e22;
       --btnHover:#d87018;
       --error:#dc2626;
+      --ok:#16a34a;
     }
 
     *{box-sizing:border-box}
@@ -27,31 +28,29 @@
       color:var(--text);
     }
 
-    /* ✅ Menos espaço no topo + responsivo */
+    /* Topo menor + responsivo */
     .page{
       min-height:100vh;
       display:flex;
-      align-items:flex-start;         /* antes center */
+      align-items:flex-start;
       justify-content:center;
-      padding:16px 16px 40px;         /* topo menor */
+      padding:16px 16px 40px;
     }
 
-    /* ✅ Controla o espaço entre logo e card */
     .container{
       width:min(920px, 100%);
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:10px;                       /* antes 22px */
-      padding-top:4px;                /* ajuste fino */
+      gap:10px;
+      padding-top:4px;
     }
 
-    /* ✅ Logo centralizado e responsivo */
     .logo{
       display:flex;
       justify-content:center;
       align-items:center;
-      margin-top:0;                   /* pode subir mais se quiser */
+      margin-top:0;
     }
 
     .logo img{
@@ -61,7 +60,6 @@
       display:block;
     }
 
-    /* CARD */
     .card{
       width:100%;
       background:var(--card);
@@ -93,11 +91,23 @@
       margin:0 auto;
     }
 
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+
     label{
       display:block;
       font-size:14px;
       color:#334155;
       margin:14px 0 6px;
+    }
+
+    .req{
+      color:var(--error);
+      font-weight:800;
+      margin-left:6px;
     }
 
     input{
@@ -106,18 +116,33 @@
       border-radius:10px;
       border:1px solid var(--border);
       font-size:15px;
+      outline:none;
+      transition: border-color .15s, box-shadow .15s, background-color .15s;
+      background:#fff;
     }
 
     input:focus{
       border-color:#94a3b8;
       box-shadow:0 0 0 3px rgba(148,163,184,.25);
-      outline:none;
+    }
+
+    /* ✅ estados visuais */
+    input.is-invalid{
+      border-color:var(--error);
+      box-shadow:0 0 0 3px rgba(220,38,38,.15);
+      background:#fff7f7;
+    }
+
+    input.is-valid{
+      border-color:rgba(22,163,74,.55);
+      box-shadow:0 0 0 3px rgba(22,163,74,.10);
+      background:#f7fff9;
     }
 
     .error{
       font-size:12px;
       color:var(--error);
-      margin-top:4px;
+      margin-top:6px;
       display:none;
     }
 
@@ -143,33 +168,15 @@
       color:#64748b;
     }
 
-    /* ✅ MOBILE */
+    /* MOBILE */
     @media (max-width:600px){
-      .page{
-        padding:12px 12px 28px;       /* topo ainda menor no mobile */
-      }
-
-      .container{
-        gap:8px;
-        padding-top:2px;
-      }
-
-      .card{
-        padding:26px 18px;
-      }
-
-      h1{
-        font-size:24px;
-      }
-
-      .logo img{
-        max-width:160px;
-      }
-
-      .subtitle{
-        font-size:14px;
-        margin-bottom:18px;
-      }
+      .page{ padding:12px 12px 28px; }
+      .container{ gap:8px; padding-top:2px; }
+      .card{ padding:26px 18px; }
+      h1{ font-size:24px; }
+      .logo img{ max-width:160px; }
+      .subtitle{ font-size:14px; margin-bottom:18px; }
+      .row{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -178,7 +185,7 @@
   <div class="page">
     <div class="container">
 
-      <!-- LOGO (troque o src pelo seu caminho correto) -->
+      <!-- LOGO -->
       <div class="logo">
         <img src="logo-atrius.png" alt="Logo da Empresa">
       </div>
@@ -194,17 +201,27 @@ Utilize o tempo que julgar necessário.
         </div>
 
         <form id="leadForm" novalidate>
-          <label for="nome">Nome e sobrenome</label>
-          <input id="nome" placeholder="Ex: Maria Silva">
-          <div class="error" id="errNome">Informe nome e sobrenome.</div>
+          <div class="row">
+            <div>
+              <label for="nome">Nome<span class="req">*</span></label>
+              <input id="nome" autocomplete="given-name" placeholder="Ex: Maria">
+              <div class="error" id="errNome">Informe seu nome.</div>
+            </div>
 
-          <label for="email">Email</label>
-          <input id="email" placeholder="ex: maria@empresa.com">
+            <div>
+              <label for="sobrenome">Sobrenome<span class="req">*</span></label>
+              <input id="sobrenome" autocomplete="family-name" placeholder="Ex: Silva">
+              <div class="error" id="errSobrenome">Informe seu sobrenome.</div>
+            </div>
+          </div>
+
+          <label for="email">Email<span class="req">*</span></label>
+          <input id="email" autocomplete="email" placeholder="ex: maria@empresa.com">
           <div class="error" id="errEmail">Informe um e-mail válido.</div>
 
-          <label for="telefone">Telefone</label>
-          <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
-          <div class="error" id="errTelefone">Informe um telefone válido.</div>
+          <label for="telefone">Telefone (DDD + número)<span class="req">*</span></label>
+          <input id="telefone" inputmode="numeric" autocomplete="tel" placeholder="(51) 99999-9999" maxlength="15">
+          <div class="error" id="errTelefone">Informe um telefone válido (10 ou 11 dígitos com DDD).</div>
 
           <button class="btn" type="submit">Iniciar Teste</button>
 
@@ -221,62 +238,120 @@ Utilize o tempo que julgar necessário.
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
     const nomeEl = document.getElementById("nome");
+    const sobrenomeEl = document.getElementById("sobrenome");
     const emailEl = document.getElementById("email");
     const telEl   = document.getElementById("telefone");
 
     const errNome = document.getElementById("errNome");
+    const errSobrenome = document.getElementById("errSobrenome");
     const errEmail = document.getElementById("errEmail");
     const errTelefone = document.getElementById("errTelefone");
 
-    // ===== MÁSCARA TELEFONE (BR) =====
-    telEl.addEventListener("input", () => {
-      let v = telEl.value.replace(/\D/g, "");
-      if (v.length > 11) v = v.slice(0,11);
+    // ====== Helpers: marca campo em vermelho/verde ======
+    function setValid(el, isValid) {
+      el.classList.remove("is-valid", "is-invalid");
+      if (isValid === true) el.classList.add("is-valid");
+      if (isValid === false) el.classList.add("is-invalid");
+    }
 
-      if (v.length >= 11) {
-        telEl.value = v.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-      } else if (v.length >= 7) {
-        telEl.value = v.replace(/(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
-      } else if (v.length >= 3) {
-        telEl.value = v.replace(/(\d{2})(\d+)/, "($1) $2");
-      } else {
-        telEl.value = v;
+    function showErr(errEl, show) {
+      errEl.style.display = show ? "block" : "none";
+    }
+
+    // ====== Máscara de telefone (DDD + número) enquanto digita ======
+    function formatPhoneBR(rawDigits) {
+      let v = (rawDigits || "").replace(/\D/g, "");
+      if (v.length > 11) v = v.slice(0, 11);
+
+      // (DD) NNNN-NNNN  -> 10 dígitos
+      // (DD) NNNNN-NNNN -> 11 dígitos
+      if (v.length === 0) return "";
+      if (v.length < 3) return `(${v}`;
+      if (v.length < 7) return `(${v.slice(0,2)}) ${v.slice(2)}`;
+      if (v.length < 11) {
+        return `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
       }
+      return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    }
+
+    telEl.addEventListener("input", () => {
+      const digits = telEl.value.replace(/\D/g, "");
+      telEl.value = formatPhoneBR(digits);
+
+      // valida ao digitar (sem ficar “brigando” no começo)
+      if (digits.length === 0) {
+        setValid(telEl, null);
+        showErr(errTelefone, false);
+        return;
+      }
+      const ok = (digits.length === 10 || digits.length === 11);
+      setValid(telEl, ok);
+      showErr(errTelefone, !ok);
     });
 
+    // ====== Validações ======
     function validarNome() {
-      const ok = nomeEl.value.trim().split(" ").length >= 2;
-      errNome.style.display = ok ? "none" : "block";
+      const ok = nomeEl.value.trim().length >= 2;
+      setValid(nomeEl, ok);
+      showErr(errNome, !ok);
+      return ok;
+    }
+
+    function validarSobrenome() {
+      const ok = sobrenomeEl.value.trim().length >= 2;
+      setValid(sobrenomeEl, ok);
+      showErr(errSobrenome, !ok);
       return ok;
     }
 
     function validarEmail() {
+      const v = emailEl.value.trim();
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const ok = regex.test(emailEl.value.trim());
-      errEmail.style.display = ok ? "none" : "block";
+      const ok = regex.test(v);
+      setValid(emailEl, ok);
+      showErr(errEmail, !ok);
       return ok;
     }
 
     function validarTelefone() {
-      const nums = telEl.value.replace(/\D/g, "");
-      const ok = nums.length === 10 || nums.length === 11;
-      errTelefone.style.display = ok ? "none" : "block";
+      const digits = telEl.value.replace(/\D/g, "");
+      const ok = (digits.length === 10 || digits.length === 11);
+      setValid(telEl, ok);
+      showErr(errTelefone, !ok);
       return ok;
     }
+
+    // valida em tempo real ao sair do campo
+    nomeEl.addEventListener("blur", validarNome);
+    sobrenomeEl.addEventListener("blur", validarSobrenome);
+    emailEl.addEventListener("blur", validarEmail);
+    telEl.addEventListener("blur", validarTelefone);
 
     document.getElementById("leadForm").addEventListener("submit", (e) => {
       e.preventDefault();
 
       const okNome = validarNome();
+      const okSobrenome = validarSobrenome();
       const okEmail = validarEmail();
       const okTel = validarTelefone();
 
-      if (!okNome || !okEmail || !okTel) return;
+      if (!okNome || !okSobrenome || !okEmail || !okTel) {
+        // foca no primeiro inválido
+        const firstBad = [nomeEl, sobrenomeEl, emailEl, telEl].find(el => el.classList.contains("is-invalid"));
+        if (firstBad) firstBad.focus();
+        return;
+      }
+
+      // Salva já separado e também "nome completo" se você quiser usar no relatório
+      const nomeCompleto = `${nomeEl.value.trim()} ${sobrenomeEl.value.trim()}`.trim();
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         nome: nomeEl.value.trim(),
+        sobrenome: sobrenomeEl.value.trim(),
+        nome_completo: nomeCompleto,
         email: emailEl.value.trim(),
         telefone: telEl.value.trim(),
+        telefone_digits: telEl.value.replace(/\D/g, ""),
         createdAt: new Date().toISOString()
       }));
 
