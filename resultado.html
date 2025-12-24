@@ -16,7 +16,7 @@
       --accent:#f07a00;
       --accent2:#0b2a5b;
 
-      /* Paleta por tipo (sua sugestão) */
+      /* Paleta por tipo */
       --t1:#9ca3af;   /* Cinza */
       --t2:#22c55e;   /* Verde */
       --t3:#d4af37;   /* Ouro */
@@ -108,15 +108,6 @@
       background:#fff;
       position:relative;
       overflow:hidden;
-    }
-
-    .topItem::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: linear-gradient(90deg, rgba(15,23,42,.06), transparent);
-      opacity:.0;
-      pointer-events:none;
     }
 
     .topItem .left{
@@ -232,7 +223,6 @@
       flex:1;
       min-width:160px;
     }
-    .btnPrimary:hover{ filter:brightness(.98) }
 
     .divider{
       height:1px;
@@ -308,50 +298,10 @@
       line-height:1.35;
     }
 
-    /* Cards coloridos (Top 3) */
-    .miniCards{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin-top:14px;
-    }
-    .mini{
-      border-radius:16px;
-      padding:14px;
-      color:#fff;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:var(--shadow);
-      min-height:92px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
-    .mini .n{
-      font-size:32px;
-      font-weight:900;
-      line-height:1;
-      opacity:.95;
-    }
-    .mini .label{
-      font-size:13px;
-      font-weight:900;
-      opacity:.95;
-    }
-    .mini .sub{
-      margin:6px 0 0;
-      font-size:12px;
-      color:rgba(255,255,255,.92);
-      line-height:1.35;
-      text-align:left;
-    }
-
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .gridTop{ grid-template-columns: 1fr; }
       .topArea{ grid-template-columns:1fr; }
-    }
-    @media (max-width: 700px){
-      .miniCards{ grid-template-columns:1fr; }
     }
     @media (max-width: 520px){
       .title h1{ font-size:30px; }
@@ -389,11 +339,10 @@
               <div class="pieHint">Proporção dos 3 tipos mais altos.</div>
             </div>
             <div id="pieWrap" style="display:flex;justify-content:center;align-items:center;"></div>
-            <div class="pieHint" id="pieLegend"></div>
+            <!-- REMOVIDO: legenda em texto abaixo do gráfico -->
           </div>
         </div>
-
-        <div class="miniCards" id="miniCards"></div>
+        <!-- REMOVIDO: miniCards coloridos -->
       </div>
 
       <!-- RIGHT -->
@@ -432,11 +381,13 @@
   </div>
 
 <script>
-  // ====== KEYS ======
   const RESPOSTAS_KEY = "respostas";
   const MATRIZ_URL = "/data/matriz.json";
 
-  // ====== CORES POR TIPO ======
+  function getCSS(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
   const TYPE_COLORS = {
     1: getCSS("--t1"),
     2: getCSS("--t2"),
@@ -448,11 +399,7 @@
     8: getCSS("--t8"),
     9: getCSS("--t9")
   };
-  function getCSS(varName){
-    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-  }
 
-  // ====== TEXTOS DOS TIPOS ======
   const TIPOS = {
     1: { nome: "Perfeccionista / Reformador", curta: "Busca fazer o correto, melhorar padrões e evitar erros." },
     2: { nome: "Prestativo / Cuidador",       curta: "Busca ajudar, ser necessário e criar conexão com pessoas." },
@@ -465,7 +412,6 @@
     9: { nome: "Pacificador",                curta: "Busca harmonia, estabilidade e evitar conflitos." }
   };
 
-  // ====== MAPA DE TRÍADE (exemplo pronto do print) ======
   const TRIADE_MAP = {
     "3-1-6": {
       resumo: "Tipo 3 aparece como o mais provável, com influência de Tipo 1 e Tipo 6.",
@@ -508,7 +454,6 @@
     };
   }
 
-  // ====== HELPERS ======
   function getLocalJSON(key){
     try{ return JSON.parse(localStorage.getItem(key) || "null"); }
     catch{ return null; }
@@ -567,30 +512,7 @@
     }).join("");
   }
 
-  // ====== MINI CARDS COLORIDOS ======
-  function renderMiniCards(top3){
-    const el = document.getElementById("miniCards");
-    el.innerHTML = top3.map((it)=>{
-      const color = TYPE_COLORS[it.t] || "#111827";
-      const tipo = TIPOS[it.t];
-      // texto em preto no ouro/azul céu pra ficar legível
-      const needsDarkText = (it.t === 3 || it.t === 9 || it.t === 1 || it.t === 2 || it.t === 7 || it.t === 6);
-      const textColor = needsDarkText ? "#0b1220" : "#ffffff";
-      const subColor  = needsDarkText ? "rgba(11,18,32,.85)" : "rgba(255,255,255,.92)";
-
-      return `
-        <div class="mini" style="background:${color}; color:${textColor};">
-          <div class="n">${it.t}</div>
-          <div>
-            <div class="label">${tipo?.nome || ""}</div>
-            <div class="sub" style="color:${subColor};">${tipo?.curta || ""}</div>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  // ====== PIE (SVG) PARA TOP3 ======
+  // ===== PIE (SVG) =====
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -627,15 +549,8 @@
     `;
 
     document.getElementById("pieWrap").innerHTML = svg;
-
-    const legend = top3.map(it=>{
-      const pct = Math.round((it.v/total)*100);
-      return `Tipo ${it.t}: <b>${pct}%</b>`;
-    }).join(" · ");
-    document.getElementById("pieLegend").innerHTML = legend;
   }
 
-  // ====== TEXTOS DA TRÍADE ======
   function renderTriadeTexts(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
     const chave = `${t1}-${t2}-${t3}`;
@@ -651,7 +566,6 @@
     document.getElementById("listaMelhorar").innerHTML = data.melhorar.map(x=>`<li>${x}</li>`).join("");
   }
 
-  // ====== NAV ======
   document.getElementById("btnVoltar").addEventListener("click", ()=>{
     window.location.href = "/pages/page4";
   });
@@ -659,7 +573,6 @@
     window.location.href = "/";
   });
 
-  // ====== INIT ======
   (async function init(){
     try{
       const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
@@ -676,7 +589,6 @@
 
       renderTop3(top3);
       renderPie(top3);
-      renderMiniCards(top3);
       renderTriadeTexts(top3);
     }catch(err){
       console.error(err);
