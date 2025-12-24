@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quem sou eu — Passo 4</title>
 
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <style>
 :root{
   --accent:#f07a00;
@@ -34,9 +37,7 @@ h1{margin:0 0 6px;font-size:32px;}
 .muted{color:var(--muted);font-size:14px;line-height:1.4}
 
 .step{margin:12px 0}
-.bar{
-  height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;margin-top:6px;
-}
+.bar{height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;margin-top:6px;}
 .fill{height:100%;width:100%;background:var(--accent);}
 
 .grid{
@@ -45,9 +46,7 @@ h1{margin:0 0 6px;font-size:32px;}
   gap:12px;
   margin-top:14px;
 }
-@media(max-width:768px){
-  .grid{grid-template-columns:1fr;}
-}
+@media(max-width:768px){ .grid{grid-template-columns:1fr;} }
 
 .word{
   border:1px solid var(--bd);
@@ -58,132 +57,83 @@ h1{margin:0 0 6px;font-size:32px;}
   justify-content:space-between;
   cursor:pointer;
   background:#fff;
-  transition:transform .06s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
-  -webkit-tap-highlight-color: transparent;
+  transition:all .15s ease;
 }
-.word:hover{box-shadow:0 6px 18px rgba(0,0,0,.06);}
-.word:active{transform:scale(.99);}
-
-.left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:800;
-}
-.word small{
-  color:#888;
-  font-weight:800;
-  min-width:26px;
-  text-align:right;
-}
-
-.word input{ transform:scale(1.2); }
-
-/* Card selecionado */
 .word.selected{
-  background: linear-gradient(0deg, var(--accent-weak), var(--accent-weak));
-  border-color: var(--accent-border);
-  box-shadow: 0 0 0 3px var(--accent-weak);
+  background:var(--accent-weak);
+  border-color:var(--accent-border);
+  box-shadow:0 0 0 3px var(--accent-weak);
 }
+.word small{color:#888;font-weight:800;min-width:26px}
+.word input{transform:scale(1.2)}
 
 .actions{
   display:flex;
   gap:10px;
   margin-top:16px;
-  flex-wrap:wrap;
 }
 .btn{
-  padding:14px 16px;
+  padding:14px;
   border-radius:14px;
   border:0;
   font-weight:900;
   cursor:pointer;
 }
-.btn-primary{
-  background:var(--accent);
-  color:#fff;
-  flex:1;
-  min-width:220px;
-}
-.btn-outline{
-  background:#fff;
-  border:1px solid var(--bd);
-}
-
-/* avisos */
-.notice{
-  margin-top:10px;
-  padding:10px 12px;
-  border-radius:14px;
-  border:1px solid var(--bd);
-  background:#fafafa;
-  font-size:13px;
-  color:#333;
-}
-.notice b{color:#111}
+.btn-primary{background:var(--accent);color:#fff;flex:1}
+.btn-outline{background:#fff;border:1px solid var(--bd)}
 </style>
 </head>
 
 <body>
 <div class="wrap">
-  <div class="card">
+<div class="card">
 
-    <h1>Quem sou eu</h1>
-    <p class="muted">Marque apenas as palavras ou expressões que realmente combinam com você ao longo da vida.</p>
+<h1>Quem sou eu</h1>
+<p class="muted">Marque apenas as palavras que realmente combinam com você ao longo da vida.</p>
 
-    <div class="step">
-      <b>Passo 4 de 4 — Identificação pessoal</b>
-      <div class="bar"><div class="fill"></div></div>
-    </div>
+<div class="step">
+  <b>Passo 4 de 4 — Identificação pessoal</b>
+  <div class="bar"><div class="fill"></div></div>
+</div>
 
-    <p class="muted">
-      <b>Instruções:</b> Selecione as palavras que mais se parecem com você.
-      Para continuar, selecione pelo menos <b>6 opções</b>.
-    </p>
+<p class="muted"><b>Instruções:</b> selecione pelo menos <b>6 opções</b>.</p>
 
-    <div id="msg" class="notice" style="display:none"></div>
+<form id="formP4">
+  <div class="grid" id="gridWords"></div>
 
-    <form id="formP4">
-      <div class="grid" id="gridWords"></div>
-
-      <div class="actions">
-        <button type="button" class="btn btn-outline" id="btnBack">Voltar</button>
-        <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
-      </div>
-    </form>
-
+  <div class="actions">
+    <button type="button" class="btn btn-outline" onclick="history.back()">Voltar</button>
+    <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
   </div>
+</form>
+
+</div>
 </div>
 
 <script>
-const KEY="respostas";
-const MIN=6;
+/* ================= EMAILJS ================= */
+emailjs.init("dMy7jYWSeALMDD7TI");
 
-// ✅ Lista maior (o dobro, como você pediu)
-// Você pode editar/ajustar livremente depois.
+/* ================= CONFIG ================= */
+const STORAGE_KEY = "respostas";
+const MIN = 6;
+
+/* ================= PALAVRAS ================= */
 const palavras = [
   "Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
   "Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
   "Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
   "Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
-  "Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)",
-  "Exigente consigo mesmo(a)","Prestativo(a)","Ambicioso(a)","Intuitivo(a)","Discreto(a)","Visionário(a)",
-
-  "Carismático(a)","Prudente","Sociável","Contido(a)","Aventureiro(a)","Confiável",
-  "Perfeccionista","Pragmático(a)","Acolhedor(a)","Decidido(a)","Resiliente","Estrategista",
-  "Detalhista","Objetivo(a)","Inspirador(a)","Empático(a)","Realista","Inconformado(a)",
-  "Calmo(a)","Corajoso(a)","Confiante","Leve","Inovador(a)","Paciente",
-  "Forte","Persistente","Idealista","Reservado(a)","Espontâneo(a)","Líder",
-  "Mediador(a)","Intenso(a)","Disciplinado(a)","Comunicativo(a)","Proativo(a)","Observador(a)"
+  "Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)"
 ];
 
+/* ================= HELPERS ================= */
 function getList(){
-  try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
   catch{ return []; }
 }
-function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
+function setList(l){ localStorage.setItem(STORAGE_KEY, JSON.stringify(l)); }
 
-// cada palavra é um checkbox salvo como: {pergunta:"P4_01", alternativa:"S"}
 function upsertCheckbox(name, checked){
   let l = getList().filter(x => x.pergunta !== name);
   if(checked) l.push({ pergunta:name, alternativa:"S" });
@@ -194,91 +144,103 @@ function countSelected(){
   return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
 }
 
-function showMsg(text){
-  const box = document.getElementById("msg");
-  box.style.display = "block";
-  box.innerHTML = text;
-}
-
-function hideMsg(){
-  const box = document.getElementById("msg");
-  box.style.display = "none";
-  box.innerHTML = "";
-}
-
+/* ================= BUILD ================= */
 function build(){
   const grid = document.getElementById("gridWords");
-  grid.innerHTML = palavras.map((p, i) => {
+  grid.innerHTML = palavras.map((p,i)=>{
     const n = String(i+1).padStart(2,"0");
     return `
-      <div class="word" data-name="P4_${n}" role="button" tabindex="0" aria-label="${p}">
-        <span class="left"><small>${i+1}.</small>${p}</span>
-        <input type="checkbox" name="P4_${n}" aria-label="${p}">
+      <div class="word" data-name="P4_${n}">
+        <span><small>${i+1}.</small> ${p}</span>
+        <input type="checkbox" name="P4_${n}">
       </div>
     `;
   }).join("");
 
-  // clique no card deve alternar o check
   grid.querySelectorAll(".word").forEach(card=>{
-    const cb = card.querySelector('input[type="checkbox"]');
-
-    function syncUI(){
+    const cb = card.querySelector("input");
+    card.addEventListener("click", e=>{
+      if(e.target !== cb) cb.checked = !cb.checked;
       card.classList.toggle("selected", cb.checked);
       upsertCheckbox(cb.name, cb.checked);
-      // opcional: mostra aviso só quando está abaixo do mínimo
-      if(countSelected() >= MIN) hideMsg();
-    }
-
-    // clique no card
-    card.addEventListener("click", (e)=>{
-      // se clicou no checkbox, deixa ele agir e só sincroniza no change
-      if(e.target === cb) return;
-      cb.checked = !cb.checked;
-      syncUI();
     });
-
-    // teclado (Enter/Espaço)
-    card.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        cb.checked = !cb.checked;
-        syncUI();
-      }
+    cb.addEventListener("change",()=>{
+      card.classList.toggle("selected", cb.checked);
+      upsertCheckbox(cb.name, cb.checked);
     });
-
-    // mudança direta no checkbox
-    cb.addEventListener("change", syncUI);
   });
 }
 
 function restore(){
-  const l = getList();
-  l.forEach(r=>{
+  getList().forEach(r=>{
     if(!r.pergunta.startsWith("P4_")) return;
-    const cb = document.querySelector(`#formP4 input[name="${r.pergunta}"]`);
+    const cb = document.querySelector(`input[name="${r.pergunta}"]`);
     if(cb){
       cb.checked = true;
-      const card = cb.closest(".word");
-      if(card) card.classList.add("selected");
+      cb.closest(".word").classList.add("selected");
     }
   });
 }
 
+/* ================= EMAIL ================= */
+async function sendEmailReport(){
+  const respostas = getList();
+
+  const res = await fetch("../data/matriz.json",{cache:"no-store"});
+  const matriz = await res.json();
+
+  const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  respostas.forEach(r=>{
+    const key = `${r.pergunta}_${r.alternativa}`;
+    const w = matriz[key];
+    if(!w) return;
+    for(const t in w) score[t] += w[t];
+  });
+
+  const top = Object.entries(score)
+    .map(([t,v])=>({t, v}))
+    .sort((a,b)=>b.v-a.v)
+    .slice(0,3);
+
+  const html = `
+    <h2>Resultado Eneagrama</h2>
+    <p><b>Top 3:</b></p>
+    <ul>
+      <li>Tipo ${top[0].t} — ${top[0].v}</li>
+      <li>Tipo ${top[1].t} — ${top[1].v}</li>
+      <li>Tipo ${top[2].t} — ${top[2].v}</li>
+    </ul>
+    <p><b>Pontuação completa:</b></p>
+    <pre>${JSON.stringify(score,null,2)}</pre>
+  `;
+
+  await emailjs.send(
+    "service_676gehg",
+    "template_jkxxqz5",
+    {
+      subject: "Resultado Eneagrama — Novo teste concluído",
+      message_html: html
+    }
+  );
+}
+
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
   build();
   restore();
 
-  document.getElementById("btnBack").addEventListener("click", ()=>{
-    history.back();
-  });
-
-  document.getElementById("btnFinish").addEventListener("click", ()=>{
-    const n = countSelected();
-    if(n < MIN){
-      showMsg(`Selecione pelo menos <b>${MIN}</b> opções para continuar. Atualmente: <b>${n}</b>.`);
+  document.getElementById("btnFinish").addEventListener("click", async ()=>{
+    if(countSelected() < MIN){
+      alert("Selecione pelo menos " + MIN + " opções.");
       return;
     }
-    // ✅ vai para o resultado na raiz
+
+    try{
+      await sendEmailReport();
+    }catch(err){
+      console.error("Erro ao enviar email:", err);
+    }
+
     window.location.href = "../resultado.html";
   });
 });
