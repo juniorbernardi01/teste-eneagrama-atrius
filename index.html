@@ -117,16 +117,14 @@
       box-shadow:0 0 0 3px rgba(148,163,184,.25);
     }
 
-    /* ✅ vermelho */
     input.is-invalid{
       border-color:var(--error);
       box-shadow:0 0 0 3px rgba(220,38,38,.15);
       background:#fff7f7;
     }
 
-    /* ✅ verde */
     input.is-valid{
-      border-color:rgba(22,163,74,.60);
+      border-color:rgba(22,163,74,.65);
       box-shadow:0 0 0 3px rgba(22,163,74,.12);
       background:#f7fff9;
     }
@@ -149,7 +147,7 @@
       font-weight:800;
       font-size:16px;
       cursor:pointer;
-      transition:filter .15s, opacity .15s;
+      transition:opacity .15s, background .15s;
     }
 
     .btn:hover{ background:var(--btnHover); }
@@ -157,7 +155,6 @@
     .btn:disabled{
       opacity:.65;
       cursor:not-allowed;
-      filter:grayscale(.1);
     }
 
     .hint{
@@ -232,9 +229,9 @@ Utilize o tempo que julgar necessário.
   <script>
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
-    // ✅ REDIRECIONA APENAS PRA PAGE1 (caminho absoluto)
-    // Se estiver em pasta, altere para: "/pasta/page1.html"
-    const NEXT_PAGE = "/page1.html";
+    // ✅ Redireciona SEM .html conforme você pediu
+    // (GitHub Pages resolve /pages/page1 -> /pages/page1.html)
+    const NEXT_PAGE = "/pages/page1";
 
     const nome = document.getElementById("nome");
     const sobrenome = document.getElementById("sobrenome");
@@ -252,51 +249,51 @@ Utilize o tempo que julgar necessário.
       if(ok === true) el.classList.add("is-valid");
       if(ok === false) el.classList.add("is-invalid");
     }
-    function showErr(el, show){ el.style.display = show ? "block" : "none"; }
 
-    function validarNome(silent=false){
+    function showErr(el, show){
+      el.style.display = show ? "block" : "none";
+    }
+
+    function validarNome(show=false){
       const ok = nome.value.trim().length >= 2;
       setValid(nome, ok);
-      if(!silent) showErr(errNome, !ok);
+      showErr(errNome, show && !ok);
       return ok;
     }
 
-    function validarSobrenome(silent=false){
+    function validarSobrenome(show=false){
       const ok = sobrenome.value.trim().length >= 2;
       setValid(sobrenome, ok);
-      if(!silent) showErr(errSobrenome, !ok);
+      showErr(errSobrenome, show && !ok);
       return ok;
     }
 
-    function validarEmail(silent=false){
+    function validarEmail(show=false){
       const v = email.value.trim();
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const ok = regex.test(v);
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
       setValid(email, ok);
-      if(!silent) showErr(errEmail, !ok);
+      showErr(errEmail, show && !ok);
       return ok;
     }
 
-    function validarTelefone(silent=false){
+    function validarTelefone(show=false){
       const digits = telefone.value.replace(/\D/g,"");
       const ok = digits.length === 10 || digits.length === 11;
       setValid(telefone, ok);
-      if(!silent) showErr(errTelefone, !ok);
+      showErr(errTelefone, show && !ok);
       return ok;
     }
 
-    // ✅ Habilita/desabilita botão conforme validação
-    function updateButtonState(){
+    function updateButton(){
       const okAll =
-        validarNome(true) &&
-        validarSobrenome(true) &&
-        validarEmail(true) &&
-        validarTelefone(true);
+        validarNome(false) &&
+        validarSobrenome(false) &&
+        validarEmail(false) &&
+        validarTelefone(false);
 
       btnStart.disabled = !okAll;
     }
 
-    // ✅ Máscara telefone conforme digita (DDD + número)
     function formatPhoneBR(digits){
       let v = String(digits || "").replace(/\D/g,"");
       if(v.length > 11) v = v.slice(0,11);
@@ -308,34 +305,34 @@ Utilize o tempo que julgar necessário.
       return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
     }
 
+    // validação em tempo real (cores)
+    nome.addEventListener("input", () => { validarNome(false); updateButton(); });
+    sobrenome.addEventListener("input", () => { validarSobrenome(false); updateButton(); });
+    email.addEventListener("input", () => { validarEmail(false); updateButton(); });
+
     telefone.addEventListener("input", () => {
       const d = telefone.value.replace(/\D/g,"");
       telefone.value = formatPhoneBR(d);
-      validarTelefone(true);
-      updateButtonState();
+      validarTelefone(false);
+      updateButton();
     });
 
-    // ✅ valida enquanto digita (nome/sobrenome/email) sem ficar “gritando” erro
-    nome.addEventListener("input", () => { validarNome(true); updateButtonState(); });
-    sobrenome.addEventListener("input", () => { validarSobrenome(true); updateButtonState(); });
-    email.addEventListener("input", () => { validarEmail(true); updateButtonState(); });
+    // mostra mensagem ao sair do campo
+    nome.addEventListener("blur", () => validarNome(true));
+    sobrenome.addEventListener("blur", () => validarSobrenome(true));
+    email.addEventListener("blur", () => validarEmail(true));
+    telefone.addEventListener("blur", () => validarTelefone(true));
 
-    // ✅ mostra erro no blur (quando sai do campo)
-    nome.addEventListener("blur", () => validarNome(false));
-    sobrenome.addEventListener("blur", () => validarSobrenome(false));
-    email.addEventListener("blur", () => validarEmail(false));
-    telefone.addEventListener("blur", () => validarTelefone(false));
-
-    // ✅ submit final
-    document.getElementById("leadForm").addEventListener("submit", (e)=>{
+    document.getElementById("leadForm").addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const okNome = validarNome(false);
-      const okSobrenome = validarSobrenome(false);
-      const okEmail = validarEmail(false);
-      const okTel = validarTelefone(false);
+      const ok =
+        validarNome(true) &&
+        validarSobrenome(true) &&
+        validarEmail(true) &&
+        validarTelefone(true);
 
-      if(!okNome || !okSobrenome || !okEmail || !okTel){
+      if(!ok){
         const firstBad = [nome, sobrenome, email, telefone].find(el => el.classList.contains("is-invalid"));
         if(firstBad) firstBad.focus();
         return;
@@ -351,11 +348,10 @@ Utilize o tempo que julgar necessário.
         createdAt: new Date().toISOString()
       }));
 
-      window.location.href = NEXT_PAGE;
+      window.location.href = NEXT_PAGE; // ✅ /pages/page1
     });
 
-    // inicializa estado do botão
-    updateButtonState();
+    updateButton();
   </script>
 </body>
 </html>
