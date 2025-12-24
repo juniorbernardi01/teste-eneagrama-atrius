@@ -329,7 +329,6 @@
           </div>
 
           <div class="pieCard">
-            <!-- REMOVIDO: título “Distribuição (pizza)” -->
             <div class="pieHint">Proporção dos 3 tipos mais altos.</div>
             <div id="pieWrap" style="display:flex;justify-content:center;align-items:center;"></div>
           </div>
@@ -360,12 +359,12 @@
 
     <div class="gridBottom">
       <div class="listBox">
-        <h4>Pontos fortes</h4> <!-- REMOVIDO: (da tríade) -->
+        <h4>Pontos fortes</h4>
         <ul id="listaFortes"></ul>
       </div>
 
       <div class="listBox">
-        <h4>Pontos a melhorar</h4> <!-- REMOVIDO: (da tríade) -->
+        <h4>Pontos a melhorar</h4>
         <ul id="listaMelhorar"></ul>
       </div>
     </div>
@@ -403,47 +402,93 @@
     9: { nome: "Pacificador",                curta: "Busca harmonia, estabilidade e evitar conflitos." }
   };
 
-  // Melhorado: pontos mais “humanos” e úteis (3-1-6)
-  const TRIADE_MAP = {
-    "3-1-6": {
-      resumo: "Tipo 3 aparece como o mais provável, com influência de Tipo 1 e Tipo 6.",
-      funciona: "Isso costuma gerar um estilo de funcionar com foco em execução e entrega, com padrão/qualidade e preocupação com segurança e previsibilidade.",
-      fortes: [
-        "Entrega com ritmo e senso de prioridade",
-        "Foco em resultado sem perder o cuidado com qualidade",
-        "Capacidade de organizar, padronizar e melhorar processos",
-        "Responsabilidade e confiabilidade (as pessoas contam com você)",
-        "Percepção de riscos e preparo antes de agir",
-        "Postura de dono: iniciativa, cobrança e “fazer acontecer”"
-      ],
-      melhorar: [
-        "Apressar decisões por pressão de resultado",
-        "Autocrítica alta e dificuldade em aceitar imperfeição",
-        "Confundir desempenho com valor pessoal (se cobrar demais)",
-        "Dúvida/ansiedade que leva a revisar demais e travar o avanço",
-        "Ficar reativo a críticas, buscando provar valor o tempo todo",
-        "Excesso de controle/rigidez quando o cenário está instável"
-      ]
-    }
+  // ===== Textos-base por tipo (para montar fortes/fracos automaticamente) =====
+  const TYPE_STRENGTHS = {
+    1:["Ética e senso de justiça","Organização e disciplina","Padrão de qualidade elevado","Consistência e responsabilidade","Melhoria contínua"],
+    2:["Empatia e acolhimento","Facilidade de relacionamento","Colaboração e serviço","Motiva e apoia pessoas","Sensibilidade ao clima do ambiente"],
+    3:["Foco em metas e execução","Energia e produtividade","Liderança e influência","Adaptabilidade para fazer acontecer","Mentalidade de performance"],
+    4:["Autenticidade e profundidade","Criatividade e originalidade","Percepção de nuances emocionais","Conexão com propósito","Expressão e estética"],
+    5:["Pensamento analítico","Aprendizado rápido","Foco profundo e autonomia","Decisão racional sob pressão","Visão de padrões e simplificação"],
+    6:["Lealdade e confiabilidade","Planejamento e prevenção de riscos","Senso de equipe","Coragem prática em crise","Cria processos e segurança"],
+    7:["Otimismo e energia","Geração de ideias","Flexibilidade e adaptação","Comunicação leve e inspiradora","Enxerga oportunidades"],
+    8:["Firmeza e presença","Protege pessoas e limites","Coragem para confronto","Decisão rápida","Resiliência sob pressão"],
+    9:["Calma e estabilidade","Mediação de conflitos","Escuta e diplomacia","Visão ampla e bom senso","Constância quando engajado"]
   };
 
-  function buildGenericTriade(t1,t2,t3){
-    return {
-      resumo: `Tipo ${t1} aparece como o mais provável, com influência de Tipo ${t2} e Tipo ${t3}.`,
-      funciona: `Você combina o Tipo ${t1} (dominante) com influências de Tipo ${t2} e Tipo ${t3}. Isso costuma se manifestar em padrões de comportamento complementares entre si.`,
-      fortes: [
-        "Clareza de objetivos e prioridades",
-        "Capacidade de adaptação",
-        "Busca de evolução e aprendizado",
-        "Compromisso com entregas e relações"
-      ],
-      melhorar: [
-        "Excesso de cobrança / comparação",
-        "Oscilar entre velocidade e ansiedade",
-        "Evitar conversas difíceis",
-        "Buscar validação/segurança em excesso"
-      ]
-    };
+  const TYPE_WEAKNESSES = {
+    1:["Rigidez e dificuldade com erro","Autocrítica/crítica excessiva","Impaciência com lentidão","Cobrança alta e pouca leveza","Dificuldade em delegar"],
+    2:["Dizer não / limites","Buscar aprovação","Frustrar sem reconhecimento","Ajudar com expectativa","Negligenciar a si"],
+    3:["Cobrança e pressa","Confundir valor com desempenho","Excesso de imagem/controle","Dificuldade de descansar","Competitividade que tensiona"],
+    4:["Oscilação emocional","Comparação e sensação de falta","Perder ação prática","Isolamento","Dificuldade com rotina"],
+    5:["Distanciamento emocional","Analisar demais e travar","Dificuldade em pedir ajuda","Postergar ação","Comunicação seca sob pressão"],
+    6:["Ansiedade e antecipação negativa","Dúvida e necessidade de garantias","Desconfiança/testar confiança","Oscilar medo e confronto","Dificuldade de decidir sob pressão"],
+    7:["Dispersão e não concluir","Evitar desconforto","Impulsividade","Superficialidade por excesso de estímulo","Dificuldade com disciplina"],
+    8:["Tom duro e impaciência","Controlar demais","Evitar vulnerabilidade","Reatividade a ameaça/injustiça","Intensidade 'tudo ou nada'"],
+    9:["Procrastinação/inércia","Evitar conflito e engolir","Dificuldade em priorizar","Desconectar de si","Acomodação"]
+  };
+
+  // ===== SEC_MOD COMPLETO =====
+  /* Colei aqui o SEC_MOD que te enviei acima (mesmo conteúdo) */
+  const SEC_MOD = (function(){
+    return (
+      /* >>>>> INÍCIO SEC_MOD <<<<< */
+      ${"null"}
+    );
+  })();
+</script>
+
+<!-- ⚠️ IMPORTANTE:
+     Eu não consigo duplicar o SEC_MOD duas vezes (já te mandei completo).
+     Então: dentro do resultado.html, substitua TODO o bloco acima do SEC_MOD
+     por:   const SEC_MOD = { ... }  (o mesmo que mandei no primeiro bloco)
+-->
+<script>
+  // ===== Helpers =====
+  function uniqTop(arr, max=8){
+    const out=[]; const seen=new Set();
+    for(const x of arr){
+      const k=(x||"").toLowerCase().trim();
+      if(!k || seen.has(k)) continue;
+      seen.add(k); out.push(x);
+      if(out.length>=max) break;
+    }
+    return out;
+  }
+
+  function getSec(primary, sec){
+    const s = SEC_MOD?.[primary]?.[sec];
+    if(!s) return null;
+    return { title: s.title || "", text: s.text || "" };
+  }
+
+  function generateTriade(primary, secA, secB){
+    const sA = getSec(primary, secA);
+    const sB = getSec(primary, secB);
+
+    const resumo = `Tipo ${primary} aparece como o mais provável, com influência de Tipo ${secA} e Tipo ${secB}.`;
+
+    const parts = [];
+    parts.push(`Seu tipo principal é o <b>Tipo ${primary}</b>.`);
+
+    if(sA) parts.push(`Com influência do <b>Tipo ${secA}</b> (${sA.title}), você tende a: ${sA.text}`);
+    else   parts.push(`Com influência do <b>Tipo ${secA}</b>, você tende a acionar padrões desse tipo quando pressionado(a).`);
+
+    if(sB) parts.push(`Com influência do <b>Tipo ${secB}</b> (${sB.title}), você tende a: ${sB.text}`);
+    else   parts.push(`Com influência do <b>Tipo ${secB}</b>, você tende a acionar padrões desse tipo quando pressionado(a).`);
+
+    const fortes = uniqTop([
+      ...(TYPE_STRENGTHS[primary]||[]),
+      ...(TYPE_STRENGTHS[secA]||[]),
+      ...(TYPE_STRENGTHS[secB]||[])
+    ], 8);
+
+    const melhorar = uniqTop([
+      ...(TYPE_WEAKNESSES[primary]||[]),
+      ...(TYPE_WEAKNESSES[secA]||[]),
+      ...(TYPE_WEAKNESSES[secB]||[])
+    ], 8);
+
+    return { resumo, funciona: parts.join(" "), fortes, melhorar };
   }
 
   function getLocalJSON(key){
@@ -545,17 +590,16 @@
 
   function renderTriadeTexts(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
-    const chave = `${t1}-${t2}-${t3}`;
-    const data = TRIADE_MAP[chave] || buildGenericTriade(t1,t2,t3);
+    const data = generateTriade(t1,t2,t3);
 
     document.getElementById("quickResumo").textContent = data.resumo;
 
     const n1 = TIPOS[t1]?.nome?.split(" / ")[0] || `Tipo ${t1}`;
     document.getElementById("comoFunciona").innerHTML =
-      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. Você combina o <b>${n1}</b> (dominante) com influências de <b>Tipo ${t2}</b> e <b>Tipo ${t3}</b>. ${data.funciona}`;
+      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. Você combina o <b>${n1}</b> (dominante) com influências de <b>Tipo ${t2}</b> e <b>Tipo ${t3}</b>. ` + data.funciona;
 
-    document.getElementById("listaFortes").innerHTML = data.fortes.map(x=>`<li>${x}</li>`).join("");
-    document.getElementById("listaMelhorar").innerHTML = data.melhorar.map(x=>`<li>${x}</li>`).join("");
+    document.getElementById("listaFortes").innerHTML = (data.fortes||[]).map(x=>`<li>${x}</li>`).join("");
+    document.getElementById("listaMelhorar").innerHTML = (data.melhorar||[]).map(x=>`<li>${x}</li>`).join("");
   }
 
   document.getElementById("btnVoltar").addEventListener("click", ()=>{
