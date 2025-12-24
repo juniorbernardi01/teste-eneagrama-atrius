@@ -15,6 +15,7 @@
       --shadow:0 10px 30px rgba(15,23,42,.10);
       --btn:#e67e22;
       --btnHover:#d87018;
+      --error:#dc2626;
     }
 
     *{box-sizing:border-box}
@@ -42,20 +43,12 @@
       gap:22px;
     }
 
-    /* LOGO */
-    .logo{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-
     .logo img{
       max-width:220px;
       width:100%;
       height:auto;
     }
 
-    /* CARD */
     .card{
       width:100%;
       background:var(--card);
@@ -91,7 +84,7 @@
       display:block;
       font-size:14px;
       color:#334155;
-      margin:14px 0 8px;
+      margin:14px 0 6px;
     }
 
     input{
@@ -106,6 +99,13 @@
       border-color:#94a3b8;
       box-shadow:0 0 0 3px rgba(148,163,184,.25);
       outline:none;
+    }
+
+    .error{
+      font-size:12px;
+      color:var(--error);
+      margin-top:4px;
+      display:none;
     }
 
     .btn{
@@ -131,17 +131,9 @@
     }
 
     @media (max-width:600px){
-      .card{
-        padding:28px 22px;
-      }
-
-      h1{
-        font-size:26px;
-      }
-
-      .logo img{
-        max-width:180px;
-      }
+      .card{ padding:28px 22px; }
+      h1{ font-size:26px; }
+      .logo img{ max-width:180px; }
     }
   </style>
 </head>
@@ -150,7 +142,7 @@
   <div class="page">
     <div class="container">
 
-      <!-- LOGO DA EMPRESA -->
+      <!-- LOGO -->
       <div class="logo">
         <img src="logo-atrius.png" alt="Logo da Empresa">
       </div>
@@ -166,15 +158,18 @@ Têm como objetivo principal conhecê-lo(a) melhor, por isso responda com muita 
 Utilize o tempo que julgar necessário.
         </div>
 
-        <form id="leadForm">
-          <label for="nome">Nome e sobrenome</label>
-          <input id="nome" required placeholder="Ex: Maria Silva" />
+        <form id="leadForm" novalidate>
+          <label>Nome e sobrenome</label>
+          <input id="nome" placeholder="Ex: Maria Silva">
+          <div class="error" id="errNome">Informe nome e sobrenome.</div>
 
-          <label for="email">Email:</label>
-          <input id="email" type="email" required placeholder="ex: maria@empresa.com" />
+          <label>Email</label>
+          <input id="email" placeholder="ex: maria@empresa.com">
+          <div class="error" id="errEmail">Informe um e-mail válido.</div>
 
-          <label for="telefone">Telefone:</label>
-          <input id="telefone" required placeholder="(51) 99999-9999" />
+          <label>Telefone</label>
+          <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
+          <div class="error" id="errTelefone">Informe um telefone válido.</div>
 
           <button class="btn" type="submit">Iniciar Teste</button>
 
@@ -190,25 +185,52 @@ Utilize o tempo que julgar necessário.
   <script>
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
+    const nomeEl = document.getElementById("nome");
+    const emailEl = document.getElementById("email");
+    const telEl   = document.getElementById("telefone");
+
+    const errNome = document.getElementById("errNome");
+    const errEmail = document.getElementById("errEmail");
+    const errTelefone = document.getElementById("errTelefone");
+
+    // ===== MÁSCARA TELEFONE =====
+    telEl.addEventListener("input", () => {
+      let v = telEl.value.replace(/\D/g, "");
+      if (v.length > 11) v = v.slice(0,11);
+
+      if (v.length >= 11) {
+        telEl.value = v.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+      } else if (v.length >= 7) {
+        telEl.value = v.replace(/(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
+      } else if (v.length >= 3) {
+        telEl.value = v.replace(/(\d{2})(\d+)/, "($1) $2");
+      } else {
+        telEl.value = v;
+      }
+    });
+
+    function validarNome() {
+      const ok = nomeEl.value.trim().split(" ").length >= 2;
+      errNome.style.display = ok ? "none" : "block";
+      return ok;
+    }
+
+    function validarEmail() {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const ok = regex.test(emailEl.value.trim());
+      errEmail.style.display = ok ? "none" : "block";
+      return ok;
+    }
+
+    function validarTelefone() {
+      const nums = telEl.value.replace(/\D/g, "");
+      const ok = nums.length === 10 || nums.length === 11;
+      errTelefone.style.display = ok ? "none" : "block";
+      return ok;
+    }
+
     document.getElementById("leadForm").addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const telefone = document.getElementById("telefone").value.trim();
-
-      if (!nome || nome.split(" ").length < 2) {
-        alert("Informe nome e sobrenome.");
-        return;
-      }
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        nome, email, telefone,
-        createdAt: new Date().toISOString()
-      }));
-
-      window.location.href = "teste.html";
-    });
-  </script>
-</body>
-</html>
+      const okNome = validarNome();
+      const okEmai
