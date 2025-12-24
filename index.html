@@ -1,137 +1,179 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Teste de Competências Emocionais | Atrius</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teste - Competências Emocionais</title>
 
-    <!-- CSS principal -->
-    <link rel="stylesheet" href="styles.css">
+  <style>
+    :root{
+      --bg:#f3f5f8;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --border:#e5e7eb;
+      --shadow:0 10px 30px rgba(15,23,42,.10);
+      --btn:#e67e22;
+      --btnHover:#d87018;
+      --radius:14px;
+    }
 
-    <!-- Script principal -->
-    <script src="script.js"></script>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-    <style>
-        body {
-            background: #f2f4f8;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    .page{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 14px;
+    }
 
-        .container {
-            max-width: 700px;
-            margin: 60px auto;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 14px;
-            box-shadow: 0px 6px 18px rgba(0,0,0,0.15);
-            text-align: center;
-        }
+    .card{
+      width:min(920px, 100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:42px 42px 34px;
+    }
 
-        h1 {
-            color: #0F2B5B;
-            margin-bottom: 10px;
-        }
+    h1{
+      margin:0;
+      text-align:center;
+      font-size:34px;
+      letter-spacing:.2px;
+      color:#0b2a5b;
+    }
 
-        p {
-            color: #555;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
+    .subtitle{
+      margin:14px auto 28px;
+      max-width:720px;
+      text-align:center;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
+      white-space:pre-line;
+    }
 
-        .form-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
+    form{
+      margin-top:6px;
+      max-width:740px;
+      margin-left:auto;
+      margin-right:auto;
+    }
 
-        label {
-            font-size: 14px;
-            color: #333;
-        }
+    label{
+      display:block;
+      font-size:14px;
+      color:#334155;
+      margin:14px 0 8px;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-        }
+    input{
+      width:100%;
+      padding:14px 14px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      outline:none;
+      font-size:15px;
+      background:#fff;
+    }
 
-        .start-btn {
-            margin-top: 30px;
-            width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            background: #E57E25;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+    input:focus{
+      border-color:#9aa6b2;
+      box-shadow:0 0 0 3px rgba(148,163,184,.25);
+    }
 
-        .start-btn:hover {
-            background: #cf6d1f;
-        }
-    </style>
+    .btn{
+      margin-top:26px;
+      width:100%;
+      padding:14px 16px;
+      border:0;
+      border-radius:12px;
+      background:var(--btn);
+      color:#fff;
+      font-weight:800;
+      font-size:16px;
+      cursor:pointer;
+    }
+
+    .btn:hover{ background:var(--btnHover); }
+
+    .hint{
+      margin-top:12px;
+      text-align:center;
+      font-size:12px;
+      color:#64748b;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="page">
+    <div class="card">
+      <h1>Teste - Competências Emocionais</h1>
 
-    <div class="container">
-        <h1>Teste de Competências Emocionais</h1>
-        <p>
-            Este formulário faz parte de um processo de autoconhecimento.<br>
-            Não existem respostas certas ou erradas.<br>
-            Responda com sinceridade.
-        </p>
+      <div class="subtitle">
+Estas questões fazem parte da entrevista e não têm respostas certas ou erradas
+Têm como objetivo principal conhecê-lo(a) melhor, por isso responda com muita sinceridade!
 
-        <!-- FORMULÁRIO DE IDENTIFICAÇÃO -->
-        <div class="form-group">
-            <label>Nome</label>
-            <input type="text" id="nome">
+Utilize o tempo que julgar necessário.
+      </div>
+
+      <form id="leadForm" autocomplete="on">
+        <label for="nome">Nome e sobrenome</label>
+        <input id="nome" name="nome" required placeholder="Ex: Maria Silva" />
+
+        <label for="email">Email:</label>
+        <input id="email" name="email" type="email" required placeholder="ex: maria@empresa.com" />
+
+        <label for="telefone">Telefone:</label>
+        <input id="telefone" name="telefone" required placeholder="(51) 99999-9999" />
+
+        <button class="btn" type="submit">Iniciar Teste</button>
+
+        <div class="hint">
+          Ao continuar, seus dados serão utilizados junto do resultado final.
         </div>
-
-        <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="email">
-        </div>
-
-        <div class="form-group">
-            <label>Empresa</label>
-            <input type="text" id="empresa">
-        </div>
-
-        <div class="form-group">
-            <label>Telefone</label>
-            <input type="text" id="telefone">
-        </div>
-
-        <div class="form-group">
-            <label>Data de nascimento</label>
-            <input type="date" id="nascimento">
-        </div>
-
-        <button class="start-btn" onclick="iniciar()">
-            Iniciar Teste
-        </button>
+      </form>
     </div>
+  </div>
 
-    <script>
-        function iniciar() {
-            const usuario = {
-                nome: document.getElementById("nome").value,
-                email: document.getElementById("email").value,
-                empresa: document.getElementById("empresa").value,
-                telefone: document.getElementById("telefone").value,
-                nascimento: document.getElementById("nascimento").value
-            };
+  <script>
+    // Mantém compatibilidade com o fluxo anterior (lead -> teste.html)
+    const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
-            localStorage.setItem("usuario", JSON.stringify(usuario));
-            localStorage.removeItem("respostas");
+    document.getElementById("leadForm").addEventListener("submit", (e) => {
+      e.preventDefault();
 
-            window.location.href = "pages/page1.html";
-        }
-    </script>
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
 
+      // validação simples extra
+      if (!nome || nome.split(" ").length < 2) {
+        alert("Por favor, informe seu nome e sobrenome.");
+        return;
+      }
+
+      const data = {
+        nome,
+        email,
+        telefone,
+        createdAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+      // Ajuste se sua próxima página tiver outro nome/rota
+      window.location.href = "teste.html";
+    });
+  </script>
 </body>
 </html>
