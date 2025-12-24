@@ -27,28 +27,41 @@
       color:var(--text);
     }
 
+    /* ✅ Menos espaço no topo + responsivo */
     .page{
       min-height:100vh;
       display:flex;
-      align-items:center;
+      align-items:flex-start;         /* antes center */
       justify-content:center;
-      padding:40px 16px;
+      padding:16px 16px 40px;         /* topo menor */
     }
 
+    /* ✅ Controla o espaço entre logo e card */
     .container{
       width:min(920px, 100%);
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:22px;
+      gap:10px;                       /* antes 22px */
+      padding-top:4px;                /* ajuste fino */
+    }
+
+    /* ✅ Logo centralizado e responsivo */
+    .logo{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin-top:0;                   /* pode subir mais se quiser */
     }
 
     .logo img{
       max-width:220px;
       width:100%;
       height:auto;
+      display:block;
     }
 
+    /* CARD */
     .card{
       width:100%;
       background:var(--card);
@@ -130,10 +143,33 @@
       color:#64748b;
     }
 
+    /* ✅ MOBILE */
     @media (max-width:600px){
-      .card{ padding:28px 22px; }
-      h1{ font-size:26px; }
-      .logo img{ max-width:180px; }
+      .page{
+        padding:12px 12px 28px;       /* topo ainda menor no mobile */
+      }
+
+      .container{
+        gap:8px;
+        padding-top:2px;
+      }
+
+      .card{
+        padding:26px 18px;
+      }
+
+      h1{
+        font-size:24px;
+      }
+
+      .logo img{
+        max-width:160px;
+      }
+
+      .subtitle{
+        font-size:14px;
+        margin-bottom:18px;
+      }
     }
   </style>
 </head>
@@ -142,12 +178,11 @@
   <div class="page">
     <div class="container">
 
-      <!-- LOGO -->
+      <!-- LOGO (troque o src pelo seu caminho correto) -->
       <div class="logo">
         <img src="logo-atrius.png" alt="Logo da Empresa">
       </div>
 
-      <!-- CARD -->
       <div class="card">
         <h1>Teste - Competências Emocionais</h1>
 
@@ -159,15 +194,15 @@ Utilize o tempo que julgar necessário.
         </div>
 
         <form id="leadForm" novalidate>
-          <label>Nome e sobrenome</label>
+          <label for="nome">Nome e sobrenome</label>
           <input id="nome" placeholder="Ex: Maria Silva">
           <div class="error" id="errNome">Informe nome e sobrenome.</div>
 
-          <label>Email</label>
+          <label for="email">Email</label>
           <input id="email" placeholder="ex: maria@empresa.com">
           <div class="error" id="errEmail">Informe um e-mail válido.</div>
 
-          <label>Telefone</label>
+          <label for="telefone">Telefone</label>
           <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
           <div class="error" id="errTelefone">Informe um telefone válido.</div>
 
@@ -193,7 +228,7 @@ Utilize o tempo que julgar necessário.
     const errEmail = document.getElementById("errEmail");
     const errTelefone = document.getElementById("errTelefone");
 
-    // ===== MÁSCARA TELEFONE =====
+    // ===== MÁSCARA TELEFONE (BR) =====
     telEl.addEventListener("input", () => {
       let v = telEl.value.replace(/\D/g, "");
       if (v.length > 11) v = v.slice(0,11);
@@ -233,4 +268,20 @@ Utilize o tempo que julgar necessário.
       e.preventDefault();
 
       const okNome = validarNome();
-      const okEmai
+      const okEmail = validarEmail();
+      const okTel = validarTelefone();
+
+      if (!okNome || !okEmail || !okTel) return;
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        nome: nomeEl.value.trim(),
+        email: emailEl.value.trim(),
+        telefone: telEl.value.trim(),
+        createdAt: new Date().toISOString()
+      }));
+
+      window.location.href = "teste.html";
+    });
+  </script>
+</body>
+</html>
