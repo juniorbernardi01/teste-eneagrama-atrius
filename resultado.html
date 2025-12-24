@@ -3,381 +3,501 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Resultado - Eneagrama</title>
+  <title>Quem sou eu — Resultado</title>
 
   <style>
     :root{
       --bg:#f3f5f8;
       --card:#ffffff;
       --text:#0f172a;
-      --muted:#475569;
+      --muted:#64748b;
       --border:#e5e7eb;
-      --shadow:0 10px 30px rgba(15,23,42,.10);
+      --shadow:0 12px 34px rgba(15,23,42,.10);
       --accent:#f07a00;
-      --accentHover:#d96f00;
-      --error:#dc2626;
-      --ok:#16a34a;
+      --accent2:#0b2a5b;
+      --soft:#fff6ee;
+      --softBorder:rgba(240,122,0,.35);
     }
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box }
     body{
       margin:0;
       font-family: Arial, Helvetica, sans-serif;
       background:var(--bg);
       color:var(--text);
     }
-    .page{
-      min-height:100vh;
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:18px 16px 40px;
+    }
+
+    .header{
       display:flex;
       align-items:flex-start;
-      justify-content:center;
-      padding:16px 16px 40px;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:14px;
     }
-    .container{
-      width:min(980px, 100%);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
+    .title h1{
+      margin:0;
+      font-size:44px;
+      letter-spacing:-.5px;
     }
-    .logo img{
-      max-width:220px;
-      width:100%;
-      height:auto;
-      display:block;
+    .title p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
     }
+
+    .gridTop{
+      display:grid;
+      grid-template-columns: 1.5fr .9fr;
+      gap:16px;
+      align-items:start;
+    }
+
     .card{
-      width:100%;
       background:var(--card);
       border:1px solid var(--border);
       border-radius:18px;
       box-shadow:var(--shadow);
-      padding:22px;
+      padding:18px;
     }
-    h1{
-      margin:0 0 6px;
-      text-align:center;
-      font-size:28px;
-      color:#0b2a5b;
+
+    .card h2{
+      margin:0 0 8px;
+      font-size:18px;
     }
-    .sub{
-      margin:0 0 16px;
-      text-align:center;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.45;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
+
+    .topList{
+      display:flex;
+      flex-direction:column;
       gap:12px;
       margin-top:12px;
     }
-    @media (max-width:780px){
-      .grid{grid-template-columns:1fr;}
-      .logo img{max-width:160px;}
-      .card{padding:18px;}
-    }
-    .box{
+
+    .topItem{
       border:1px solid var(--border);
       border-radius:14px;
       padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
       background:#fff;
     }
-    .box h3{
-      margin:0 0 10px;
+
+    .topItem .left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .rankLine{
+      font-weight:900;
       font-size:16px;
       color:#0b2a5b;
     }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:14px;
-    }
-    th, td{
-      border:1px solid var(--border);
-      padding:10px;
-      text-align:center;
-    }
-    th{ background:#f8fafc; }
-    .top3{
-      font-size:14px;
+
+    .typeName{
+      font-weight:800;
+      font-size:13px;
       color:#0f172a;
-      margin-top:6px;
     }
-    .actions{
+
+    .desc{
+      font-size:13px;
+      color:#475569;
+      line-height:1.35;
+      max-width:520px;
+    }
+
+    .score{
+      font-weight:900;
+      font-size:22px;
+      color:#0f172a;
+      min-width:50px;
+      text-align:right;
+    }
+
+    .actionsCard{
+      background:var(--soft);
+      border:1px solid var(--softBorder);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .actionsCard h2{
+      margin:0 0 6px;
+      font-size:18px;
+    }
+
+    .actionsCard p{
+      margin:0 0 12px;
+      color:#475569;
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .btnRow{
       display:flex;
       gap:10px;
+      margin:10px 0 14px;
       flex-wrap:wrap;
-      justify-content:center;
-      margin-top:14px;
     }
+
     .btn{
-      border:0;
-      border-radius:12px;
-      padding:12px 16px;
+      padding:12px 14px;
+      border-radius:14px;
       font-weight:900;
+      border:0;
       cursor:pointer;
+      font-size:13px;
+    }
+    .btnOutline{
+      background:#fff;
+      border:1px solid var(--border);
+      color:#0f172a;
+    }
+    .btnPrimary{
       background:var(--accent);
       color:#fff;
+      flex:1;
+      min-width:160px;
     }
-    .btn:hover{ background:var(--accentHover); }
-    .btn.secondary{
-      background:#fff;
+    .btnPrimary:hover{ filter:brightness(.98) }
+
+    .divider{
+      height:1px;
+      background:rgba(15,23,42,.12);
+      margin:14px 0;
+    }
+
+    .smallTitle{
+      font-weight:900;
+      margin:0 0 6px;
       color:#0f172a;
-      border:1px solid var(--border);
     }
-    .msg{
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius:12px;
+
+    .quick{
       font-size:13px;
+      color:#334155;
+      line-height:1.35;
+    }
+
+    /* section below */
+    .section{
+      margin-top:16px;
+    }
+    .section h3{
+      margin:0 0 8px;
+      font-size:20px;
+      letter-spacing:-.2px;
+    }
+    .section p{
+      margin:0;
+      color:#334155;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .gridBottom{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:14px;
+    }
+
+    .listBox{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .listBox h4{
+      margin:0 0 10px;
+      font-size:16px;
+      font-weight:900;
+      color:#0f172a;
+    }
+    ul{
+      margin:0;
+      padding-left:18px;
+      color:#0f172a;
+      font-size:14px;
+      line-height:1.6;
+    }
+    li{ margin:4px 0; }
+
+    /* errors */
+    .error{
       display:none;
-    }
-    .msg.err{ display:block; background:#fff7f7; border:1px solid rgba(220,38,38,.25); color:var(--error); }
-    .msg.ok{ display:block; background:#f7fff9; border:1px solid rgba(22,163,74,.25); color:var(--ok); }
-    .small{
-      font-size:12px;
-      color:#64748b;
-      margin-top:10px;
-      text-align:center;
-    }
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12px;
-      background:#0b1220;
-      color:#e5e7eb;
-      border-radius:12px;
+      background:#fff7f7;
+      border:1px solid rgba(220,38,38,.25);
+      color:#b91c1c;
+      border-radius:14px;
       padding:12px;
-      overflow:auto;
-      display:none;
       margin-top:12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    /* responsive */
+    @media (max-width: 900px){
+      .title h1{ font-size:36px; }
+      .gridTop{ grid-template-columns: 1fr; }
+      .score{ font-size:20px; }
+    }
+    @media (max-width: 520px){
+      .title h1{ font-size:30px; }
+      .topItem{ padding:12px; }
+      .desc{ font-size:12.5px; }
+      .gridBottom{ grid-template-columns:1fr; }
     }
   </style>
 </head>
 
 <body>
-  <div class="page">
-    <div class="container">
-
-      <div class="logo">
-        <img src="logo-atrius.png" alt="Atrius">
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>Quem sou eu</h1>
+        <p>Abaixo está o seu resultado com base nas respostas do formulário.</p>
       </div>
+    </div>
 
+    <div class="gridTop">
+      <!-- LEFT: TOP 3 -->
       <div class="card">
-        <h1>Resultado - Eneagrama</h1>
-        <p class="sub">Abaixo está o resumo do seu resultado. (Top 3 e pontuação completa 1 a 9)</p>
+        <h2>Sua tríade principal (Top 3)</h2>
+        <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
 
-        <div id="msg" class="msg err" style="display:none;"></div>
+        <div id="topList" class="topList"></div>
 
-        <div class="grid">
-          <div class="box">
-            <h3>Dados do participante</h3>
-            <div id="dados" style="font-size:14px;color:#0f172a;"></div>
-          </div>
-
-          <div class="box">
-            <h3>Símbolo do Eneagrama (9 no topo)</h3>
-            <div id="eneagrama" style="text-align:center;"></div>
-          </div>
-        </div>
-
-        <div class="box" style="margin-top:12px;">
-          <h3>Top 3</h3>
-          <div id="top3" class="top3"></div>
-        </div>
-
-        <div class="box" style="margin-top:12px;">
-          <h3>Pontuação completa (1 a 9)</h3>
-          <div id="tabela"></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn secondary" id="btnRefazer">Refazer teste</button>
-          <button class="btn" id="btnDebug">Mostrar debug</button>
-        </div>
-
-        <div class="small">Atrius • Teste de Competências Emocionais</div>
-        <pre id="debug" class="mono"></pre>
+        <div id="errBox" class="error"></div>
       </div>
 
+      <!-- RIGHT: ACTIONS + QUICK SUMMARY -->
+      <div class="actionsCard">
+        <h2>Ações</h2>
+        <p>Você pode voltar, ou refazer o teste do zero.</p>
+
+        <div class="btnRow">
+          <button class="btn btnOutline" id="btnVoltar">Voltar</button>
+          <button class="btn btnPrimary" id="btnRefazer">Refazer teste</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="smallTitle">Resumo rápido</div>
+        <div class="quick" id="quickResumo">Carregando…</div>
+      </div>
+    </div>
+
+    <!-- How you function -->
+    <div class="section">
+      <h3>Como você tende a funcionar</h3>
+      <p id="comoFunciona">Carregando…</p>
+    </div>
+
+    <!-- Strengths / Improvements -->
+    <div class="gridBottom">
+      <div class="listBox">
+        <h4>Pontos fortes (da tríade)</h4>
+        <ul id="listaFortes"></ul>
+      </div>
+
+      <div class="listBox">
+        <h4>Pontos a melhorar (da tríade)</h4>
+        <ul id="listaMelhorar"></ul>
+      </div>
     </div>
   </div>
 
 <script>
-  // ===== Keys =====
-  const LEAD_KEY = "atrius_eneagrama_lead_v1";
-  const RESPOSTAS_KEY = "respostas";
+  // ====== CONFIG / KEYS ======
+  const RESPOSTAS_KEY = "respostas";                 // onde você já salva tudo
+  const LEAD_KEY = "atrius_eneagrama_lead_v1";       // cadastro do index
+  const MATRIZ_URL = "/data/matriz.json";            // pela sua estrutura
 
-  // ===== Helpers UI =====
-  function setError(msg){
-    const el = document.getElementById("msg");
+  // ====== TEXTOS DOS TIPOS ======
+  const TIPOS = {
+    1: { nome: "Perfeccionista / Reformador",  curta: "Busca fazer o correto, melhorar padrões e evitar erros." },
+    2: { nome: "Prestativo / Cuidador",        curta: "Busca ajudar, ser necessário e criar conexão com pessoas." },
+    3: { nome: "Realizador",                  curta: "Busca alcançar resultados, ser reconhecido e vencer desafios." },
+    4: { nome: "Individualista",              curta: "Busca autenticidade, profundidade e identidade própria." },
+    5: { nome: "Investigador",                curta: "Busca compreender, dominar assuntos e preservar energia." },
+    6: { nome: "Leal",                         curta: "Busca segurança, previsibilidade e confiança." },
+    7: { nome: "Entusiasta",                  curta: "Busca opções, liberdade, experiências e leveza." },
+    8: { nome: "Desafiador",                  curta: "Busca autonomia, força e proteção do seu território." },
+    9: { nome: "Pacificador",                 curta: "Busca harmonia, estabilidade e evitar conflitos." }
+  };
+
+  // ====== LISTAS POR TRÍADE (top3 string "3-1-6") ======
+  // (você pode ir ajustando depois, mas já fica bem “profissional”)
+  const TRIADE_MAP = {
+    "3-1-6": {
+      resumo: "Tipo 3 aparece como o mais provável, com influência de Tipo 1 e Tipo 6.",
+      funciona: "Sua tríade principal é 3-1-6. Você combina o Realizador (dominante) com influências de Tipo 1 e Tipo 6. Isso costuma gerar um estilo de funcionar com foco em resultado e execução, apoiado por padrão e correção e segurança e lealdade.",
+      fortes: [
+        "Foco, velocidade e entrega",
+        "Orientação a metas e performance",
+        "Qualidade, capricho e responsabilidade",
+        "Consistência e melhoria contínua",
+        "Confiabilidade e comprometimento com o time",
+        "Antecipação de riscos e responsabilidade"
+      ],
+      melhorar: [
+        "Pressa e ansiedade por resultado",
+        "Confundir valor pessoal com desempenho",
+        "Autocrítica e rigidez",
+        "Dificuldade em aceitar erro/imperfeição",
+        "Ansiedade e dúvida excessiva",
+        "Necessidade de garantias o tempo todo"
+      ]
+    }
+  };
+
+  // fallback genérico (se der uma tríade diferente)
+  function buildGenericTriade(top3){
+    const t1 = Number(top3[0]?.t);
+    const t2 = Number(top3[1]?.t);
+    const t3 = Number(top3[2]?.t);
+    const chave = `${t1}-${t2}-${t3}`;
+
+    return {
+      resumo: `Tipo ${t1} aparece como o mais provável, com influência de Tipo ${t2} e Tipo ${t3}.`,
+      funciona: `Sua tríade principal é ${chave}. Você combina o Tipo ${t1} (dominante) com influências de Tipo ${t2} e Tipo ${t3}.`,
+      fortes: [
+        "Clareza sobre objetivos",
+        "Capacidade de adaptação em cenários diferentes",
+        "Busca de evolução e aprendizado",
+        "Compromisso com entregas e relações"
+      ],
+      melhorar: [
+        "Excesso de cobrança e comparação",
+        "Oscilar entre velocidade e ansiedade",
+        "Tendência a evitar desconfortos importantes",
+        "Necessidade de validação/segurança em excesso"
+      ]
+    };
+  }
+
+  // ====== HELPERS ======
+  function getLocalJSON(key){
+    try{ return JSON.parse(localStorage.getItem(key) || "null"); }
+    catch{ return null; }
+  }
+
+  function showError(msg){
+    const el = document.getElementById("errBox");
     el.style.display = "block";
-    el.className = "msg err";
     el.textContent = msg;
   }
-  function clearError(){
-    const el = document.getElementById("msg");
-    el.style.display = "none";
-    el.textContent = "";
+
+  async function loadMatriz(){
+    const res = await fetch(MATRIZ_URL, { cache: "no-store" });
+    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json. Verifique se o arquivo existe na pasta /data.");
+    return res.json();
   }
 
-  function eneagramaSvg(){
-    return `
-      <svg width="240" height="240" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Símbolo do Eneagrama">
-        <defs>
-          <style>
-            .c{fill:none;stroke:#111827;stroke-width:3}
-            .l{fill:none;stroke:#111827;stroke-width:2}
-            .n{font: 700 14px Arial, sans-serif; fill:#111827}
-          </style>
-        </defs>
-
-        <circle class="c" cx="130" cy="130" r="102"/>
-        <!-- triângulo 9-3-6 (9 topo) -->
-        <path class="l" d="M130 28 L209 175 L51 175 Z"/>
-        <!-- estrela simples -->
-        <path class="l" d="M206 88 L157 220 L245 142 L15 142 L103 220 L54 88 L206 88"/>
-
-        <!-- números com 9 no topo -->
-        <text class="n" x="124" y="20">9</text>
-        <text class="n" x="187" y="40">1</text>
-        <text class="n" x="227" y="95">2</text>
-        <text class="n" x="220" y="165">3</text>
-        <text class="n" x="165" y="232">4</text>
-        <text class="n" x="124" y="248">5</text>
-        <text class="n" x="78"  y="232">6</text>
-        <text class="n" x="24"  y="165">7</text>
-        <text class="n" x="18"  y="95">8</text>
-      </svg>
-    `;
-  }
-
-  function getLead(){
-    const raw = localStorage.getItem(LEAD_KEY);
-    if(!raw) return null;
-    try{
-      const lead = JSON.parse(raw);
-      const nomeCompleto =
-        lead.nome_completo ||
-        `${lead.nome || ""} ${lead.sobrenome || ""}`.trim();
-
-      return {
-        ...lead,
-        nome_completo: (nomeCompleto || "Participante").trim(),
-        email: (lead.email || "").trim(),
-        telefone: (lead.telefone || "").trim()
-      };
-    }catch{
-      return null;
-    }
-  }
-
-  function getRespostas(){
-    const raw = localStorage.getItem(RESPOSTAS_KEY);
-    if(!raw) return [];
-    try{ return JSON.parse(raw) || []; }
-    catch{ return []; }
-  }
-
-  function buildTabela(score){
-    let rows = "";
-    for(let i=1;i<=9;i++){
-      rows += `
-        <tr>
-          <td style="font-weight:900;">${i}</td>
-          <td>${score[i] ?? 0}</td>
-        </tr>
-      `;
-    }
-    return `
-      <table>
-        <thead><tr><th>Tipo</th><th>Quantidade</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `;
-  }
-
-  function computeTop3(score){
-    const arr = [];
-    for(let i=1;i<=9;i++) arr.push({tipo:i, qtd: Number(score[i]||0)});
-    arr.sort((a,b)=>b.qtd-a.qtd);
-    return arr.slice(0,3);
-  }
-
-  async function calcularScore(){
-    const respostas = getRespostas();
-    if(respostas.length === 0){
-      throw new Error("Não encontrei respostas salvas. Volte e faça o teste novamente.");
-    }
-
-    const res = await fetch("/data/matriz.json", { cache:"no-store" });
-    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json (verifique o caminho e o arquivo no GitHub).");
-    const matriz = await res.json();
-
+  function computeScore(respostas, matriz){
     const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-
     respostas.forEach(r=>{
       const key = `${r.pergunta}_${r.alternativa}`;
       const w = matriz[key];
       if(!w) return;
-      for(const t in w){
-        score[t] += w[t];
-      }
+      for(const t in w) score[t] += w[t];
     });
-
-    return { score, respostasCount: respostas.length };
+    return score;
   }
 
-  async function init(){
-    document.getElementById("eneagrama").innerHTML = eneagramaSvg();
+  function top3FromScore(score){
+    return Object.entries(score)
+      .map(([t,v])=>({ t:Number(t), v:Number(v) }))
+      .sort((a,b)=>b.v-a.v)
+      .slice(0,3);
+  }
 
-    const lead = getLead();
-    document.getElementById("dados").innerHTML = `
-      <div><b>Nome:</b> ${lead?.nome_completo || "-"}</div>
-      <div><b>Email:</b> ${lead?.email || "-"}</div>
-      <div><b>Telefone:</b> ${lead?.telefone || "-"}</div>
-    `;
-
-    const debugEl = document.getElementById("debug");
-    const dbg = {
-      lead,
-      respostasCount: getRespostas().length
-    };
-
-    try{
-      clearError();
-      const { score, respostasCount } = await calcularScore();
-      dbg.score = score;
-      dbg.respostasCount = respostasCount;
-
-      const top3 = computeTop3(score);
-      document.getElementById("top3").innerHTML = `
-        <div><b>1º:</b> Tipo ${top3[0].tipo} — ${top3[0].qtd}</div>
-        <div><b>2º:</b> Tipo ${top3[1].tipo} — ${top3[1].qtd}</div>
-        <div><b>3º:</b> Tipo ${top3[2].tipo} — ${top3[2].qtd}</div>
+  function renderTop3(top3){
+    const list = document.getElementById("topList");
+    list.innerHTML = top3.map((it, idx)=>{
+      const tipo = TIPOS[it.t];
+      const rank = (idx+1) + "º — Tipo " + it.t;
+      return `
+        <div class="topItem">
+          <div class="left">
+            <div class="rankLine">${rank}</div>
+            <div class="typeName">${tipo?.nome || ""}</div>
+            <div class="desc">${tipo?.curta || ""}</div>
+          </div>
+          <div class="score">${it.v}</div>
+        </div>
       `;
-
-      document.getElementById("tabela").innerHTML = buildTabela(score);
-    }catch(err){
-      setError(err.message || String(err));
-    }
-
-    debugEl.textContent = JSON.stringify(dbg, null, 2);
+    }).join("");
   }
 
-  // Buttons
+  function renderTriadeTexts(top3){
+    const chave = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+    const data = TRIADE_MAP[chave] || buildGenericTriade(top3);
+
+    document.getElementById("quickResumo").textContent = data.resumo;
+
+    // texto “Como funciona” com negrito nos pontos-chave
+    const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
+    const n1 = TIPOS[t1]?.nome?.split(" / ")[0] || `Tipo ${t1}`;
+    const n2 = `Tipo ${t2}`;
+    const n3 = `Tipo ${t3}`;
+
+    document.getElementById("comoFunciona").innerHTML =
+      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. Você combina o <b>${n1}</b> (dominante) com influências de <b>${n2}</b> e <b>${n3}</b>. ${data.funciona.replace(/^Sua tríade principal.*?\.\s*/,'')}`;
+
+    const ulF = document.getElementById("listaFortes");
+    ulF.innerHTML = data.fortes.map(x=>`<li>${x}</li>`).join("");
+
+    const ulM = document.getElementById("listaMelhorar");
+    ulM.innerHTML = data.melhorar.map(x=>`<li>${x}</li>`).join("");
+  }
+
+  // ====== NAV ======
+  document.getElementById("btnVoltar").addEventListener("click", ()=>{
+    window.location.href = "/pages/page4";
+  });
+
   document.getElementById("btnRefazer").addEventListener("click", ()=>{
-    // opcional: limpar respostas do teste, mantendo lead (se quiser)
-    // localStorage.removeItem("respostas");
+    // se quiser limpar tudo:
+    // localStorage.removeItem(RESPOSTAS_KEY);
+    // localStorage.removeItem(LEAD_KEY);
     window.location.href = "/";
   });
 
-  document.getElementById("btnDebug").addEventListener("click", ()=>{
-    const el = document.getElementById("debug");
-    el.style.display = (el.style.display === "block") ? "none" : "block";
-  });
+  // ====== INIT ======
+  (async function init(){
+    try{
+      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
+      if(!Array.isArray(respostas) || respostas.length === 0){
+        showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
+        document.getElementById("quickResumo").textContent = "Sem dados.";
+        document.getElementById("comoFunciona").textContent = "Sem dados.";
+        return;
+      }
 
-  document.addEventListener("DOMContentLoaded", init);
+      const matriz = await loadMatriz();
+      const score = computeScore(respostas, matriz);
+      const top3 = top3FromScore(score);
+
+      renderTop3(top3);
+      renderTriadeTexts(top3);
+    }catch(err){
+      console.error(err);
+      showError(err?.message || String(err));
+      document.getElementById("quickResumo").textContent = "Erro ao carregar.";
+      document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
+    }
+  })();
 </script>
 </body>
 </html>
