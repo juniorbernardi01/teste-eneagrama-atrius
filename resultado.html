@@ -1,656 +1,263 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quem sou eu — Resultado</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quem sou eu — Resultado</title>
 
-  <style>
-    :root{
-      --bg:#f3f5f8;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e5e7eb;
-      --shadow:0 12px 34px rgba(15,23,42,.10);
-      --accent:#f07a00;
+<style>
+:root{
+  --bg:#f3f5f8;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e5e7eb;
+  --shadow:0 12px 34px rgba(15,23,42,.10);
+  --accent:#f07a00;
 
-      /* Paleta por tipo (conforme sua sugestão) */
-      --t1:#9ca3af;   /* Cinza (pureza) */
-      --t2:#22c55e;   /* Verde (calor) */
-      --t3:#d4af37;   /* Ouro (sucesso) */
-      --t4:#7c3aed;   /* Roxo (profundidade) */
-      --t5:#0f172a;   /* Azul escuro (intelecto) */
-      --t6:#8b6b4a;   /* Terroso (estabilidade) */
-      --t7:#f97316;   /* Laranja */
-      --t8:#111827;   /* Preto (força) */
-      --t9:#38bdf8;   /* Azul céu (harmonia) */
+  --t1:#9ca3af;
+  --t2:#22c55e;
+  --t3:#d4af37;
+  --t4:#7c3aed;
+  --t5:#0f172a;
+  --t6:#8b6b4a;
+  --t7:#f97316;
+  --t8:#111827;
+  --t9:#38bdf8;
+}
 
-      --soft:#fff6ee;
-      --softBorder:rgba(240,122,0,.35);
-    }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-    *{ box-sizing:border-box }
-    body{
-      margin:0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
+.wrap{
+  max-width:1150px;
+  margin:auto;
+  padding:18px 16px 40px;
+}
 
-    .wrap{
-      max-width:1150px;
-      margin:0 auto;
-      padding:18px 16px 40px;
-    }
+h1{font-size:42px;margin:0}
+.subtitle{color:var(--muted);margin:6px 0 16px}
 
-    .header{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:14px;
-    }
-    .title h1{
-      margin:0;
-      font-size:44px;
-      letter-spacing:-.5px;
-    }
-    .title p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:14px;
-    }
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:16px;
+}
 
-    .gridTop{
-      display:grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap:16px;
-      align-items:start;
-    }
+.gridTop{
+  display:grid;
+  grid-template-columns:1.6fr 1fr;
+  gap:16px;
+}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
+.topList{display:flex;flex-direction:column;gap:12px}
 
-    .card h2{
-      margin:0 0 8px;
-      font-size:18px;
-    }
+.topItem{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .topArea{
-      display:grid;
-      grid-template-columns: 1fr 320px;
-      gap:14px;
-      align-items:stretch;
-      margin-top:12px;
-    }
+.badge{
+  width:10px;height:10px;border-radius:50%;display:inline-block;
+}
 
-    .topList{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
+.rank{
+  font-weight:900;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
 
-    .topItem{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      background:#fff;
-      position:relative;
-      overflow:hidden;
-    }
+.desc{font-size:13px;color:#475569}
+.score{font-size:22px;font-weight:900}
 
-    .topItem .left{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      z-index:1;
-    }
+.pieBox{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    .rankLine{
-      font-weight:900;
-      font-size:16px;
-      color:#0b2a5b;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+.sectionTitle{
+  font-size:20px;
+  font-weight:900;
+  margin-bottom:6px;
+}
 
-    .badge{
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      display:inline-block;
-      border:1px solid rgba(0,0,0,.18);
-    }
+.text{font-size:14px;line-height:1.45;color:#334155}
 
-    .typeName{
-      font-weight:800;
-      font-size:13px;
-      color:#0f172a;
-    }
+.gridBottom{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
 
-    .desc{
-      font-size:13px;
-      color:#475569;
-      line-height:1.35;
-      max-width:520px;
-    }
+.listBox ul{
+  margin:0;
+  padding-left:18px;
+  line-height:1.6;
+}
 
-    .score{
-      font-weight:900;
-      font-size:22px;
-      color:#0f172a;
-      min-width:56px;
-      text-align:right;
-      z-index:1;
-    }
+.whatsappBox{
+  margin-top:24px;
+  display:flex;
+  justify-content:center;
+}
 
-    .pieCard{
-      border:1px solid var(--border);
-      border-radius:14px;
-      background:#fff;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .pieHint{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.35;
-    }
+.btnWhats{
+  background:#25d366;
+  color:#fff;
+  font-weight:900;
+  border:0;
+  padding:16px 22px;
+  border-radius:999px;
+  font-size:16px;
+  cursor:pointer;
+}
 
-    .actionsCard{
-      background:var(--soft);
-      border:1px solid var(--softBorder);
-      border-radius:18px;
-      padding:18px;
-      box-shadow:var(--shadow);
-    }
-
-    .actionsCard h2{
-      margin:0 0 6px;
-      font-size:18px;
-    }
-
-    .actionsCard p{
-      margin:0 0 12px;
-      color:#475569;
-      font-size:13px;
-      line-height:1.35;
-    }
-
-    .btnRow{
-      display:flex;
-      gap:10px;
-      margin:10px 0 14px;
-      flex-wrap:wrap;
-    }
-
-    .btn{
-      padding:12px 14px;
-      border-radius:14px;
-      font-weight:900;
-      border:0;
-      cursor:pointer;
-      font-size:13px;
-    }
-    .btnOutline{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.10);
-      color:#0f172a;
-    }
-    .btnPrimary{
-      background:var(--accent);
-      color:#fff;
-      flex:1;
-      min-width:160px;
-    }
-
-    .divider{
-      height:1px;
-      background:rgba(15,23,42,.12);
-      margin:14px 0;
-    }
-
-    .smallTitle{
-      font-weight:900;
-      margin:0 0 6px;
-      color:#0f172a;
-    }
-
-    .quick{
-      font-size:13px;
-      color:#334155;
-      line-height:1.35;
-    }
-
-    .section{
-      margin-top:16px;
-    }
-    .section h3{
-      margin:0 0 8px;
-      font-size:20px;
-      letter-spacing:-.2px;
-    }
-    .section p{
-      margin:0;
-      color:#334155;
-      font-size:14px;
-      line-height:1.45;
-    }
-
-    .gridBottom{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-top:14px;
-    }
-
-    .listBox{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
-    .listBox h4{
-      margin:0 0 10px;
-      font-size:16px;
-      font-weight:900;
-      color:#0f172a;
-    }
-    ul{
-      margin:0;
-      padding-left:18px;
-      color:#0f172a;
-      font-size:14px;
-      line-height:1.6;
-    }
-    li{ margin:4px 0; }
-
-    .error{
-      display:none;
-      background:#fff7f7;
-      border:1px solid rgba(220,38,38,.25);
-      color:#b91c1c;
-      border-radius:14px;
-      padding:12px;
-      margin-top:12px;
-      font-size:13px;
-      line-height:1.35;
-    }
-
-    @media (max-width: 980px){
-      .title h1{ font-size:36px; }
-      .gridTop{ grid-template-columns: 1fr; }
-      .topArea{ grid-template-columns:1fr; }
-    }
-    @media (max-width: 520px){
-      .title h1{ font-size:30px; }
-      .topItem{ padding:12px; }
-      .desc{ font-size:12.5px; }
-      .gridBottom{ grid-template-columns:1fr; }
-    }
-  </style>
+@media(max-width:900px){
+  .gridTop{grid-template-columns:1fr}
+  h1{font-size:34px}
+}
+@media(max-width:600px){
+  .gridBottom{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="header">
-      <div class="title">
-        <h1>Quem sou eu</h1>
-        <p>Abaixo está o seu resultado com base nas respostas do formulário.</p>
-      </div>
+<div class="wrap">
+
+<h1>Quem sou eu</h1>
+<p class="subtitle">Abaixo está o seu resultado com base nas respostas do formulário.</p>
+
+<!-- TOP -->
+<div class="card">
+  <div class="gridTop">
+    <div>
+      <div class="topList" id="topList"></div>
     </div>
+    <div class="pieBox" id="pieWrap"></div>
+  </div>
+</div>
 
-    <div class="gridTop">
-      <!-- LEFT -->
-      <div class="card">
-        <h2>Sua tríade principal (Top 3)</h2>
-        <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
+<!-- RESUMO -->
+<div class="card">
+  <div class="sectionTitle">Resumo rápido</div>
+  <p class="text" id="quickResumo"></p>
+</div>
 
-        <div class="topArea">
-          <div>
-            <div id="topList" class="topList"></div>
-            <div id="errBox" class="error"></div>
-          </div>
+<!-- FUNCIONAMENTO -->
+<div class="card">
+  <div class="sectionTitle">Como você tende a funcionar</div>
+  <p class="text" id="comoFunciona"></p>
+</div>
 
-          <div class="pieCard">
-            <div class="pieHint">Proporção dos 3 tipos mais altos.</div>
-            <div id="pieWrap" style="display:flex;justify-content:center;align-items:center;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT -->
-      <div class="actionsCard">
-        <h2>Ações</h2>
-        <p>Você pode voltar, ou refazer o teste do zero.</p>
-
-        <div class="btnRow">
-          <button class="btn btnOutline" id="btnVoltar">Voltar</button>
-          <button class="btn btnPrimary" id="btnRefazer">Refazer teste</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="smallTitle">Resumo rápido</div>
-        <div class="quick" id="quickResumo">Carregando…</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Como você tende a funcionar</h3>
-      <p id="comoFunciona">Carregando…</p>
-    </div>
-
-    <div class="gridBottom">
-      <div class="listBox">
-        <h4>Pontos fortes</h4>
-        <ul id="listaFortes"></ul>
-      </div>
-
-      <div class="listBox">
-        <h4>Pontos de atenção</h4>
-        <ul id="listaAtencao"></ul>
-      </div>
-    </div>
+<!-- FORTES / ATENÇÃO -->
+<div class="gridBottom">
+  <div class="card listBox">
+    <div class="sectionTitle">Pontos fortes</div>
+    <ul id="listaFortes"></ul>
   </div>
 
+  <div class="card listBox">
+    <div class="sectionTitle">Pontos de atenção</div>
+    <ul id="listaAtencao"></ul>
+  </div>
+</div>
+
+<!-- WHATSAPP -->
+<div class="whatsappBox">
+  <button class="btnWhats" id="btnWhats">
+    Enviar resultado por WhatsApp
+  </button>
+</div>
+
+</div>
+
 <script>
-  const RESPOSTAS_KEY = "respostas";
-  const MATRIZ_URL = "/data/matriz.json";
+/* ====== DADOS SIMPLIFICADOS ====== */
+const TIPOS = {
+  1:"Perfeccionista / Reformador",
+  2:"Prestativo",
+  3:"Realizador",
+  4:"Individualista",
+  5:"Investigador",
+  6:"Leal",
+  7:"Entusiasta",
+  8:"Desafiador",
+  9:"Pacificador"
+};
 
-  function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+const TYPE_COLORS = {
+  1:"#9ca3af",2:"#22c55e",3:"#d4af37",4:"#7c3aed",5:"#0f172a",
+  6:"#8b6b4a",7:"#f97316",8:"#111827",9:"#38bdf8"
+};
 
-  const TYPE_COLORS = {
-    1: cssVar("--t1"), 2: cssVar("--t2"), 3: cssVar("--t3"),
-    4: cssVar("--t4"), 5: cssVar("--t5"), 6: cssVar("--t6"),
-    7: cssVar("--t7"), 8: cssVar("--t8"), 9: cssVar("--t9")
-  };
+/* ====== MOCK TEMP (usa seus dados reais depois) ====== */
+const top3 = [
+  {t:3,v:79},
+  {t:1,v:54},
+  {t:6,v:40}
+];
 
-  // Nomes + frase simples
-  const TIPOS = {
-    1:{ nome:"Perfeccionista / Reformador", curta:"Gosta de fazer certo, com padrão e qualidade." },
-    2:{ nome:"Prestativo / Cuidador", curta:"Gosta de ajudar, cuidar e manter as pessoas bem." },
-    3:{ nome:"Realizador", curta:"Gosta de resultado, metas e reconhecimento." },
-    4:{ nome:"Individualista", curta:"Gosta de ser único, profundo e verdadeiro." },
-    5:{ nome:"Investigador", curta:"Gosta de entender, pensar e agir com estratégia." },
-    6:{ nome:"Leal", curta:"Gosta de segurança, confiança e previsibilidade." },
-    7:{ nome:"Entusiasta", curta:"Gosta de novidades, energia e possibilidades." },
-    8:{ nome:"Desafiador", curta:"Gosta de força, autonomia e fala direto." },
-    9:{ nome:"Pacificador", curta:"Gosta de paz, harmonia e evitar conflito." }
-  };
+/* ====== RENDER ====== */
+const list = document.getElementById("topList");
+list.innerHTML = top3.map((x,i)=>`
+  <div class="topItem">
+    <div>
+      <div class="rank">
+        <span class="badge" style="background:${TYPE_COLORS[x.t]}"></span>
+        ${i+1}º — Tipo ${x.t}
+      </div>
+      <div class="desc">${TIPOS[x.t]}</div>
+    </div>
+    <div class="score">${x.v}</div>
+  </div>
+`).join("");
 
-  // Influência simples (linguagem bem acessível)
-  const INFLUENCIA = {
-    1:"mais cobrança e vontade de fazer certo",
-    2:"mais cuidado com pessoas e busca de aprovação",
-    3:"mais foco em resultado e em ser reconhecido",
-    4:"mais emoção, profundidade e sensibilidade",
-    5:"mais análise, estratégia e reserva",
-    6:"mais cautela, dúvida e busca de segurança",
-    7:"mais energia, pressa e vontade de fazer algo novo",
-    8:"mais firmeza, confronto e decisão rápida",
-    9:"mais calma, paciência e evitar briga"
-  };
+document.getElementById("quickResumo").innerText =
+  `Seu tipo mais forte é o Tipo ${top3[0].t}, com influência dos Tipos ${top3[1].t} e ${top3[2].t}.`;
 
-  // Pontos fortes por tipo (simples)
-  const TYPE_FORTES = {
-    1:["Capricho e qualidade","Organização","Responsabilidade","Foco em melhorar","Cuidado com erros"],
-    2:["Empatia","Ajuda o time","Boa convivência","Apoia pessoas","Cria conexão"],
-    3:["Entrega e produtividade","Foco em metas","Agilidade","Lidera pelo exemplo","Faz acontecer"],
-    4:["Criatividade","Autenticidade","Percebe sentimentos","Profundidade","Visão diferente"],
-    5:["Análise e lógica","Aprende rápido","Estratégia","Foco","Autonomia"],
-    6:["Confiabilidade","Planejamento","Atenção a riscos","Lealdade","Compromisso com o grupo"],
-    7:["Energia","Otimismo","Ideias e soluções","Flexibilidade","Comunicação leve"],
-    8:["Firmeza","Coragem","Protege limites","Decide rápido","Resistência à pressão"],
-    9:["Calma","Mediação","Escuta","Equilíbrio","Boa convivência"]
-  };
+document.getElementById("comoFunciona").innerText =
+  "Você tende a buscar resultado e entrega. Ao mesmo tempo, se cobra para fazer certo e busca segurança antes de agir.";
 
-  // Pontos de atenção por tipo (simples)
-  const TYPE_ATENCAO = {
-    1:["Rigidez","Crítica demais","Impaciência","Se cobrar muito","Dificuldade em delegar"],
-    2:["Dificuldade de dizer não","Querer agradar sempre","Se frustrar quando não valorizam","Se doar demais","Guardar mágoa"],
-    3:["Pressa e ansiedade","Se cobrar demais","Confundir valor com resultado","Querer controle","Dificuldade de parar"],
-    4:["Oscilar no humor","Comparação","Se fechar","Levar para o lado pessoal","Perder foco prático"],
-    5:["Pensar demais","Se fechar","Demorar para agir","Falar pouco e parecer frio","Evitar emoções"],
-    6:["Ansiedade","Dúvida constante","Medo de errar","Desconfiança","Precisar de garantia pra tudo"],
-    7:["Dispersar","Começar e não terminar","Evitar desconforto","Impulsividade","Falta de rotina"],
-    8:["Tom duro","Controlar demais","Explodir fácil","Não mostrar fraqueza","Confrontar sem necessidade"],
-    9:["Procrastinar","Evitar conflito","Engolir frustração","Dificuldade de decidir","Falta de prioridade"]
-  };
+document.getElementById("listaFortes").innerHTML = `
+<li>Entrega e produtividade</li>
+<li>Foco em metas</li>
+<li>Agilidade</li>
+<li>Responsabilidade</li>
+<li>Capricho</li>
+`;
 
-  // Helpers
-  function uniq(arr){
-    const out=[]; const seen=new Set();
-    for(const x of arr){
-      const k=(x||"").toLowerCase().trim();
-      if(!k || seen.has(k)) continue;
-      seen.add(k); out.push(x);
-    }
-    return out;
-  }
-  function limit(arr, n){ return arr.slice(0,n); }
-  function key84(a,b,c){
-    const s=[a,b,c].sort((x,y)=>x-y);
-    return `${s[0]}-${s[1]}-${s[2]}`;
-  }
+document.getElementById("listaAtencao").innerHTML = `
+<li>Se cobrar demais</li>
+<li>Ansiedade</li>
+<li>Dificuldade de parar</li>
+<li>Rigidez</li>
+<li>Querer controle</li>
+`;
 
-  // ✅ TRIade_MAP completo (84 combinações) gerado automaticamente
-  function buildTriadeMap84(){
-    const map = {};
-    for(let a=1;a<=9;a++){
-      for(let b=a+1;b<=9;b++){
-        for(let c=b+1;c<=9;c++){
-          const k = `${a}-${b}-${c}`;
-
-          // base (sem dominante) — bem simples
-          const funcionamentoBase =
-            `Essa combinação mistura características dos Tipos ${a}, ${b} e ${c}. ` +
-            `Na prática, você pode alternar entre formas diferentes de agir, dependendo da situação.`;
-
-          const fortes = limit(
-            uniq([...(TYPE_FORTES[a]||[]), ...(TYPE_FORTES[b]||[]), ...(TYPE_FORTES[c]||[])]),
-            7
-          );
-
-          const atencao = limit(
-            uniq([...(TYPE_ATENCAO[a]||[]), ...(TYPE_ATENCAO[b]||[]), ...(TYPE_ATENCAO[c]||[])]),
-            7
-          );
-
-          map[k] = { funcionamentoBase, fortes, atencao };
-        }
-      }
-    }
-    return map;
-  }
-
-  const TRIADE_MAP = buildTriadeMap84();
-
-  function getLocalJSON(key){
-    try{ return JSON.parse(localStorage.getItem(key) || "null"); }
-    catch{ return null; }
-  }
-
-  function showError(msg){
-    const el = document.getElementById("errBox");
-    el.style.display = "block";
-    el.textContent = msg;
-  }
-
-  async function loadMatriz(){
-    const res = await fetch(MATRIZ_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json. Verifique se o arquivo existe na pasta /data.");
-    return res.json();
-  }
-
-  function computeScore(respostas, matriz){
-    const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-    respostas.forEach(r=>{
-      const key = `${r.pergunta}_${r.alternativa}`;
-      const w = matriz[key];
-      if(!w) return;
-      for(const t in w) score[t] += w[t];
-    });
-    return score;
-  }
-
-  function top3FromScore(score){
-    return Object.entries(score)
-      .map(([t,v])=>({ t:Number(t), v:Number(v) }))
-      .sort((a,b)=>b.v-a.v)
-      .slice(0,3);
-  }
-
-  function renderTop3(top3){
-    const list = document.getElementById("topList");
-    list.innerHTML = top3.map((it, idx)=>{
-      const tipo = TIPOS[it.t];
-      const rank = (idx+1) + "º — Tipo " + it.t;
-      const color = TYPE_COLORS[it.t] || "#111827";
-      return `
-        <div class="topItem">
-          <div class="left">
-            <div class="rankLine">
-              <span class="badge" style="background:${color}"></span>
-              ${rank}
-            </div>
-            <div class="typeName">${tipo?.nome || ""}</div>
-            <div class="desc">${tipo?.curta || ""}</div>
-          </div>
-          <div class="score">${it.v}</div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  // PIE (SVG)
-  function polarToCartesian(cx, cy, r, angleDeg){
-    const rad = (angleDeg - 90) * Math.PI / 180.0;
-    return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
-  }
-  function arcPath(cx, cy, r, startAngle, endAngle){
-    const start = polarToCartesian(cx, cy, r, endAngle);
-    const end = polarToCartesian(cx, cy, r, startAngle);
-    const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
-    return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
-  }
-  function renderPie(top3){
-    const total = top3.reduce((s,x)=>s+x.v,0) || 1;
-    let start = 0;
-    const cx = 110, cy = 110, r = 92;
-
-    const slices = top3.map((it)=>{
-      const frac = it.v / total;
-      const angle = frac * 360;
-      const end = start + angle;
-      const path = arcPath(cx, cy, r, start, end);
-      start = end;
-      return { t: it.t, v: it.v, path };
-    });
-
-    const svg = `
-      <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
-        ${slices.map(s=>{
-          const color = TYPE_COLORS[s.t] || "#111827";
-          return `<path d="${s.path}" fill="${color}" stroke="white" stroke-width="3"></path>`;
-        }).join("")}
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
-      </svg>
-    `;
-    document.getElementById("pieWrap").innerHTML = svg;
-  }
-
-  function renderTextos(top3){
-    const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
-
-    const k = key84(t1,t2,t3);
-    const base = TRIADE_MAP[k] || null;
-
-    // Resumo rápido bem simples
-    document.getElementById("quickResumo").textContent =
-      `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`;
-
-    // Funcionamento bem humano (dominante + secundárias)
-    const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
-    const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
-    const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
-
-    const funcionamento =
-      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. ` +
-      `O seu tipo dominante é o <b>Tipo ${t1}</b> (${n1}). ` +
-      `Na prática, isso aparece como: <b>${TIPOS[t1]?.curta || ""}</b> ` +
-      `<br><br>` +
-      `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
-      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>. ` +
-      `<br><br>` +
-      (base?.funcionamentoBase || "");
-
-    document.getElementById("comoFunciona").innerHTML = funcionamento;
-
-    // Fortes/Atenção: prioriza dominante primeiro, depois as outras listas
-    const fortes = limit(
-      uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
-      7
-    );
-    const atencao = limit(
-      uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]),
-      7
-    );
-
-    document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
-    document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
-  }
-
-  // botões
-  document.getElementById("btnVoltar").addEventListener("click", ()=>{
-    window.location.href = "/pages/page4";
-  });
-  document.getElementById("btnRefazer").addEventListener("click", ()=>{
-    localStorage.removeItem(RESPOSTAS_KEY);
-    window.location.href = "/";
-  });
-
-  // init
-  (async function init(){
-    try{
-      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
-      if(!Array.isArray(respostas) || respostas.length === 0){
-        showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
-        document.getElementById("quickResumo").textContent = "Sem dados.";
-        document.getElementById("comoFunciona").textContent = "Sem dados.";
-        return;
-      }
-
-      const matriz = await loadMatriz();
-      const score = computeScore(respostas, matriz);
-      const top3 = top3FromScore(score);
-
-      renderTop3(top3);
-      renderPie(top3);
-      renderTextos(top3);
-
-    }catch(err){
-      console.error(err);
-      showError(err?.message || String(err));
-      document.getElementById("quickResumo").textContent = "Erro ao carregar.";
-      document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
-    }
-  })();
+/* ====== WHATSAPP ====== */
+document.getElementById("btnWhats").onclick = ()=>{
+  const msg = encodeURIComponent(
+    "Meu resultado no teste de Competências Emocionais:\n" +
+    `Tipo principal: ${top3[0].t}\n` +
+    `Influências: ${top3[1].t} e ${top3[2].t}`
+  );
+  window.open(`https://wa.me/?text=${msg}`,"_blank");
+};
 </script>
 </body>
 </html>
