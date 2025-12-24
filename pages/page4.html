@@ -10,14 +10,13 @@
   --accent:#f07a00;
   --accent-weak: rgba(240,122,0,.12);
   --accent-border: rgba(240,122,0,.45);
-
   --bg:#f6f7fb;
   --card:#ffffff;
   --bd:#e7e7e7;
   --text:#111;
   --muted:#666;
 }
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -78,9 +77,7 @@ h1{margin:0 0 6px;font-size:32px;}
   text-align:right;
 }
 
-.word input{
-  transform:scale(1.2);
-}
+.word input{ transform:scale(1.2); }
 
 /* Card selecionado */
 .word.selected{
@@ -93,66 +90,91 @@ h1{margin:0 0 6px;font-size:32px;}
   display:flex;
   gap:10px;
   margin-top:16px;
+  flex-wrap:wrap;
 }
 .btn{
-  padding:14px;
+  padding:14px 16px;
   border-radius:14px;
   border:0;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
 }
 .btn-primary{
   background:var(--accent);
   color:#fff;
   flex:1;
+  min-width:220px;
 }
 .btn-outline{
   background:#fff;
   border:1px solid var(--bd);
 }
+
+/* avisos */
+.notice{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--bd);
+  background:#fafafa;
+  font-size:13px;
+  color:#333;
+}
+.notice b{color:#111}
 </style>
 </head>
 
 <body>
 <div class="wrap">
-<div class="card">
+  <div class="card">
 
-  <h1>Quem sou eu</h1>
-  <p class="muted">Marque apenas as palavras ou expressões que realmente combinam com você ao longo da vida.</p>
+    <h1>Quem sou eu</h1>
+    <p class="muted">Marque apenas as palavras ou expressões que realmente combinam com você ao longo da vida.</p>
 
-  <div class="step">
-    <b>Passo 4 de 4 — Identificação pessoal</b>
-    <div class="bar"><div class="fill"></div></div>
-  </div>
-
-  <p class="muted">
-    <b>Instruções:</b> Selecione as palavras que mais se parecem com você.
-    Para continuar, selecione pelo menos <b>6 opções</b>.
-  </p>
-
-  <form id="formP4">
-    <div class="grid" id="gridWords"></div>
-
-    <div class="actions">
-      <button type="button" class="btn btn-outline" onclick="history.back()">Voltar</button>
-      <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
+    <div class="step">
+      <b>Passo 4 de 4 — Identificação pessoal</b>
+      <div class="bar"><div class="fill"></div></div>
     </div>
-  </form>
 
-</div>
+    <p class="muted">
+      <b>Instruções:</b> Selecione as palavras que mais se parecem com você.
+      Para continuar, selecione pelo menos <b>6 opções</b>.
+    </p>
+
+    <div id="msg" class="notice" style="display:none"></div>
+
+    <form id="formP4">
+      <div class="grid" id="gridWords"></div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-outline" id="btnBack">Voltar</button>
+        <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
+      </div>
+    </form>
+
+  </div>
 </div>
 
 <script>
 const KEY="respostas";
 const MIN=6;
 
+// ✅ Lista maior (o dobro, como você pediu)
+// Você pode editar/ajustar livremente depois.
 const palavras = [
-"Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
-"Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
-"Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
-"Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
-"Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)",
-"Exigente consigo mesmo(a)","Prestativo(a)","Ambicioso(a)","Intuitivo(a)","Discreto(a)","Visionário(a)"
+  "Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
+  "Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
+  "Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
+  "Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
+  "Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)",
+  "Exigente consigo mesmo(a)","Prestativo(a)","Ambicioso(a)","Intuitivo(a)","Discreto(a)","Visionário(a)",
+
+  "Carismático(a)","Prudente","Sociável","Contido(a)","Aventureiro(a)","Confiável",
+  "Perfeccionista","Pragmático(a)","Acolhedor(a)","Decidido(a)","Resiliente","Estrategista",
+  "Detalhista","Objetivo(a)","Inspirador(a)","Empático(a)","Realista","Inconformado(a)",
+  "Calmo(a)","Corajoso(a)","Confiante","Leve","Inovador(a)","Paciente",
+  "Forte","Persistente","Idealista","Reservado(a)","Espontâneo(a)","Líder",
+  "Mediador(a)","Intenso(a)","Disciplinado(a)","Comunicativo(a)","Proativo(a)","Observador(a)"
 ];
 
 function getList(){
@@ -161,6 +183,7 @@ function getList(){
 }
 function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
 
+// cada palavra é um checkbox salvo como: {pergunta:"P4_01", alternativa:"S"}
 function upsertCheckbox(name, checked){
   let l = getList().filter(x => x.pergunta !== name);
   if(checked) l.push({ pergunta:name, alternativa:"S" });
@@ -169,6 +192,18 @@ function upsertCheckbox(name, checked){
 
 function countSelected(){
   return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
+}
+
+function showMsg(text){
+  const box = document.getElementById("msg");
+  box.style.display = "block";
+  box.innerHTML = text;
+}
+
+function hideMsg(){
+  const box = document.getElementById("msg");
+  box.style.display = "none";
+  box.innerHTML = "";
 }
 
 function build(){
@@ -183,18 +218,20 @@ function build(){
     `;
   }).join("");
 
-  // Toggle ao clicar no card (e também por teclado)
+  // clique no card deve alternar o check
   grid.querySelectorAll(".word").forEach(card=>{
     const cb = card.querySelector('input[type="checkbox"]');
 
     function syncUI(){
       card.classList.toggle("selected", cb.checked);
       upsertCheckbox(cb.name, cb.checked);
+      // opcional: mostra aviso só quando está abaixo do mínimo
+      if(countSelected() >= MIN) hideMsg();
     }
 
     // clique no card
     card.addEventListener("click", (e)=>{
-      // se clicou no checkbox, deixa ele fazer o toggle normal
+      // se clicou no checkbox, deixa ele agir e só sincroniza no change
       if(e.target === cb) return;
       cb.checked = !cb.checked;
       syncUI();
@@ -217,6 +254,7 @@ function build(){
 function restore(){
   const l = getList();
   l.forEach(r=>{
+    if(!r.pergunta.startsWith("P4_")) return;
     const cb = document.querySelector(`#formP4 input[name="${r.pergunta}"]`);
     if(cb){
       cb.checked = true;
@@ -230,11 +268,17 @@ document.addEventListener("DOMContentLoaded",()=>{
   build();
   restore();
 
+  document.getElementById("btnBack").addEventListener("click", ()=>{
+    history.back();
+  });
+
   document.getElementById("btnFinish").addEventListener("click", ()=>{
-    if(countSelected() < MIN){
-      alert("Selecione pelo menos " + MIN + " opções para continuar.");
+    const n = countSelected();
+    if(n < MIN){
+      showMsg(`Selecione pelo menos <b>${MIN}</b> opções para continuar. Atualmente: <b>${n}</b>.`);
       return;
     }
+    // ✅ vai para o resultado na raiz
     window.location.href = "../resultado.html";
   });
 });
