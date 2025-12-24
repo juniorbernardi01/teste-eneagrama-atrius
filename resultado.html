@@ -15,16 +15,16 @@
       --shadow:0 12px 34px rgba(15,23,42,.10);
       --accent:#f07a00;
 
-      /* Paleta por tipo (conforme sua sugestão) */
-      --t1:#9ca3af;   /* Cinza (pureza) */
-      --t2:#22c55e;   /* Verde (calor) */
-      --t3:#d4af37;   /* Ouro (sucesso) */
-      --t4:#7c3aed;   /* Roxo (profundidade) */
-      --t5:#0f172a;   /* Azul escuro (intelecto) */
-      --t6:#8b6b4a;   /* Terroso (estabilidade) */
+      /* Paleta por tipo */
+      --t1:#9ca3af;   /* Cinza */
+      --t2:#22c55e;   /* Verde */
+      --t3:#d4af37;   /* Ouro */
+      --t4:#7c3aed;   /* Roxo */
+      --t5:#0f172a;   /* Azul escuro */
+      --t6:#8b6b4a;   /* Terroso */
       --t7:#f97316;   /* Laranja */
-      --t8:#111827;   /* Preto (força) */
-      --t9:#38bdf8;   /* Azul céu (harmonia) */
+      --t8:#111827;   /* Preto */
+      --t9:#38bdf8;   /* Azul céu */
     }
 
     *{ box-sizing:border-box }
@@ -184,17 +184,6 @@
     .section{
       margin-top:16px;
     }
-    .section h3{
-      margin:0 0 8px;
-      font-size:20px;
-      letter-spacing:-.2px;
-    }
-    .section p{
-      margin:0;
-      color:#334155;
-      font-size:14px;
-      line-height:1.45;
-    }
 
     .gridBottom{
       display:grid;
@@ -285,7 +274,7 @@
     </div>
 
     <div class="gridTop">
-      <!-- LEFT: Top 3 + Pizza -->
+      <!-- LEFT -->
       <div class="card">
         <h2>Sua tríade principal (Top 3)</h2>
         <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
@@ -303,7 +292,7 @@
         </div>
       </div>
 
-      <!-- RIGHT: Resumo rápido (card branco) + botão WhatsApp -->
+      <!-- RIGHT -->
       <div class="card">
         <div class="smallTitle">Resumo rápido</div>
         <div class="quick" id="quickResumo">Carregando…</div>
@@ -319,7 +308,7 @@
       </div>
     </div>
 
-    <!-- ✅ AGORA: "Como você tende a funcionar" EM FUNDO BRANCO (CARD) -->
+    <!-- Como funciona em card branco -->
     <div class="card section">
       <h3 style="margin:0 0 8px; font-size:20px;">Como você tende a funcionar</h3>
       <p id="comoFunciona" style="margin:0;color:#334155;font-size:14px;line-height:1.45;">Carregando…</p>
@@ -336,12 +325,14 @@
         <ul id="listaAtencao"></ul>
       </div>
     </div>
-
   </div>
 
 <script>
   const RESPOSTAS_KEY = "respostas";
   const MATRIZ_URL = "/data/matriz.json";
+
+  // ✅ Número fixo do WhatsApp (somente dígitos, com DDI)
+  const WHATS_NUMBER = "5551995912176"; // +55 51 99591-2176
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
@@ -437,6 +428,23 @@
     catch{ return null; }
   }
 
+  // ✅ tenta achar nome/email/telefone em várias chaves
+  function readUserData(){
+    const candidates = [
+      getLocalJSON("userData"),
+      getLocalJSON("dados_iniciais"),
+      getLocalJSON("dadosUsuario")
+    ].filter(Boolean);
+
+    const raw = candidates[0] || {};
+
+    const nome = raw.nome || raw.name || raw.nomeCompleto || "(não informado)";
+    const email = raw.email || raw.mail || "(não informado)";
+    const telefone = raw.telefone || raw.phone || raw.fone || "(não informado)";
+
+    return { nome, email, telefone };
+  }
+
   function showError(msg){
     const el = document.getElementById("errBox");
     el.style.display = "block";
@@ -489,6 +497,7 @@
     }).join("");
   }
 
+  // PIE (SVG)
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -530,8 +539,10 @@
     const k = key84(t1,t2,t3);
     const base = TRIADE_MAP[k] || null;
 
-    document.getElementById("quickResumo").textContent =
+    const resumoRapido =
       `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`;
+
+    document.getElementById("quickResumo").textContent = resumoRapido;
 
     const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
     const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
@@ -558,14 +569,25 @@
     document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
     document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
 
+    // ✅ monta mensagem do WhatsApp com dados do usuário + resumo
+    const user = readUserData();
     const msg =
-      `*Resultado do Teste (Eneagrama)*\n` +
-      `Tríade: ${t1}-${t2}-${t3}\n` +
-      `Dominante: Tipo ${t1} (${TIPOS[t1]?.nome || ""})\n` +
-      `Influências: Tipo ${t2} e Tipo ${t3}\n\n` +
-      `Resumo: ${document.getElementById("quickResumo").textContent}`;
+`*Resultado do Teste Eneagrama (Atrius)*
+Nome: ${user.nome}
+Email: ${user.email}
+Telefone: ${user.telefone}
 
-    const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+${resumoRapido}
+
+Tríade: ${t1}-${t2}-${t3}
+Dominante: Tipo ${t1} (${TIPOS[t1]?.nome || ""})
+
+Pontuações (Top 3):
+1º Tipo ${t1}: ${top3[0].v}
+2º Tipo ${t2}: ${top3[1].v}
+3º Tipo ${t3}: ${top3[2].v}`;
+
+    const waUrl = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
     document.getElementById("btnWhats").onclick = ()=> window.open(waUrl, "_blank", "noopener,noreferrer");
   }
 
