@@ -15,16 +15,15 @@
       --shadow:0 12px 34px rgba(15,23,42,.10);
       --accent:#f07a00;
 
-      /* Paleta por tipo (conforme sua sugestão) */
-      --t1:#9ca3af;   /* Cinza */
-      --t2:#22c55e;   /* Verde */
-      --t3:#d4af37;   /* Ouro */
-      --t4:#7c3aed;   /* Roxo */
-      --t5:#0f172a;   /* Azul escuro */
-      --t6:#8b6b4a;   /* Terroso */
-      --t7:#f97316;   /* Laranja */
-      --t8:#111827;   /* Preto */
-      --t9:#38bdf8;   /* Azul céu */
+      --t1:#9ca3af;
+      --t2:#22c55e;
+      --t3:#d4af37;
+      --t4:#7c3aed;
+      --t5:#0f172a;
+      --t6:#8b6b4a;
+      --t7:#f97316;
+      --t8:#111827;
+      --t9:#38bdf8;
 
       --soft:#fff6ee;
       --softBorder:rgba(240,122,0,.35);
@@ -77,7 +76,6 @@
       font-size:18px;
     }
 
-    /* Top grid: lista + pizza */
     .topArea{
       display:grid;
       grid-template-columns: 1fr 320px;
@@ -163,11 +161,8 @@
       gap:10px;
       min-height: 220px;
     }
-    .pieHint{
-      display:none; /* removido (você pediu tirar) */
-    }
+    .pieHint{ display:none; }
 
-    /* Card de resumo + WhatsApp */
     .summaryCard{
       margin-top:14px;
       background:var(--soft);
@@ -232,10 +227,7 @@
       line-height:1.35;
     }
 
-    .btnRow{
-      display:flex;
-      justify-content:flex-end;
-    }
+    .btnRow{ display:flex; justify-content:flex-end; }
 
     .btnWA{
       display:inline-flex;
@@ -254,10 +246,7 @@
     }
     .btnWA:hover{ background:var(--waHover); }
 
-    /* Seção funcionamento em card branco */
-    .section{
-      margin-top:16px;
-    }
+    .section{ margin-top:16px; }
     .section h3{
       margin:0 0 10px;
       font-size:20px;
@@ -277,7 +266,6 @@
       line-height:1.55;
     }
 
-    /* Bottom lists */
     .gridBottom{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -343,7 +331,6 @@
       </div>
     </div>
 
-    <!-- TOP CARD -->
     <div class="card">
       <h2>Sua tríade principal (Top 3)</h2>
       <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
@@ -359,7 +346,6 @@
         </div>
       </div>
 
-      <!-- RESUMO + WHATSAPP (tudo junto, como você pediu) -->
       <div class="summaryCard">
         <div class="summaryRow">
           <div class="miniInfo">
@@ -374,14 +360,11 @@
         </div>
 
         <div class="btnRow">
-          <button class="btnWA" id="btnWhats">
-            Enviar no WhatsApp
-          </button>
+          <button class="btnWA" id="btnWhats">Enviar no WhatsApp</button>
         </div>
       </div>
     </div>
 
-    <!-- FUNCIONAMENTO (em bloco branco) -->
     <div class="section">
       <h3>Como você tende a funcionar</h3>
       <div class="funcCard">
@@ -389,7 +372,6 @@
       </div>
     </div>
 
-    <!-- LISTAS -->
     <div class="gridBottom">
       <div class="listBox">
         <h4>Pontos fortes</h4>
@@ -404,11 +386,19 @@
   </div>
 
 <script>
+  // ===== Keys do projeto (PADRÃO) =====
   const RESPOSTAS_KEY = "respostas";
-  const USERDATA_KEY = "userData";
-  const MATRIZ_URL = "/data/matriz.json";
+  const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
+  const LEAD_KEY_FALLBACK_1 = "lead";
+  const LEAD_KEY_FALLBACK_2 = "atrius_lead";
+  const LEAD_KEY_FALLBACK_3 = "lead_inicial";
 
-  // WhatsApp destino: 55 51 9591-2176
+  const TEST_ID_KEY = "atrius_eneagrama_test_id";
+  const SESSION_ACTIVE_KEY = "atrius_eneagrama_active";
+
+  // ✅ caminho relativo (evita problemas com domínio/subpasta)
+  const MATRIZ_URL = "data/matriz.json";
+
   const WHATS_NUMBER = "555195912176";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
@@ -419,7 +409,6 @@
     7: cssVar("--t7"), 8: cssVar("--t8"), 9: cssVar("--t9")
   };
 
-  // Nomes + frase simples
   const TIPOS = {
     1:{ nome:"Perfeccionista / Reformador", curta:"Gosta de fazer certo, com padrão e qualidade." },
     2:{ nome:"Prestativo / Cuidador", curta:"Gosta de ajudar, cuidar e manter as pessoas bem." },
@@ -432,7 +421,6 @@
     9:{ nome:"Pacificador", curta:"Gosta de paz, harmonia e evitar conflito." }
   };
 
-  // Influência simples (bem acessível)
   const INFLUENCIA = {
     1:"mais cobrança e vontade de fazer certo",
     2:"mais cuidado com pessoas e vontade de ajudar",
@@ -445,177 +433,30 @@
     9:"mais calma e evitar briga"
   };
 
-  // ✅ Pontos fortes (melhorados)
-  const TYPE_FORTES = {
-    1:[
-      "Cuida da qualidade e do capricho",
-      "Organiza e coloca ordem no que está bagunçado",
-      "É responsável e confiável",
-      "Percebe erros e evita retrabalho",
-      "Gosta de melhorar as coisas aos poucos",
-      "Cumpre regras e combinações",
-      "Mantém padrão mesmo com pressão"
-    ],
-    2:[
-      "Ajuda as pessoas de verdade",
-      "Percebe quando alguém não está bem",
-      "Cria um clima bom no time",
-      "É prestativo(a) e acolhedor(a)",
-      "Tem facilidade para cooperar",
-      "Faz o outro se sentir importante",
-      "Resolve coisas com gentileza"
-    ],
-    3:[
-      "Entrega resultado e faz acontecer",
-      "Foca em metas e não se perde",
-      "Tem energia e ritmo de trabalho",
-      "Se adapta para dar certo",
-      "Motiva o time pelo exemplo",
-      "Aprende rápido o que precisa para vencer",
-      "Gosta de crescer e evoluir"
-    ],
-    4:[
-      "Tem criatividade e ideias diferentes",
-      "Percebe sentimentos com facilidade",
-      "Busca ser verdadeiro(a) e autêntico(a)",
-      "Tem profundidade e visão humana",
-      "Gosta de fazer com personalidade",
-      "Enxerga detalhes que outros não veem",
-      "Valoriza sentido e propósito"
-    ],
-    5:[
-      "Pensa com lógica e clareza",
-      "Aprende rápido e gosta de entender",
-      "Analisa antes de agir",
-      "É estratégico(a) e cuidadoso(a)",
-      "Faz perguntas inteligentes",
-      "Se concentra bem quando precisa",
-      "Trabalha bem sozinho(a)"
-    ],
-    6:[
-      "É leal e comprometido(a)",
-      "Vê riscos antes de acontecer",
-      "Planeja e evita surpresas",
-      "Cumpre o que promete",
-      "Protege o time e a empresa",
-      "Tem senso de responsabilidade",
-      "Gosta de trabalhar com segurança"
-    ],
-    7:[
-      "Traz energia e bom humor",
-      "Vê possibilidades e soluções",
-      "É criativo(a) para resolver problemas",
-      "Se adapta fácil a mudanças",
-      "Gosta de aprender coisas novas",
-      "Tem iniciativa e movimento",
-      "Anima o ambiente"
-    ],
-    8:[
-      "É firme e decidido(a)",
-      "Protege o que é importante",
-      "Não foge de problema",
-      "Tem coragem para falar o que precisa",
-      "Toma atitude rápido",
-      "Segura pressão e aguenta pancada",
-      "Defende limites com força"
-    ],
-    9:[
-      "É calmo(a) e equilibrado(a)",
-      "Evita brigas e acalma o ambiente",
-      "Escuta bem as pessoas",
-      "Ajuda o time a se entender",
-      "Tem paciência e constância",
-      "Gosta de harmonia e paz",
-      "Trabalha bem em grupo"
-    ]
+  const TYPE_FORTES = { /* (mantido igual ao seu código) */
+    1:["Cuida da qualidade e do capricho","Organiza e coloca ordem no que está bagunçado","É responsável e confiável","Percebe erros e evita retrabalho","Gosta de melhorar as coisas aos poucos","Cumpre regras e combinações","Mantém padrão mesmo com pressão"],
+    2:["Ajuda as pessoas de verdade","Percebe quando alguém não está bem","Cria um clima bom no time","É prestativo(a) e acolhedor(a)","Tem facilidade para cooperar","Faz o outro se sentir importante","Resolve coisas com gentileza"],
+    3:["Entrega resultado e faz acontecer","Foca em metas e não se perde","Tem energia e ritmo de trabalho","Se adapta para dar certo","Motiva o time pelo exemplo","Aprende rápido o que precisa para vencer","Gosta de crescer e evoluir"],
+    4:["Tem criatividade e ideias diferentes","Percebe sentimentos com facilidade","Busca ser verdadeiro(a) e autêntico(a)","Tem profundidade e visão humana","Gosta de fazer com personalidade","Enxerga detalhes que outros não veem","Valoriza sentido e propósito"],
+    5:["Pensa com lógica e clareza","Aprende rápido e gosta de entender","Analisa antes de agir","É estratégico(a) e cuidadoso(a)","Faz perguntas inteligentes","Se concentra bem quando precisa","Trabalha bem sozinho(a)"],
+    6:["É leal e comprometido(a)","Vê riscos antes de acontecer","Planeja e evita surpresas","Cumpre o que promete","Protege o time e a empresa","Tem senso de responsabilidade","Gosta de trabalhar com segurança"],
+    7:["Traz energia e bom humor","Vê possibilidades e soluções","É criativo(a) para resolver problemas","Se adapta fácil a mudanças","Gosta de aprender coisas novas","Tem iniciativa e movimento","Anima o ambiente"],
+    8:["É firme e decidido(a)","Protege o que é importante","Não foge de problema","Tem coragem para falar o que precisa","Toma atitude rápido","Segura pressão e aguenta pancada","Defende limites com força"],
+    9:["É calmo(a) e equilibrado(a)","Evita brigas e acalma o ambiente","Escuta bem as pessoas","Ajuda o time a se entender","Tem paciência e constância","Gosta de harmonia e paz","Trabalha bem em grupo"]
   };
 
-  // ✅ Pontos de atenção (melhorados)
-  const TYPE_ATENCAO = {
-    1:[
-      "Pode se cobrar demais",
-      "Pode ficar rígido(a) e inflexível",
-      "Pode criticar muito (a si e aos outros)",
-      "Pode ter dificuldade de relaxar",
-      "Pode ficar impaciente com erros",
-      "Pode querer tudo do seu jeito",
-      "Pode ter dificuldade em delegar"
-    ],
-    2:[
-      "Pode dizer “sim” demais e se sobrecarregar",
-      "Pode ter medo de desagradar",
-      "Pode esperar reconhecimento e se frustrar",
-      "Pode se envolver demais com problemas dos outros",
-      "Pode guardar mágoa sem falar",
-      "Pode se esquecer de si",
-      "Pode evitar conversas difíceis"
-    ],
-    3:[
-      "Pode ficar ansioso(a) por resultado",
-      "Pode querer fazer tudo rápido demais",
-      "Pode se comparar com os outros",
-      "Pode confundir valor pessoal com desempenho",
-      "Pode colocar imagem acima do descanso",
-      "Pode ter dificuldade de parar e respirar",
-      "Pode ficar irritado(a) com lentidão"
-    ],
-    4:[
-      "Pode oscilar no humor",
-      "Pode levar as coisas para o lado pessoal",
-      "Pode se sentir incompreendido(a)",
-      "Pode desanimar com rotina",
-      "Pode focar mais no sentimento do que na ação",
-      "Pode comparar e se frustrar",
-      "Pode se isolar quando dói"
-    ],
-    5:[
-      "Pode pensar demais e agir de menos",
-      "Pode se fechar e falar pouco",
-      "Pode parecer frio(a) sem querer",
-      "Pode evitar pedir ajuda",
-      "Pode guardar tudo para si",
-      "Pode se desligar das emoções",
-      "Pode ter dificuldade com mudanças rápidas"
-    ],
-    6:[
-      "Pode ter ansiedade e preocupação",
-      "Pode duvidar muito antes de decidir",
-      "Pode imaginar o pior cenário",
-      "Pode precisar de garantia o tempo todo",
-      "Pode desconfiar com facilidade",
-      "Pode travar com medo de errar",
-      "Pode buscar validação demais"
-    ],
-    7:[
-      "Pode se dispersar e perder foco",
-      "Pode começar e não terminar",
-      "Pode evitar assuntos difíceis",
-      "Pode agir por impulso",
-      "Pode exagerar no ritmo e cansar",
-      "Pode ter dificuldade com rotina",
-      "Pode prometer mais do que dá conta"
-    ],
-    8:[
-      "Pode falar duro e assustar",
-      "Pode querer controlar demais",
-      "Pode perder a paciência rápido",
-      "Pode bater de frente sem necessidade",
-      "Pode ter dificuldade de mostrar fragilidade",
-      "Pode ser “8 ou 80” em decisões",
-      "Pode insistir quando seria melhor ouvir"
-    ],
-    9:[
-      "Pode adiar decisões (procrastinar)",
-      "Pode evitar conflito e engolir incômodo",
-      "Pode dizer “tanto faz” e perder prioridade",
-      "Pode aceitar demais para manter paz",
-      "Pode demorar para reagir",
-      "Pode acumular stress em silêncio",
-      "Pode se acomodar quando precisa agir"
-    ]
+  const TYPE_ATENCAO = { /* (mantido igual ao seu código) */
+    1:["Pode se cobrar demais","Pode ficar rígido(a) e inflexível","Pode criticar muito (a si e aos outros)","Pode ter dificuldade de relaxar","Pode ficar impaciente com erros","Pode querer tudo do seu jeito","Pode ter dificuldade em delegar"],
+    2:["Pode dizer “sim” demais e se sobrecarregar","Pode ter medo de desagradar","Pode esperar reconhecimento e se frustrar","Pode se envolver demais com problemas dos outros","Pode guardar mágoa sem falar","Pode se esquecer de si","Pode evitar conversas difíceis"],
+    3:["Pode ficar ansioso(a) por resultado","Pode querer fazer tudo rápido demais","Pode se comparar com os outros","Pode confundir valor pessoal com desempenho","Pode colocar imagem acima do descanso","Pode ter dificuldade de parar e respirar","Pode ficar irritado(a) com lentidão"],
+    4:["Pode oscilar no humor","Pode levar as coisas para o lado pessoal","Pode se sentir incompreendido(a)","Pode desanimar com rotina","Pode focar mais no sentimento do que na ação","Pode comparar e se frustrar","Pode se isolar quando dói"],
+    5:["Pode pensar demais e agir de menos","Pode se fechar e falar pouco","Pode parecer frio(a) sem querer","Pode evitar pedir ajuda","Pode guardar tudo para si","Pode se desligar das emoções","Pode ter dificuldade com mudanças rápidas"],
+    6:["Pode ter ansiedade e preocupação","Pode duvidar muito antes de decidir","Pode imaginar o pior cenário","Pode precisar de garantia o tempo todo","Pode desconfiar com facilidade","Pode travar com medo de errar","Pode buscar validação demais"],
+    7:["Pode se dispersar e perder foco","Pode começar e não terminar","Pode evitar assuntos difíceis","Pode agir por impulso","Pode exagerar no ritmo e cansar","Pode ter dificuldade com rotina","Pode prometer mais do que dá conta"],
+    8:["Pode falar duro e assustar","Pode querer controlar demais","Pode perder a paciência rápido","Pode bater de frente sem necessidade","Pode ter dificuldade de mostrar fragilidade","Pode ser “8 ou 80” em decisões","Pode insistir quando seria melhor ouvir"],
+    9:["Pode adiar decisões (procrastinar)","Pode evitar conflito e engolir incômodo","Pode dizer “tanto faz” e perder prioridade","Pode aceitar demais para manter paz","Pode demorar para reagir","Pode acumular stress em silêncio","Pode se acomodar quando precisa agir"]
   };
 
-  // Helpers
   function uniq(arr){
     const out=[]; const seen=new Set();
     for(const x of arr){
@@ -632,6 +473,15 @@
     catch{ return null; }
   }
 
+  function getLead(){
+    const keys = [LEAD_KEY_MAIN, LEAD_KEY_FALLBACK_1, LEAD_KEY_FALLBACK_2, LEAD_KEY_FALLBACK_3];
+    for(const k of keys){
+      const obj = getLocalJSON(k);
+      if(obj && (obj.email || obj.nome || obj.nome_completo)) return obj;
+    }
+    return null;
+  }
+
   function showError(msg){
     const el = document.getElementById("errBox");
     el.style.display = "block";
@@ -640,7 +490,7 @@
 
   async function loadMatriz(){
     const res = await fetch(MATRIZ_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json. Verifique se o arquivo existe na pasta /data.");
+    if(!res.ok) throw new Error("Não consegui carregar data/matriz.json. Verifique se o arquivo existe na pasta /data.");
     return res.json();
   }
 
@@ -684,7 +534,6 @@
     }).join("");
   }
 
-  // PIE (SVG)
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -724,11 +573,9 @@
   function renderTextos(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
 
-    // Resumo simples
     document.getElementById("quickResumo").textContent =
       `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`;
 
-    // Funcionamento bem humano
     const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
     const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
     const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
@@ -745,7 +592,6 @@
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
-    // Fortes/Atenção: dominante primeiro, depois secundários (sem repetir)
     const fortes = limit(
       uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
       7
@@ -761,14 +607,14 @@
 
   function formatUserLine(user){
     if(!user) return "Nome: — | Email: — | Telefone: —";
-    const nome = user.nome || user.nomeCompleto || "—";
+    const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
     const email = user.email || "—";
     const tel = user.telefone || "—";
     return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
   }
 
   function buildWhatsText(user, top3){
-    const nome = (user?.nome || user?.nomeCompleto || "—");
+    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
     const email = (user?.email || "—");
     const telefone = (user?.telefone || "—");
 
@@ -785,7 +631,6 @@
     linhas.push(`3) Tipo ${top3[2].t} — ${top3[2].v}`);
     linhas.push("");
     linhas.push(`Resumo: Tipo ${top3[0].t} dominante, com influência de ${top3[1].t} e ${top3[2].t}.`);
-
     return linhas.join("\n");
   }
 
@@ -802,17 +647,33 @@
     window.open(url, "_blank");
   });
 
-  // init
   (async function init(){
     try{
-      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
-      const user = getLocalJSON(USERDATA_KEY) || null;
+      // ✅ guard: se não veio de uma sessão de teste, volta pro início
+      const active = sessionStorage.getItem(SESSION_ACTIVE_KEY) === "1";
+      const currentTestId = localStorage.getItem(TEST_ID_KEY);
+      const user = getLead();
 
+      if(!active || !currentTestId || !user){
+        // não dá loop: manda pro index
+        window.location.href = "index.html";
+        return;
+      }
+
+      // ✅ trava anti-dado antigo: lead precisa ser do testId atual (quando existir)
+      if(user.testId && currentTestId && String(user.testId) !== String(currentTestId)){
+        showError("Este resultado não pertence ao teste atual. Inicie um novo teste na página inicial.");
+        document.getElementById("quickResumo").textContent = "Sem dados.";
+        document.getElementById("comoFunciona").textContent = "Sem dados.";
+        return;
+      }
+
+      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
       __lastUser = user;
       document.getElementById("dadosUser").innerHTML = formatUserLine(user);
 
       if(!Array.isArray(respostas) || respostas.length === 0){
-        showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
+        showError("Não encontrei respostas salvas deste teste. Volte e finalize o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
         return;
