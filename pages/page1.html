@@ -228,7 +228,7 @@ Não existe resposta certa ou errada.
   <label class="opt"><input type="radio" name="P1_14" value="C"> Existe espaço e flexibilidade</label>
 </div>
 
-<!-- 15 (faltava) -->
+<!-- 15 -->
 <div class="q">
   <div class="qtitle"><span>15.</span>Eu me desmotivo mais quando:</div>
   <label class="opt"><input type="radio" name="P1_15" value="A"> Vejo descuido</label>
@@ -245,58 +245,71 @@ Não existe resposta certa ou errada.
 </div>
 
 <script>
-const KEY="respostas";
+const RESPOSTAS_KEY = "respostas";
+const LEAD_KEY = "atrius_eneagrama_lead_v1";
 
-function getList(){
-  try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
+function getRespostas(){
+  try{ return JSON.parse(localStorage.getItem(RESPOSTAS_KEY)) || []; }
   catch{ return []; }
 }
-function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
+function setRespostas(r){
+  localStorage.setItem(RESPOSTAS_KEY, JSON.stringify(r));
+}
 
-function save(p,a){
-  const l=getList();
-  const i=l.findIndex(x=>x.pergunta===p);
-  if(i>=0) l[i].alternativa=a;
-  else l.push({pergunta:p,alternativa:a});
-  setList(l);
+function getLead(){
+  try{
+    const l = localStorage.getItem(LEAD_KEY);
+    return l ? JSON.parse(l) : null;
+  }catch{ return null; }
+}
+
+function save(pergunta, alternativa){
+  const r = getRespostas();
+  const i = r.findIndex(x => x.pergunta === pergunta);
+  if(i >= 0) r[i].alternativa = alternativa;
+  else r.push({ pergunta, alternativa });
+  setRespostas(r);
 }
 
 function restore(){
-  getList().forEach(r=>{
-    const el=document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
-    if(el) el.checked=true;
+  getRespostas().forEach(r => {
+    const el = document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
+    if(el) el.checked = true;
   });
 }
 
 function validate(){
-  const names=[...new Set([...document.querySelectorAll('input[type=radio]')].map(i=>i.name))];
-  const ok=names.every(n=>document.querySelector(`input[name="${n}"]:checked`));
+  const names = [...new Set(
+    [...document.querySelectorAll('input[type=radio]')].map(i => i.name)
+  )];
+  const ok = names.every(n => document.querySelector(`input[name="${n}"]:checked`));
   if(!ok){
     alert("Responda todas as questões para continuar.");
-    const firstMissing = names.find(n=>!document.querySelector(`input[name="${n}"]:checked`));
+    const firstMissing = names.find(n => !document.querySelector(`input[name="${n}"]:checked`));
     const firstEl = document.querySelector(`input[name="${firstMissing}"]`);
-    if(firstEl) firstEl.scrollIntoView({behavior:"smooth", block:"center"});
+    if(firstEl) firstEl.scrollIntoView({ behavior:"smooth", block:"center" });
   }
   return ok;
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  // 🔒 proteção de fluxo (se cair direto aqui sem iniciar)
-  if(getList().length === 0){
-    window.location.href = "/";
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ✅ PROTEÇÃO CORRETA: se não existe lead, não iniciou o teste
+  if(!getLead()){
+    window.location.href = "../index.html";
     return;
   }
 
   restore();
 
-  document.querySelectorAll("input[type=radio]").forEach(i=>{
-    i.addEventListener("change",()=>save(i.name,i.value));
+  document.querySelectorAll("input[type=radio]").forEach(i => {
+    i.addEventListener("change", () => save(i.name, i.value));
   });
 
-  document.getElementById("btnNext").onclick=()=>{
+  document.getElementById("btnNext").addEventListener("click", () => {
     if(!validate()) return;
-    location.href="page2.html";
-  };
+    window.location.href = "page2.html";
+  });
 });
 </script>
 
