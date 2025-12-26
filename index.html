@@ -11,7 +11,7 @@
       --card:#ffffff;
       --text:#0f172a;
       --muted:#475569;
-      --border:#e5e7eb;
+      --border:#e5e7e7;
       --shadow:0 10px 30px rgba(15,23,42,.10);
       --btn:#e67e22;
       --btnHover:#d87018;
@@ -227,13 +227,12 @@ Utilize o tempo que julgar necessário.
   </div>
 
   <script>
-    // mantém seu storage atual
-    const STORAGE_KEY = "atrius_eneagrama_lead_v1";
+    /* ================== CHAVES DO PROJETO ================== */
+    const RESPOSTAS_KEY = "respostas";              // todas as páginas usam isso
+    const USERDATA_KEY  = "userData";              // resultado/whatsapp/email usa isso
+    const LEAD_OLD_KEY  = "atrius_eneagrama_lead_v1"; // se ainda sobrou do modelo antigo
 
-    // ✅ chave PADRÃO lida pelo resultado.html (WhatsApp)
-    const USERDATA_KEY = "userData";
-
-    // ✅ Redireciona SEM .html
+    // ✅ página 1 (GitHub Pages resolve /pages/page1 -> /pages/page1.html)
     const NEXT_PAGE = "/pages/page1";
 
     const nome = document.getElementById("nome");
@@ -246,6 +245,15 @@ Utilize o tempo que julgar necessário.
     const errSobrenome = document.getElementById("errSobrenome");
     const errEmail = document.getElementById("errEmail");
     const errTelefone = document.getElementById("errTelefone");
+
+    /* ✅ LIMPA O TESTE ANTES DE COMEÇAR (zera respostas antigas) */
+    function clearTestStorage(){
+      localStorage.removeItem(RESPOSTAS_KEY);
+      // remove também a pessoa anterior (pra não misturar dados)
+      localStorage.removeItem(USERDATA_KEY);
+      // legado
+      localStorage.removeItem(LEAD_OLD_KEY);
+    }
 
     function setValid(el, ok){
       el.classList.remove("is-valid","is-invalid");
@@ -341,35 +349,21 @@ Utilize o tempo que julgar necessário.
         return;
       }
 
-      const nomeTrim = nome.value.trim();
-      const sobrenomeTrim = sobrenome.value.trim();
-      const nomeCompleto = `${nomeTrim} ${sobrenomeTrim}`.trim();
-      const emailTrim = email.value.trim();
-      const telFmt = telefone.value.trim();
-      const telDigits = telefone.value.replace(/\D/g,"");
+      // ✅ AQUI É O PONTO: zera o teste ANTES de ir para a page1
+      clearTestStorage();
 
-      // ✅ 1) mantém seu storage original (compatibilidade)
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        nome: nomeTrim,
-        sobrenome: sobrenomeTrim,
-        nome_completo: nomeCompleto,
-        email: emailTrim,
-        telefone: telFmt,
-        telefone_digits: telDigits,
-        createdAt: new Date().toISOString()
-      }));
-
-      // ✅ 2) storage PADRÃO para o resultado/WhatsApp
+      // salva os dados do usuário (para resultado / whatsapp / email)
       localStorage.setItem(USERDATA_KEY, JSON.stringify({
-        nome: nomeCompleto,          // o resultado lê "nome"
-        nomeCompleto: nomeCompleto,  // extra
-        email: emailTrim,
-        telefone: telFmt,
-        telefone_digits: telDigits,
+        nome: nome.value.trim(),
+        sobrenome: sobrenome.value.trim(),
+        nomeCompleto: `${nome.value.trim()} ${sobrenome.value.trim()}`.trim(),
+        email: email.value.trim(),
+        telefone: telefone.value.trim(),
+        telefone_digits: telefone.value.replace(/\D/g,""),
         createdAt: new Date().toISOString()
       }));
 
-      window.location.href = NEXT_PAGE;
+      window.location.href = NEXT_PAGE; // ✅ /pages/page1
     });
 
     updateButton();
