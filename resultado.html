@@ -675,139 +675,101 @@
     return html;
   }
 
-  // ================= Email HTML (inline) =================
-  function buildEmailHtml(user, top3, score){
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
-    const email = (user?.email || "—");
-    const tel = (user?.telefone || "—");
-    const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+  // ===== Guia rápido de comunicação (SÓ NO E-MAIL) =====
+  function buildGuiaComunicacaoHtml(top3){
+    const dom = top3[0].t;
+    const infl1 = top3[1].t;
+    const infl2 = top3[2].t;
 
-    const itemTop = (idx, it) => {
-      const color = (TYPE_COLORS[it.t] || "#111827");
-      const tipoNome = (TIPOS[it.t]?.nome || `Tipo ${it.t}`);
-      const tipoCurta = (TIPOS[it.t]?.curta || "");
-      return `
-        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fff;margin-bottom:10px;">
-          <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;">
-            <div>
-              <div style="font-weight:900;font-size:16px;color:#0b2a5b;display:flex;gap:10px;align-items:center;">
-                <span style="width:10px;height:10px;border-radius:999px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.18);"></span>
-                ${idx}º — Tipo ${it.t}
-              </div>
-              <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${tipoNome}</div>
-              <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${tipoCurta}</div>
-            </div>
-            <div style="font-weight:900;font-size:22px;color:#0f172a;min-width:56px;text-align:right;">${it.v}</div>
-          </div>
-        </div>
-      `;
+    const base = {
+      1:{ como:"Seja objetivo, organizado e com critérios claros. Mostre o padrão esperado.", cobrar:"Use fatos, checklist e qualidade. Evite humilhar; foque no 'como melhorar'.", elogiar:"Elogie capricho, consistência, responsabilidade e qualidade do trabalho.", ouvir:"Quer ouvir que fez certo e que pode confiar nele(a)." },
+      2:{ como:"Seja gentil, humano e reconheça a intenção de ajudar.", cobrar:"Peça de forma direta porém calorosa. Explique impacto nas pessoas/time.", elogiar:"Elogie cuidado, colaboração, suporte e atenção aos outros.", ouvir:"Quer ouvir que é importante e que ajudou de verdade." },
+      3:{ como:"Vá no ponto, metas e resultado. Dê contexto de objetivo e prazo.", cobrar:"Seja direto e com métricas. Mostre a régua e o que falta pra bater.", elogiar:"Elogie entrega, performance, superação e velocidade com qualidade.", ouvir:"Quer ouvir que está indo bem e que é referência/essencial." },
+      4:{ como:"Converse com autenticidade e significado. Dê espaço pra expressão.", cobrar:"Explique o porquê, e alinhe expectativa sem frieza. Evite ironia.", elogiar:"Elogie criatividade, sensibilidade, profundidade e originalidade.", ouvir:"Quer ouvir que foi compreendido(a) e valorizado(a) como é." },
+      5:{ como:"Seja lógico, respeite o espaço e dê tempo para pensar.", cobrar:"Traga dados e clareza. Combine autonomia e prazo. Evite pressão emocional.", elogiar:"Elogie análise, estratégia, qualidade do raciocínio e competência.", ouvir:"Quer ouvir que confiam na capacidade e que há autonomia." },
+      6:{ como:"Passe segurança, combine regras, plano e próximos passos.", cobrar:"Seja previsível e claro. Mostre riscos e como evitar. Reforce confiança.", elogiar:"Elogie lealdade, responsabilidade, cuidado e consistência.", ouvir:"Quer ouvir que está seguro(a), que tem suporte e direção." },
+      7:{ como:"Seja leve e direto. Mostre possibilidades e caminhos.", cobrar:"Foque em prioridade e conclusão. Evite prender demais, mas cobre entrega.", elogiar:"Elogie energia, criatividade, soluções e iniciativa.", ouvir:"Quer ouvir que há liberdade e que dá pra fazer de um jeito melhor." },
+      8:{ como:"Seja firme, direto e sem rodeios. Respeite autoridade e limite.", cobrar:"Fale reto, com consequência e objetivo. Evite rodear e dramatizar.", elogiar:"Elogie força, proteção, decisão e coragem de resolver.", ouvir:"Quer ouvir que confiam e que ele(a) tem autonomia real." },
+      9:{ como:"Seja calmo, acolhedor e objetivo. Ajude a priorizar sem pressão.", cobrar:"Cobre com gentileza e clareza. Ajude a decidir e dar o primeiro passo.", elogiar:"Elogie equilíbrio, cooperação, paciência e capacidade de harmonizar.", ouvir:"Quer ouvir que está tudo bem e que há clareza do que é prioridade." }
     };
 
-    const pieSvg = document.getElementById("pieWrap")?.innerHTML || "";
-    const funcionamento = document.getElementById("comoFunciona")?.innerHTML || "";
-    const fortes = document.getElementById("listaFortes")?.innerHTML || "";
-    const atencao = document.getElementById("listaAtencao")?.innerHTML || "";
-    const quick = document.getElementById("quickResumo")?.textContent || "";
-    const scoreBars = buildScoreBarsHtmlForEmail(score);
+    const b = base[dom] || base[3];
 
     return `
-      <div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">
-        <div style="max-width:980px;margin:0 auto;">
-          <div style="font-size:40px;font-weight:900;margin:0 0 6px;">Quem sou eu</div>
-          <div style="color:#64748b;font-size:14px;margin:0 0 14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>
-
-          <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-            <div style="font-weight:900;font-size:18px;margin-bottom:6px;">Sua tríade principal (Top 3)</div>
-            <div style="color:#64748b;font-size:13px;margin-bottom:12px;">Os 3 tipos mais altos (ordem decrescente).</div>
-
-            <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
-              <div style="flex:1;min-width:320px;">
-                ${itemTop(1, top3[0])}
-                ${itemTop(2, top3[1])}
-                ${itemTop(3, top3[2])}
-              </div>
-
-              <div style="width:320px;min-width:280px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:12px;text-align:center;">
-                ${pieSvg}
-              </div>
-            </div>
-
-            <div style="margin-top:14px;background:#fff6ee;border:1px solid rgba(240,122,0,.35);border-radius:18px;padding:16px;">
-              <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:260px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;">
-                  <div style="font-size:12px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Dados</div>
-                  <div style="font-size:14px;font-weight:800;line-height:1.4;">
-                    Nome: ${nome}<br>
-                    Email: ${email}<br>
-                    Telefone: ${tel}
-                  </div>
-                </div>
-
-                <div style="flex:1.2;min-width:280px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;">
-                  <div style="font-weight:900;font-size:14px;margin-bottom:6px;">Resumo do resultado</div>
-                  <div style="font-size:13px;color:#334155;line-height:1.4;">${quick}</div>
-                  <div style="margin-top:10px;font-size:13px;color:#334155;">
-                    <b>Tríade:</b> ${triade}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-top:16px;">
-            <div style="font-weight:900;font-size:20px;margin:0 0 10px;">Como você tende a funcionar</div>
-            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-              <div style="font-size:14px;line-height:1.55;color:#334155;">${funcionamento}</div>
-            </div>
-          </div>
-
-          <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-              <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos fortes</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortes}</ul>
-            </div>
-
-            <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-              <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos de atenção</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencao}</ul>
-            </div>
-          </div>
-
-          <!-- Pontuação (SÓ NO EMAIL) -->
-          <div style="margin-top:14px;background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-            <div style="font-weight:900;font-size:22px;margin:0 0 6px;">Pontuação</div>
-            <div style="color:#64748b;font-size:13px;margin:0 0 12px;">Quanto maior a barra, maior a compatibilidade com aquele tipo.</div>
-            <div>${scoreBars}</div>
-          </div>
-
-          <div style="margin-top:18px;color:#94a3b8;font-size:12px;">
-            Atrius • Resultado gerado automaticamente
-          </div>
-        </div>
-      </div>
+      <div style="margin:0 0 10px;"><b>Dominante:</b> Tipo ${dom} • <b>Influências:</b> ${infl1} e ${infl2}</div>
+      <ul style="margin:0;padding-left:18px;">
+        <li><b>Como falar com a pessoa:</b> ${b.como}</li>
+        <li><b>Como cobrar (sem gerar atrito):</b> ${b.cobrar}</li>
+        <li><b>Como elogiar (o que ela valoriza):</b> ${b.elogiar}</li>
+        <li><b>O que ela espera ouvir:</b> ${b.ouvir}</li>
+      </ul>
     `;
   }
 
+  // ================= Email: envia variáveis pro template =================
   async function sendEmailOnce(user, top3, score){
     try{
       if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
       sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
 
       const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
+      const email = (user?.email || "").trim();
+      const telefone = (user?.telefone || "—").trim();
+
       const assunto = `Resultado eneagrama - ${nome}`;
-      const relatorio_html = buildEmailHtml(user, top3, score);
+      const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+
+      // pega os blocos já renderizados na página
+      const pie_svg = document.getElementById("pieWrap")?.innerHTML || "";
+      const como_funciona_html = document.getElementById("comoFunciona")?.innerHTML || "";
+      const fortes_html = document.getElementById("listaFortes")?.innerHTML || "";
+      const atencao_html = document.getElementById("listaAtencao")?.innerHTML || "";
+      const quick_resumo = document.getElementById("quickResumo")?.textContent || "";
+
+      // top 3 cards
+      const top3_html = top3.map((it, idx)=>{
+        const color = (TYPE_COLORS[it.t] || "#111827");
+        const tipoNome = (TIPOS[it.t]?.nome || `Tipo ${it.t}`);
+        const tipoCurta = (TIPOS[it.t]?.curta || "");
+        return `
+          <div style="border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fff;margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;">
+              <div>
+                <div style="font-weight:900;font-size:16px;color:#0b2a5b;display:flex;gap:10px;align-items:center;">
+                  <span style="width:10px;height:10px;border-radius:999px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.18);"></span>
+                  ${(idx+1)}º — Tipo ${it.t}
+                </div>
+                <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${tipoNome}</div>
+                <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${tipoCurta}</div>
+              </div>
+              <div style="font-weight:900;font-size:22px;color:#0f172a;min-width:56px;text-align:right;">${it.v}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const score_bars_html = buildScoreBarsHtmlForEmail(score);
+      const guia_html = buildGuiaComunicacaoHtml(top3);
 
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        // usados no template
         assunto,
-        relatorio_html,
+        nome,
+        email,
+        telefone,
+        triade,
+        quick_resumo,
 
-        // pra bater com teu print (From Name / Reply To)
-        name: nome,
-        email: (user?.email || "")
+        top3_html,
+        pie_svg,
+        como_funciona_html,
+        fortes_html,
+        atencao_html,
+        score_bars_html,
+        guia_html
       });
+
     }catch(err){
       console.error("Erro EmailJS:", err);
     }
