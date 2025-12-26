@@ -227,10 +227,13 @@ Utilize o tempo que julgar necessário.
   </div>
 
   <script>
+    // mantém seu storage atual
     const STORAGE_KEY = "atrius_eneagrama_lead_v1";
 
-    // ✅ Redireciona SEM .html conforme você pediu
-    // (GitHub Pages resolve /pages/page1 -> /pages/page1.html)
+    // ✅ chave PADRÃO lida pelo resultado.html (WhatsApp)
+    const USERDATA_KEY = "userData";
+
+    // ✅ Redireciona SEM .html
     const NEXT_PAGE = "/pages/page1";
 
     const nome = document.getElementById("nome");
@@ -338,17 +341,35 @@ Utilize o tempo que julgar necessário.
         return;
       }
 
+      const nomeTrim = nome.value.trim();
+      const sobrenomeTrim = sobrenome.value.trim();
+      const nomeCompleto = `${nomeTrim} ${sobrenomeTrim}`.trim();
+      const emailTrim = email.value.trim();
+      const telFmt = telefone.value.trim();
+      const telDigits = telefone.value.replace(/\D/g,"");
+
+      // ✅ 1) mantém seu storage original (compatibilidade)
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        nome: nome.value.trim(),
-        sobrenome: sobrenome.value.trim(),
-        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`.trim(),
-        email: email.value.trim(),
-        telefone: telefone.value.trim(),
-        telefone_digits: telefone.value.replace(/\D/g,""),
+        nome: nomeTrim,
+        sobrenome: sobrenomeTrim,
+        nome_completo: nomeCompleto,
+        email: emailTrim,
+        telefone: telFmt,
+        telefone_digits: telDigits,
         createdAt: new Date().toISOString()
       }));
 
-      window.location.href = NEXT_PAGE; // ✅ /pages/page1
+      // ✅ 2) storage PADRÃO para o resultado/WhatsApp
+      localStorage.setItem(USERDATA_KEY, JSON.stringify({
+        nome: nomeCompleto,          // o resultado lê "nome"
+        nomeCompleto: nomeCompleto,  // extra
+        email: emailTrim,
+        telefone: telFmt,
+        telefone_digits: telDigits,
+        createdAt: new Date().toISOString()
+      }));
+
+      window.location.href = NEXT_PAGE;
     });
 
     updateButton();
