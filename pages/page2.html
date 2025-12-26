@@ -255,6 +255,8 @@ Agora foque no que te incomoda, te tensiona ou mexe com você por dentro.
 
 <script>
 const KEY="respostas";
+const LEAD_KEY_MAIN="atrius_eneagrama_lead_v1";
+const LEAD_KEY_FALLBACK="lead";
 
 /* ================= STORAGE ================= */
 function getList(){
@@ -262,6 +264,18 @@ function getList(){
   catch{ return []; }
 }
 function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
+
+function getLead(){
+  try{
+    const a = localStorage.getItem(LEAD_KEY_MAIN);
+    if(a) return JSON.parse(a);
+  }catch(_){}
+  try{
+    const b = localStorage.getItem(LEAD_KEY_FALLBACK);
+    if(b) return JSON.parse(b);
+  }catch(_){}
+  return null;
+}
 
 function save(p,a){
   const l=getList();
@@ -292,9 +306,9 @@ function validate(){
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
-  // 🔒 proteção de fluxo (se cair direto aqui sem ter iniciado)
-  if(getList().length === 0){
-    window.location.href = "/";
+  // ✅ proteção correta: se não tem lead, não iniciou o teste
+  if(!getLead()){
+    window.location.href = "../index.html";
     return;
   }
 
