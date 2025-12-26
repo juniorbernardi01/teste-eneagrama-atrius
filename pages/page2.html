@@ -1,261 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quem sou eu — Passo 2</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página 2 - Teste de Competências Emocionais</title>
+
+  <link rel="stylesheet" href="../styles.css" />
+  <script src="../script.js"></script>
 
   <style>
-    :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e5e7eb;
-      --accent:#f07a00;
-      --accentSoft:rgba(240,122,0,.12);
-      --accentBorder:rgba(240,122,0,.45);
-      --shadow:0 10px 28px rgba(0,0,0,.06);
+    .question-card {
+      background: #fff;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.12);
     }
 
-    *{ box-sizing:border-box }
-
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      background:var(--bg);
-      color:var(--text);
+    .option-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #0F2B5B;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.2s;
+      text-align: left;
     }
 
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-      padding:16px;
+    .option-btn:hover { background: #183c7d; }
+
+    .next-btn {
+      margin-top: 35px;
+      background: #E57E25;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
     }
 
-    .card{
-      background:var(--card);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
+    .next-btn:hover { background: #cf6d1f; }
 
-    h1{
-      margin:0 0 6px;
-      font-size:32px;
-    }
-
-    .muted{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.45;
-    }
-
-    .step{
-      margin:12px 0;
-    }
-
-    .bar{
-      height:10px;
-      background:#e9e9e9;
-      border-radius:999px;
-      overflow:hidden;
-      margin-top:6px;
-    }
-
-    .fill{
-      height:100%;
-      width:50%;
-      background:var(--accent);
-    }
-
-    .question{
-      margin-top:18px;
-      padding:14px;
-      border:1px solid var(--border);
-      border-radius:16px;
-      background:#fff;
-    }
-
-    .question h3{
-      margin:0 0 12px;
-      font-size:18px;
-    }
-
-    .option{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      margin-bottom:10px;
-      cursor:pointer;
-      transition:.15s;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .option input{
-      transform:scale(1.2);
-    }
-
-    .option.selected{
-      background:var(--accentSoft);
-      border-color:var(--accentBorder);
-      box-shadow:0 0 0 3px var(--accentSoft);
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    .btn{
-      flex:1;
-      padding:14px;
-      border-radius:14px;
-      border:0;
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    .btn-outline{
-      background:#fff;
-      border:1px solid var(--border);
-    }
-
-    .btn-primary{
-      background:var(--accent);
-      color:#fff;
-    }
-
-    @media(max-width:600px){
-      h1{ font-size:26px; }
+    .back-link {
+      margin-top: 14px;
+      display: inline-block;
+      color: #0F2B5B;
+      text-decoration: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
+  <div class="container">
+    <h1>Formulário de Pesquisa — Página 2</h1>
+    <p>Continue selecionando a alternativa que MAIS se parece com você em cada situação.</p>
 
-      <h1>Quem sou eu</h1>
-      <p class="muted">Escolha a alternativa que mais combina com você.</p>
+    <!-- P2_01 -->
+    <div class="question-card">
+      <h3>Às vezes</h3>
 
-      <div class="step">
-        <b>Passo 2 de 4</b>
-        <div class="bar"><div class="fill"></div></div>
-      </div>
+      <button class="option-btn" onclick="salvarResposta('P2_01','A', this)">
+        Imagino um mundo ideal
+      </button>
 
-      <form id="formP2">
+      <button class="option-btn" onclick="salvarResposta('P2_01','B', this)">
+        Prefiro ficar só para analisar o cenário sem influência dos outros
+      </button>
 
-        <!-- PERGUNTA 4 -->
-        <div class="question">
-          <h3>4. Quando algo dá errado, eu costumo:</h3>
-
-          <div class="option">
-            <input type="radio" name="P2_01" value="A">
-            <label>Me cobrar bastante e tentar corrigir o erro</label>
-          </div>
-
-          <div class="option">
-            <input type="radio" name="P2_01" value="B">
-            <label>Seguir em frente e focar na próxima solução</label>
-          </div>
-        </div>
-
-        <!-- PERGUNTA 5 -->
-        <div class="question">
-          <h3>5. No dia a dia, eu me sinto mais confortável:</h3>
-
-          <div class="option">
-            <input type="radio" name="P2_02" value="A">
-            <label>Tendo regras claras e previsibilidade</label>
-          </div>
-
-          <div class="option">
-            <input type="radio" name="P2_02" value="B">
-            <label>Tendo liberdade para decidir e agir</label>
-          </div>
-        </div>
-
-        <!-- PERGUNTA 6 -->
-        <div class="question">
-          <h3>6. Quando preciso decidir rápido, eu:</h3>
-
-          <div class="option">
-            <input type="radio" name="P2_03" value="A">
-            <label>Penso nos riscos antes de agir</label>
-          </div>
-
-          <div class="option">
-            <input type="radio" name="P2_03" value="B">
-            <label>Confio no instinto e vou</label>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn btn-outline" onclick="window.location.href='/pages/page1'">
-            Voltar
-          </button>
-          <button type="submit" class="btn btn-primary">
-            Próximo
-          </button>
-        </div>
-
-      </form>
+      <button class="option-btn" onclick="salvarResposta('P2_01','C', this)">
+        Prefiro saber a opinião dos outros para decidir o que é melhor a fazer
+      </button>
     </div>
+
+    <!-- P2_02 -->
+    <div class="question-card">
+      <h3>Não gosto de</h3>
+
+      <button class="option-btn" onclick="salvarResposta('P2_02','A', this)">
+        Me sentir desvalorizado, quando não me dão atenção
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P2_02','B', this)">
+        Me sentir preso a rotinas e processos
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P2_02','C', this)">
+        Ser pressionado a tomar partido, pois acredito que todos têm suas razões
+      </button>
+    </div>
+
+    <!-- P2_03 -->
+    <div class="question-card">
+      <h3>Sei que sou</h3>
+
+      <button class="option-btn" onclick="salvarResposta('P2_03','A', this)">
+        Orgulhoso
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P2_03','B', this)">
+        Disperso
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P2_03','C', this)">
+        Narcisista
+      </button>
+    </div>
+
+    <!-- P2_04 -->
+    <div class="question-card">
+      <h3>Não sou e não gosto</h3>
+
+      <button class="option-btn" onclick="salvarResposta('P2_04','A', this)">
+        Situações mal esclarecidas
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P2_04','B', this)">
+        Injustiças
+      </button>
+
+      <button class="option-btn" onclick="salvarResposta('P2_04','C', this)">
+        Ter que decidir no calor da emoção
+      </button>
+    </div>
+
+    <a class="back-link" href="page1.html">← Voltar para a página 1</a>
+
+    <button class="next-btn" onclick="window.location.href='page3.html'">
+      Próxima Página →
+    </button>
   </div>
-
-<script>
-/* ================= CONFIG ================= */
-const STORAGE_KEY = "respostas";
-
-/* ================= HELPERS ================= */
-function getList(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch{ return []; }
-}
-
-function setList(list){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
-
-function upsertAnswer(pergunta, alternativa){
-  let list = getList().filter(r => r.pergunta !== pergunta);
-  list.push({ pergunta, alternativa });
-  setList(list);
-}
-
-/* ================= INTERAÇÕES ================= */
-document.querySelectorAll(".option").forEach(opt=>{
-  opt.addEventListener("click", ()=>{
-    const radio = opt.querySelector("input");
-    radio.checked = true;
-
-    const name = radio.name;
-    document.querySelectorAll(`input[name="${name}"]`)
-      .forEach(r => r.closest(".option").classList.remove("selected"));
-
-    opt.classList.add("selected");
-    upsertAnswer(name, radio.value);
-  });
-});
-
-/* ================= SUBMIT ================= */
-document.getElementById("formP2").addEventListener("submit", e=>{
-  e.preventDefault();
-
-  const required = ["P2_01","P2_02","P2_03"];
-  const missing = required.find(q => !document.querySelector(`input[name="${q}"]:checked`));
-
-  if(missing){
-    alert("Responda todas as perguntas para continuar.");
-    return;
-  }
-
-  window.location.href = "/pages/page3";
-});
-</script>
 </body>
 </html>
