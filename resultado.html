@@ -323,7 +323,7 @@
 </head>
 
 <body>
-  <div class="wrap">
+  <div class="wrap" id="reportRoot">
     <div class="header">
       <div class="title">
         <h1>Quem sou eu</h1>
@@ -385,7 +385,18 @@
     </div>
   </div>
 
+  <!-- ✅ EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
+  // ===== EmailJS IDs (SEUS) =====
+  const EMAILJS_PUBLIC_KEY = "dMy7jYWSeALMDD7TI";
+  const EMAILJS_SERVICE_ID = "service_676gehg";
+  const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
+
+  // ✅ trava para não mandar e-mail 2x (refresh / voltar)
+  const EMAIL_SENT_LOCK = "atrius_eneagrama_email_sent_v1";
+
   // ===== Keys do projeto (PADRÃO) =====
   const RESPOSTAS_KEY = "respostas";
   const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
@@ -433,7 +444,7 @@
     9:"mais calma e evitar briga"
   };
 
-  const TYPE_FORTES = { /* (mantido igual ao seu código) */
+  const TYPE_FORTES = {
     1:["Cuida da qualidade e do capricho","Organiza e coloca ordem no que está bagunçado","É responsável e confiável","Percebe erros e evita retrabalho","Gosta de melhorar as coisas aos poucos","Cumpre regras e combinações","Mantém padrão mesmo com pressão"],
     2:["Ajuda as pessoas de verdade","Percebe quando alguém não está bem","Cria um clima bom no time","É prestativo(a) e acolhedor(a)","Tem facilidade para cooperar","Faz o outro se sentir importante","Resolve coisas com gentileza"],
     3:["Entrega resultado e faz acontecer","Foca em metas e não se perde","Tem energia e ritmo de trabalho","Se adapta para dar certo","Motiva o time pelo exemplo","Aprende rápido o que precisa para vencer","Gosta de crescer e evoluir"],
@@ -445,7 +456,7 @@
     9:["É calmo(a) e equilibrado(a)","Evita brigas e acalma o ambiente","Escuta bem as pessoas","Ajuda o time a se entender","Tem paciência e constância","Gosta de harmonia e paz","Trabalha bem em grupo"]
   };
 
-  const TYPE_ATENCAO = { /* (mantido igual ao seu código) */
+  const TYPE_ATENCAO = {
     1:["Pode se cobrar demais","Pode ficar rígido(a) e inflexível","Pode criticar muito (a si e aos outros)","Pode ter dificuldade de relaxar","Pode ficar impaciente com erros","Pode querer tudo do seu jeito","Pode ter dificuldade em delegar"],
     2:["Pode dizer “sim” demais e se sobrecarregar","Pode ter medo de desagradar","Pode esperar reconhecimento e se frustrar","Pode se envolver demais com problemas dos outros","Pode guardar mágoa sem falar","Pode se esquecer de si","Pode evitar conversas difíceis"],
     3:["Pode ficar ansioso(a) por resultado","Pode querer fazer tudo rápido demais","Pode se comparar com os outros","Pode confundir valor pessoal com desempenho","Pode colocar imagem acima do descanso","Pode ter dificuldade de parar e respirar","Pode ficar irritado(a) com lentidão"],
@@ -634,6 +645,46 @@
     return linhas.join("\n");
   }
 
+  // ✅ Monta HTML do relatório para o e-mail (igual a página)
+  function buildEmailHtml(){
+    // CSS minimalista inline para e-mail, mantendo o visual geral
+    const head =
+      `<div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">`+
+        `<div style="max-width:980px;margin:0 auto;">`+
+          `<div style="font-size:36px;font-weight:900;margin:0 0 6px;">Quem sou eu</div>`+
+          `<div style="color:#64748b;font-size:14px;margin:0 0 14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>`+
+          `<div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">`;
+    const tail = `</div></div></div>`;
+
+    // Pega o HTML “pronto” que já foi renderizado na tela:
+    const body = document.getElementById("reportRoot").innerHTML;
+
+    return head + body + tail;
+  }
+
+  async function sendEmailOnce(user){
+    try{
+      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
+      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
+
+      const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—").trim();
+      const assunto = `Resultado eneagrama - ${nome || "Participante"}`;
+
+      const relatorio_html = buildEmailHtml();
+
+      // init + send
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        assunto,
+        relatorio_html
+      });
+
+    }catch(err){
+      console.error("Erro EmailJS:", err);
+      // não quebra o resultado na tela
+    }
+  }
+
   let __lastTop3 = null;
   let __lastUser = null;
 
@@ -649,18 +700,15 @@
 
   (async function init(){
     try{
-      // ✅ guard: se não veio de uma sessão de teste, volta pro início
       const active = sessionStorage.getItem(SESSION_ACTIVE_KEY) === "1";
       const currentTestId = localStorage.getItem(TEST_ID_KEY);
       const user = getLead();
 
       if(!active || !currentTestId || !user){
-        // não dá loop: manda pro index
         window.location.href = "index.html";
         return;
       }
 
-      // ✅ trava anti-dado antigo: lead precisa ser do testId atual (quando existir)
       if(user.testId && currentTestId && String(user.testId) !== String(currentTestId)){
         showError("Este resultado não pertence ao teste atual. Inicie um novo teste na página inicial.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
@@ -688,6 +736,9 @@
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
+
+      // ✅ Envia o e-mail DEPOIS que a página já está renderizada (garante que vem com dados)
+      await sendEmailOnce(user);
 
     }catch(err){
       console.error(err);
