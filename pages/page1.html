@@ -1,289 +1,58 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quem sou eu — Passo 1</title>
-
-<style>
-:root{
-  --accent:#f07a00;
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --bd:#e7e7e7;
-  --text:#111;
-  --muted:#666;
-}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-.wrap{
-  max-width:960px;
-  margin:auto;
-  padding:16px;
-}
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 6px 20px rgba(0,0,0,.06);
-}
-h1{margin:0 0 6px}
-.muted{color:var(--muted);font-size:14px;line-height:1.4}
-
-.step{margin:12px 0}
-.bar{
-  height:10px;
-  background:#e9e9e9;
-  border-radius:999px;
-  overflow:hidden;
-  margin-top:6px;
-}
-.fill{
-  height:100%;
-  width:25%;
-  background:var(--accent);
-}
-
-.q{
-  border:1px solid var(--bd);
-  border-radius:14px;
-  padding:12px;
-  margin:12px 0;
-}
-.qtitle{
-  font-weight:700;
-  margin-bottom:8px;
-}
-.qtitle span{
-  color:#888;
-  margin-right:6px;
-}
-
-.opt{
-  display:block;
-  border:1px solid var(--bd);
-  border-radius:12px;
-  padding:12px;
-  margin:6px 0;
-  cursor:pointer;
-  background:#fafafa;
-}
-.opt input{
-  margin-right:10px;
-  transform:scale(1.1);
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-}
-.btn{
-  padding:14px;
-  border-radius:12px;
-  border:0;
-  font-weight:700;
-  cursor:pointer;
-}
-.btn-primary{
-  background:var(--accent);
-  color:#fff;
-  flex:1;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teste — Página 1</title>
+  <link rel="stylesheet" href="../styles.css">
 </head>
-
 <body>
-<div class="wrap">
-<div class="card">
+  <div class="wrap">
+    <div class="card">
+      <h1>Página 1</h1>
+      <p class="muted">Marque a alternativa que mais combina com você.</p>
 
-<h1>Quem sou eu</h1>
-<p class="muted">
-Escolha a alternativa que mais se repete em você ao longo da vida.
-Não existe resposta certa ou errada.
-</p>
+      <form id="qForm" autocomplete="off">
+        <div class="q">
+          <h3>1) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q1" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q1" value="B"> Opção B</label>
+        </div>
 
-<div class="step">
-<b>Passo 1 de 4 — Motivações pessoais</b>
-<div class="bar"><div class="fill"></div></div>
-</div>
+        <div class="q">
+          <h3>2) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q2" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q2" value="B"> Opção B</label>
+        </div>
 
-<form id="formP1">
+        <div class="q">
+          <h3>3) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q3" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q3" value="B"> Opção B</label>
+        </div>
 
-<!-- 1 -->
-<div class="q">
-  <div class="qtitle"><span>1.</span>Me sinto mais satisfeito(a) quando:</div>
-  <label class="opt"><input type="radio" name="P1_01" value="A"> Tudo está correto e bem feito</label>
-  <label class="opt"><input type="radio" name="P1_01" value="B"> Sou reconhecido(a)</label>
-  <label class="opt"><input type="radio" name="P1_01" value="C"> Tenho liberdade</label>
-</div>
+        <div class="q">
+          <h3>4) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q4" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q4" value="B"> Opção B</label>
+        </div>
 
-<!-- 2 -->
-<div class="q">
-  <div class="qtitle"><span>2.</span>O que mais me motiva é:</div>
-  <label class="opt"><input type="radio" name="P1_02" value="A"> Fazer o que é certo</label>
-  <label class="opt"><input type="radio" name="P1_02" value="B"> Vencer desafios</label>
-  <label class="opt"><input type="radio" name="P1_02" value="C"> Ter autonomia</label>
-</div>
+        <div class="row">
+          <button class="btn secondary" type="button" id="backBtn">Voltar</button>
+          <button class="btn" type="submit">Próxima</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-<!-- 3 -->
-<div class="q">
-  <div class="qtitle"><span>3.</span>Eu me sinto melhor quando:</div>
-  <label class="opt"><input type="radio" name="P1_03" value="A"> Tenho clareza e ordem</label>
-  <label class="opt"><input type="radio" name="P1_03" value="B"> Estou progredindo</label>
-  <label class="opt"><input type="radio" name="P1_03" value="C"> Tenho meu espaço respeitado</label>
-</div>
-
-<!-- 4 -->
-<div class="q">
-  <div class="qtitle"><span>4.</span>Eu valorizo mais:</div>
-  <label class="opt"><input type="radio" name="P1_04" value="A"> Organização e responsabilidade</label>
-  <label class="opt"><input type="radio" name="P1_04" value="B"> Performance e resultado</label>
-  <label class="opt"><input type="radio" name="P1_04" value="C"> Independência</label>
-</div>
-
-<!-- 5 -->
-<div class="q">
-  <div class="qtitle"><span>5.</span>Eu me dedico mais quando:</div>
-  <label class="opt"><input type="radio" name="P1_05" value="A"> Posso melhorar algo errado</label>
-  <label class="opt"><input type="radio" name="P1_05" value="B"> Tenho um objetivo claro</label>
-  <label class="opt"><input type="radio" name="P1_05" value="C"> Posso decidir com calma</label>
-</div>
-
-<!-- 6 -->
-<div class="q">
-  <div class="qtitle"><span>6.</span>Eu costumo ser mais:</div>
-  <label class="opt"><input type="radio" name="P1_06" value="A"> Exigente e cuidadoso(a)</label>
-  <label class="opt"><input type="radio" name="P1_06" value="B"> Competitivo(a) e focado(a)</label>
-  <label class="opt"><input type="radio" name="P1_06" value="C"> Reservado(a) e observador(a)</label>
-</div>
-
-<!-- 7 -->
-<div class="q">
-  <div class="qtitle"><span>7.</span>Eu me sinto valorizado(a) quando:</div>
-  <label class="opt"><input type="radio" name="P1_07" value="A"> Reconhecem minha responsabilidade</label>
-  <label class="opt"><input type="radio" name="P1_07" value="B"> Reconhecem minhas conquistas</label>
-  <label class="opt"><input type="radio" name="P1_07" value="C"> Respeitam meus limites</label>
-</div>
-
-<!-- 8 -->
-<div class="q">
-  <div class="qtitle"><span>8.</span>Em geral, eu prefiro:</div>
-  <label class="opt"><input type="radio" name="P1_08" value="A"> Regras claras</label>
-  <label class="opt"><input type="radio" name="P1_08" value="B"> Metas e desafios</label>
-  <label class="opt"><input type="radio" name="P1_08" value="C"> Flexibilidade</label>
-</div>
-
-<!-- 9 -->
-<div class="q">
-  <div class="qtitle"><span>9.</span>Eu me considero mais:</div>
-  <label class="opt"><input type="radio" name="P1_09" value="A"> Correto(a) e coerente</label>
-  <label class="opt"><input type="radio" name="P1_09" value="B"> Determinado(a)</label>
-  <label class="opt"><input type="radio" name="P1_09" value="C"> Curioso(a)</label>
-</div>
-
-<!-- 10 -->
-<div class="q">
-  <div class="qtitle"><span>10.</span>Quando preciso escolher, prefiro:</div>
-  <label class="opt"><input type="radio" name="P1_10" value="A"> Qualidade</label>
-  <label class="opt"><input type="radio" name="P1_10" value="B"> Resultado</label>
-  <label class="opt"><input type="radio" name="P1_10" value="C"> Liberdade</label>
-</div>
-
-<!-- 11 -->
-<div class="q">
-  <div class="qtitle"><span>11.</span>Eu costumo buscar:</div>
-  <label class="opt"><input type="radio" name="P1_11" value="A"> Fazer o certo</label>
-  <label class="opt"><input type="radio" name="P1_11" value="B"> Ser reconhecido(a)</label>
-  <label class="opt"><input type="radio" name="P1_11" value="C"> Ser independente</label>
-</div>
-
-<!-- 12 -->
-<div class="q">
-  <div class="qtitle"><span>12.</span>Eu me sinto melhor quando:</div>
-  <label class="opt"><input type="radio" name="P1_12" value="A"> Tudo está alinhado</label>
-  <label class="opt"><input type="radio" name="P1_12" value="B"> Estou alcançando algo importante</label>
-  <label class="opt"><input type="radio" name="P1_12" value="C"> Tenho tempo para mim</label>
-</div>
-
-<!-- 13 -->
-<div class="q">
-  <div class="qtitle"><span>13.</span>Eu gosto mais de:</div>
-  <label class="opt"><input type="radio" name="P1_13" value="A"> Corrigir e melhorar</label>
-  <label class="opt"><input type="radio" name="P1_13" value="B"> Realizar e conquistar</label>
-  <label class="opt"><input type="radio" name="P1_13" value="C"> Entender profundamente</label>
-</div>
-
-<!-- 14 -->
-<div class="q">
-  <div class="qtitle"><span>14.</span>Eu valorizo quando:</div>
-  <label class="opt"><input type="radio" name="P1_14" value="A"> Existe cuidado e capricho</label>
-  <label class="opt"><input type="radio" name="P1_14" value="B"> Existe foco e disciplina</label>
-  <label class="opt"><input type="radio" name="P1_14" value="C"> Existe espaço e flexibilidade</label>
-</div>
-
-<!-- 15 -->
-<div class="q">
-  <div class="qtitle"><span>15.</span>Eu me desmotivo mais quando:</div>
-  <label class="opt"><input type="radio" name="P1_15" value="A"> Vejo descuido</label>
-  <label class="opt"><input type="radio" name="P1_15" value="B"> Não vejo progresso</label>
-  <label class="opt"><input type="radio" name="P1_15" value="C"> Me sinto controlado(a)</label>
-</div>
-
-<div class="actions">
-<button type="button" id="btnNext" class="btn btn-primary">Continuar</button>
-</div>
-
-</form>
-</div>
-</div>
-
-<script>
-const KEY="respostas";
-
-function getList(){
-  try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
-  catch{ return []; }
-}
-function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
-
-function save(p,a){
-  const l=getList();
-  const i=l.findIndex(x=>x.pergunta===p);
-  if(i>=0) l[i].alternativa=a;
-  else l.push({pergunta:p,alternativa:a});
-  setList(l);
-}
-
-function restore(){
-  getList().forEach(r=>{
-    const el=document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
-    if(el) el.checked=true;
-  });
-}
-
-function validate(){
-  const names=[...new Set([...document.querySelectorAll('input[type=radio]')].map(i=>i.name))];
-  const ok=names.every(n=>document.querySelector(`input[name="${n}"]:checked`));
-  if(!ok) alert("Responda todas as questões para continuar.");
-  return ok;
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  restore();
-  document.querySelectorAll("input[type=radio]").forEach(i=>{
-    i.addEventListener("change",()=>save(i.name,i.value));
-  });
-  document.getElementById("btnNext").onclick=()=>{
-    if(!validate()) return;
-    location.href="page2.html";
-  };
-});
-</script>
-
+  <script src="../script.js"></script>
+  <script>
+    APP.initQuestionPage({
+      formId: "qForm",
+      qKeys: ["q1","q2","q3","q4"],
+      prevHref: "../index.html",
+      nextHref: "page2.html"
+    });
+  </script>
 </body>
 </html>
