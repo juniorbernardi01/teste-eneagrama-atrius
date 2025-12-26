@@ -147,6 +147,7 @@
       font-weight:800;
       font-size:16px;
       cursor:pointer;
+      transition:opacity .15s, background .15s;
     }
 
     .btn:hover{ background:var(--btnHover); }
@@ -195,24 +196,24 @@ Utilize o tempo que julgar necessário.
           <div class="row">
             <div>
               <label for="nome">Nome<span class="req">*</span></label>
-              <input id="nome" placeholder="Ex: Maria">
+              <input id="nome" autocomplete="given-name" placeholder="Ex: Maria">
               <div class="error" id="errNome">Informe seu nome.</div>
             </div>
 
             <div>
               <label for="sobrenome">Sobrenome<span class="req">*</span></label>
-              <input id="sobrenome" placeholder="Ex: Silva">
+              <input id="sobrenome" autocomplete="family-name" placeholder="Ex: Silva">
               <div class="error" id="errSobrenome">Informe seu sobrenome.</div>
             </div>
           </div>
 
           <label for="email">Email<span class="req">*</span></label>
-          <input id="email" placeholder="ex: maria@empresa.com">
+          <input id="email" autocomplete="email" inputmode="email" placeholder="ex: maria@empresa.com">
           <div class="error" id="errEmail">Informe um e-mail válido.</div>
 
-          <label for="telefone">Telefone<span class="req">*</span></label>
-          <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
-          <div class="error" id="errTelefone">Informe um telefone válido.</div>
+          <label for="telefone">Telefone (DDD + número)<span class="req">*</span></label>
+          <input id="telefone" autocomplete="tel" inputmode="numeric" placeholder="(51) 99999-9999" maxlength="15">
+          <div class="error" id="errTelefone">Informe um telefone válido (10 ou 11 dígitos com DDD).</div>
 
           <button class="btn" id="btnStart" type="submit" disabled>Iniciar Teste</button>
 
@@ -226,36 +227,54 @@ Utilize o tempo que julgar necessário.
   </div>
 
   <script>
-    /* ===============================
-       CONFIG / KEYS
-    =============================== */
+    // =========================
+    // CONFIG
+    // =========================
     const RESPOSTAS_KEY = "respostas";
-    const LEAD_KEY = "atrius_eneagrama_lead_v1";
-    const TEST_ID_KEY = "atrius_eneagrama_test_id";
-    const SESSION_KEY = "atrius_eneagrama_active";
 
+    // ✅ vamos gravar o lead em MAIS DE UMA KEY (compatibilidade com Page1)
+    const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
+    const LEAD_KEY_FALLBACK_1 = "lead";
+    const LEAD_KEY_FALLBACK_2 = "atrius_lead";
+    const LEAD_KEY_FALLBACK_3 = "lead_inicial";
+
+    // ✅ rota RELATIVA (mais segura)
     const NEXT_PAGE = "pages/page1.html";
 
-    /* ===============================
-       RESET TOTAL AO ENTRAR NO INDEX
-       (sempre um teste novo)
-    =============================== */
-    function resetTest() {
-      localStorage.removeItem(RESPOSTAS_KEY);
-      localStorage.removeItem(LEAD_KEY);
-      localStorage.setItem(TEST_ID_KEY, Date.now().toString());
-      sessionStorage.setItem(SESSION_KEY, "1");
+    // ✅ controle mestre do teste (para as páginas validarem)
+    const TEST_ID_KEY = "atrius_eneagrama_test_id";
+    const SESSION_ACTIVE_KEY = "atrius_eneagrama_active";
+
+    // =========================
+    // RESET TOTAL AO ENTRAR NO INDEX
+    // (sempre um teste novo)
+    // =========================
+    function hardResetOnEntry(){
+      try{
+        localStorage.removeItem(RESPOSTAS_KEY);
+
+        localStorage.removeItem(LEAD_KEY_MAIN);
+        localStorage.removeItem(LEAD_KEY_FALLBACK_1);
+        localStorage.removeItem(LEAD_KEY_FALLBACK_2);
+        localStorage.removeItem(LEAD_KEY_FALLBACK_3);
+
+        localStorage.setItem(TEST_ID_KEY, String(Date.now()));
+        sessionStorage.setItem(SESSION_ACTIVE_KEY, "1");
+      }catch(e){
+        console.warn("Falha ao limpar storage:", e);
+      }
     }
 
-    resetTest();
+    hardResetOnEntry();
 
-    window.addEventListener("pageshow", (e) => {
-      if (e.persisted) resetTest();
+    // cobre o caso do usuário voltar pra página inicial via "Voltar"
+    window.addEventListener("pageshow", (ev) => {
+      if (ev && ev.persisted) hardResetOnEntry();
     });
 
-    /* ===============================
-       VALIDAÇÃO
-    =============================== */
+    // =========================
+    // ELEMENTOS
+    // =========================
     const nome = document.getElementById("nome");
     const sobrenome = document.getElementById("sobrenome");
     const email = document.getElementById("email");
@@ -269,55 +288,124 @@ Utilize o tempo que julgar necessário.
 
     function setValid(el, ok){
       el.classList.remove("is-valid","is-invalid");
-      if(ok) el.classList.add("is-valid");
-      else el.classList.add("is-invalid");
+      if(ok === true) el.classList.add("is-valid");
+      if(ok === false) el.classList.add("is-invalid");
     }
 
-    function validate(){
-      const okNome = nome.value.trim().length >= 2;
-      const okSobrenome = sobrenome.value.trim().length >= 2;
-      const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value);
+    function showErr(el, show){
+      el.style.display = show ? "block" : "none";
+    }
+
+    function validarNome(show=false){
+      const ok = nome.value.trim().length >= 2;
+      setValid(nome, ok);
+      showErr(errNome, show && !ok);
+      return ok;
+    }
+
+    function validarSobrenome(show=false){
+      const ok = sobrenome.value.trim().length >= 2;
+      setValid(sobrenome, ok);
+      showErr(errSobrenome, show && !ok);
+      return ok;
+    }
+
+    function validarEmail(show=false){
+      const v = email.value.trim();
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      setValid(email, ok);
+      showErr(errEmail, show && !ok);
+      return ok;
+    }
+
+    function validarTelefone(show=false){
       const digits = telefone.value.replace(/\D/g,"");
-      const okTelefone = digits.length === 10 || digits.length === 11;
-
-      setValid(nome, okNome);
-      setValid(sobrenome, okSobrenome);
-      setValid(email, okEmail);
-      setValid(telefone, okTelefone);
-
-      errNome.style.display = okNome ? "none" : "block";
-      errSobrenome.style.display = okSobrenome ? "none" : "block";
-      errEmail.style.display = okEmail ? "none" : "block";
-      errTelefone.style.display = okTelefone ? "none" : "block";
-
-      btnStart.disabled = !(okNome && okSobrenome && okEmail && okTelefone);
-      return btnStart.disabled === false;
+      const ok = digits.length === 10 || digits.length === 11;
+      setValid(telefone, ok);
+      showErr(errTelefone, show && !ok);
+      return ok;
     }
 
-    [nome, sobrenome, email, telefone].forEach(el =>
-      el.addEventListener("input", validate)
-    );
+    function updateButton(){
+      const okAll =
+        validarNome(false) &&
+        validarSobrenome(false) &&
+        validarEmail(false) &&
+        validarTelefone(false);
 
-    /* ===============================
-       SUBMIT
-    =============================== */
+      btnStart.disabled = !okAll;
+    }
+
+    function formatPhoneBR(digits){
+      let v = String(digits || "").replace(/\D/g,"");
+      if(v.length > 11) v = v.slice(0,11);
+
+      if(v.length === 0) return "";
+      if(v.length < 3) return `(${v}`;
+      if(v.length < 7) return `(${v.slice(0,2)}) ${v.slice(2)}`;
+      if(v.length < 11) return `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+      return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    }
+
+    nome.addEventListener("input", () => { validarNome(false); updateButton(); });
+    sobrenome.addEventListener("input", () => { validarSobrenome(false); updateButton(); });
+    email.addEventListener("input", () => { validarEmail(false); updateButton(); });
+
+    telefone.addEventListener("input", () => {
+      const d = telefone.value.replace(/\D/g,"");
+      telefone.value = formatPhoneBR(d);
+      validarTelefone(false);
+      updateButton();
+    });
+
+    nome.addEventListener("blur", () => validarNome(true));
+    sobrenome.addEventListener("blur", () => validarSobrenome(true));
+    email.addEventListener("blur", () => validarEmail(true));
+    telefone.addEventListener("blur", () => validarTelefone(true));
+
+    // =========================
+    // SUBMIT
+    // =========================
     document.getElementById("leadForm").addEventListener("submit", (e) => {
       e.preventDefault();
-      if (!validate()) return;
 
-      localStorage.setItem(LEAD_KEY, JSON.stringify({
+      const ok =
+        validarNome(true) &&
+        validarSobrenome(true) &&
+        validarEmail(true) &&
+        validarTelefone(true);
+
+      if(!ok){
+        const firstBad = [nome, sobrenome, email, telefone].find(el => el.classList.contains("is-invalid"));
+        if(firstBad) firstBad.focus();
+        return;
+      }
+
+      // garante sessão ativa
+      try{ sessionStorage.setItem(SESSION_ACTIVE_KEY, "1"); }catch(_){}
+
+      const payload = {
         nome: nome.value.trim(),
         sobrenome: sobrenome.value.trim(),
-        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`,
+        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`.trim(),
         email: email.value.trim(),
         telefone: telefone.value.trim(),
         telefone_digits: telefone.value.replace(/\D/g,""),
         createdAt: new Date().toISOString(),
-        testId: localStorage.getItem(TEST_ID_KEY)
-      }));
+        testId: localStorage.getItem(TEST_ID_KEY) || null
+      };
 
-      window.location.href = NEXT_PAGE;
+      // ✅ grava em múltiplas keys (compatibilidade)
+      localStorage.setItem(LEAD_KEY_MAIN, JSON.stringify(payload));
+      localStorage.setItem(LEAD_KEY_FALLBACK_1, JSON.stringify(payload));
+      localStorage.setItem(LEAD_KEY_FALLBACK_2, JSON.stringify(payload));
+      localStorage.setItem(LEAD_KEY_FALLBACK_3, JSON.stringify(payload));
+
+      // ✅ vai pra Page1
+      window.location.assign(NEXT_PAGE);
     });
+
+    updateButton();
   </script>
 </body>
 </html>
