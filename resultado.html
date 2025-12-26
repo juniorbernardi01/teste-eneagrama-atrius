@@ -14,18 +14,17 @@
       --border:#e5e7eb;
       --shadow:0 12px 34px rgba(15,23,42,.10);
       --accent:#f07a00;
-      --accent2:#0b2a5b;
 
-      /* Paleta por tipo */
-      --t1:#9ca3af;   /* Cinza */
-      --t2:#22c55e;   /* Verde */
-      --t3:#d4af37;   /* Ouro */
-      --t4:#7c3aed;   /* Roxo */
-      --t5:#0f172a;   /* Azul escuro */
-      --t6:#8b6b4a;   /* Terroso */
+      /* Paleta por tipo (conforme sua sugestão) */
+      --t1:#9ca3af;   /* Cinza (pureza) */
+      --t2:#22c55e;   /* Verde (calor) */
+      --t3:#d4af37;   /* Ouro (sucesso) */
+      --t4:#7c3aed;   /* Roxo (profundidade) */
+      --t5:#0f172a;   /* Azul escuro (intelecto) */
+      --t6:#8b6b4a;   /* Terroso (estabilidade) */
       --t7:#f97316;   /* Laranja */
-      --t8:#111827;   /* Preto/força */
-      --t9:#38bdf8;   /* Azul céu */
+      --t8:#111827;   /* Preto (força) */
+      --t9:#38bdf8;   /* Azul céu (harmonia) */
 
       --soft:#fff6ee;
       --softBorder:rgba(240,122,0,.35);
@@ -364,8 +363,8 @@
       </div>
 
       <div class="listBox">
-        <h4>Pontos a melhorar</h4>
-        <ul id="listaMelhorar"></ul>
+        <h4>Pontos de atenção</h4>
+        <ul id="listaAtencao"></ul>
       </div>
     </div>
   </div>
@@ -374,122 +373,113 @@
   const RESPOSTAS_KEY = "respostas";
   const MATRIZ_URL = "/data/matriz.json";
 
-  function getCSS(varName){
-    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-  }
+  function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
   const TYPE_COLORS = {
-    1: getCSS("--t1"),
-    2: getCSS("--t2"),
-    3: getCSS("--t3"),
-    4: getCSS("--t4"),
-    5: getCSS("--t5"),
-    6: getCSS("--t6"),
-    7: getCSS("--t7"),
-    8: getCSS("--t8"),
-    9: getCSS("--t9")
+    1: cssVar("--t1"), 2: cssVar("--t2"), 3: cssVar("--t3"),
+    4: cssVar("--t4"), 5: cssVar("--t5"), 6: cssVar("--t6"),
+    7: cssVar("--t7"), 8: cssVar("--t8"), 9: cssVar("--t9")
   };
 
+  // Nomes + frase simples
   const TIPOS = {
-    1: { nome: "Perfeccionista / Reformador", curta: "Busca fazer o correto, melhorar padrões e evitar erros." },
-    2: { nome: "Prestativo / Cuidador",       curta: "Busca ajudar, ser necessário e criar conexão com pessoas." },
-    3: { nome: "Realizador",                 curta: "Busca alcançar resultados, ser reconhecido e vencer desafios." },
-    4: { nome: "Individualista",             curta: "Busca autenticidade, profundidade e identidade própria." },
-    5: { nome: "Investigador",               curta: "Busca compreender, dominar assuntos e preservar energia." },
-    6: { nome: "Leal",                       curta: "Busca segurança, previsibilidade e confiança." },
-    7: { nome: "Entusiasta",                 curta: "Busca opções, liberdade, experiências e leveza." },
-    8: { nome: "Desafiador",                 curta: "Busca autonomia, força e proteção do seu território." },
-    9: { nome: "Pacificador",                curta: "Busca harmonia, estabilidade e evitar conflitos." }
+    1:{ nome:"Perfeccionista / Reformador", curta:"Gosta de fazer certo, com padrão e qualidade." },
+    2:{ nome:"Prestativo / Cuidador", curta:"Gosta de ajudar, cuidar e manter as pessoas bem." },
+    3:{ nome:"Realizador", curta:"Gosta de resultado, metas e reconhecimento." },
+    4:{ nome:"Individualista", curta:"Gosta de ser único, profundo e verdadeiro." },
+    5:{ nome:"Investigador", curta:"Gosta de entender, pensar e agir com estratégia." },
+    6:{ nome:"Leal", curta:"Gosta de segurança, confiança e previsibilidade." },
+    7:{ nome:"Entusiasta", curta:"Gosta de novidades, energia e possibilidades." },
+    8:{ nome:"Desafiador", curta:"Gosta de força, autonomia e fala direto." },
+    9:{ nome:"Pacificador", curta:"Gosta de paz, harmonia e evitar conflito." }
   };
 
-  // ===== Textos-base por tipo (para montar fortes/fracos automaticamente) =====
-  const TYPE_STRENGTHS = {
-    1:["Ética e senso de justiça","Organização e disciplina","Padrão de qualidade elevado","Consistência e responsabilidade","Melhoria contínua"],
-    2:["Empatia e acolhimento","Facilidade de relacionamento","Colaboração e serviço","Motiva e apoia pessoas","Sensibilidade ao clima do ambiente"],
-    3:["Foco em metas e execução","Energia e produtividade","Liderança e influência","Adaptabilidade para fazer acontecer","Mentalidade de performance"],
-    4:["Autenticidade e profundidade","Criatividade e originalidade","Percepção de nuances emocionais","Conexão com propósito","Expressão e estética"],
-    5:["Pensamento analítico","Aprendizado rápido","Foco profundo e autonomia","Decisão racional sob pressão","Visão de padrões e simplificação"],
-    6:["Lealdade e confiabilidade","Planejamento e prevenção de riscos","Senso de equipe","Coragem prática em crise","Cria processos e segurança"],
-    7:["Otimismo e energia","Geração de ideias","Flexibilidade e adaptação","Comunicação leve e inspiradora","Enxerga oportunidades"],
-    8:["Firmeza e presença","Protege pessoas e limites","Coragem para confronto","Decisão rápida","Resiliência sob pressão"],
-    9:["Calma e estabilidade","Mediação de conflitos","Escuta e diplomacia","Visão ampla e bom senso","Constância quando engajado"]
+  // Influência simples (linguagem bem acessível)
+  const INFLUENCIA = {
+    1:"mais cobrança e vontade de fazer certo",
+    2:"mais cuidado com pessoas e busca de aprovação",
+    3:"mais foco em resultado e em ser reconhecido",
+    4:"mais emoção, profundidade e sensibilidade",
+    5:"mais análise, estratégia e reserva",
+    6:"mais cautela, dúvida e busca de segurança",
+    7:"mais energia, pressa e vontade de fazer algo novo",
+    8:"mais firmeza, confronto e decisão rápida",
+    9:"mais calma, paciência e evitar briga"
   };
 
-  const TYPE_WEAKNESSES = {
-    1:["Rigidez e dificuldade com erro","Autocrítica/crítica excessiva","Impaciência com lentidão","Cobrança alta e pouca leveza","Dificuldade em delegar"],
-    2:["Dizer não / limites","Buscar aprovação","Frustrar sem reconhecimento","Ajudar com expectativa","Negligenciar a si"],
-    3:["Cobrança e pressa","Confundir valor com desempenho","Excesso de imagem/controle","Dificuldade de descansar","Competitividade que tensiona"],
-    4:["Oscilação emocional","Comparação e sensação de falta","Perder ação prática","Isolamento","Dificuldade com rotina"],
-    5:["Distanciamento emocional","Analisar demais e travar","Dificuldade em pedir ajuda","Postergar ação","Comunicação seca sob pressão"],
-    6:["Ansiedade e antecipação negativa","Dúvida e necessidade de garantias","Desconfiança/testar confiança","Oscilar medo e confronto","Dificuldade de decidir sob pressão"],
-    7:["Dispersão e não concluir","Evitar desconforto","Impulsividade","Superficialidade por excesso de estímulo","Dificuldade com disciplina"],
-    8:["Tom duro e impaciência","Controlar demais","Evitar vulnerabilidade","Reatividade a ameaça/injustiça","Intensidade 'tudo ou nada'"],
-    9:["Procrastinação/inércia","Evitar conflito e engolir","Dificuldade em priorizar","Desconectar de si","Acomodação"]
+  // Pontos fortes por tipo (simples)
+  const TYPE_FORTES = {
+    1:["Capricho e qualidade","Organização","Responsabilidade","Foco em melhorar","Cuidado com erros"],
+    2:["Empatia","Ajuda o time","Boa convivência","Apoia pessoas","Cria conexão"],
+    3:["Entrega e produtividade","Foco em metas","Agilidade","Lidera pelo exemplo","Faz acontecer"],
+    4:["Criatividade","Autenticidade","Percebe sentimentos","Profundidade","Visão diferente"],
+    5:["Análise e lógica","Aprende rápido","Estratégia","Foco","Autonomia"],
+    6:["Confiabilidade","Planejamento","Atenção a riscos","Lealdade","Compromisso com o grupo"],
+    7:["Energia","Otimismo","Ideias e soluções","Flexibilidade","Comunicação leve"],
+    8:["Firmeza","Coragem","Protege limites","Decide rápido","Resistência à pressão"],
+    9:["Calma","Mediação","Escuta","Equilíbrio","Boa convivência"]
   };
 
-  // ===== SEC_MOD COMPLETO =====
-  /* Colei aqui o SEC_MOD que te enviei acima (mesmo conteúdo) */
-  const SEC_MOD = (function(){
-    return (
-      /* >>>>> INÍCIO SEC_MOD <<<<< */
-      ${"null"}
-    );
-  })();
-</script>
+  // Pontos de atenção por tipo (simples)
+  const TYPE_ATENCAO = {
+    1:["Rigidez","Crítica demais","Impaciência","Se cobrar muito","Dificuldade em delegar"],
+    2:["Dificuldade de dizer não","Querer agradar sempre","Se frustrar quando não valorizam","Se doar demais","Guardar mágoa"],
+    3:["Pressa e ansiedade","Se cobrar demais","Confundir valor com resultado","Querer controle","Dificuldade de parar"],
+    4:["Oscilar no humor","Comparação","Se fechar","Levar para o lado pessoal","Perder foco prático"],
+    5:["Pensar demais","Se fechar","Demorar para agir","Falar pouco e parecer frio","Evitar emoções"],
+    6:["Ansiedade","Dúvida constante","Medo de errar","Desconfiança","Precisar de garantia pra tudo"],
+    7:["Dispersar","Começar e não terminar","Evitar desconforto","Impulsividade","Falta de rotina"],
+    8:["Tom duro","Controlar demais","Explodir fácil","Não mostrar fraqueza","Confrontar sem necessidade"],
+    9:["Procrastinar","Evitar conflito","Engolir frustração","Dificuldade de decidir","Falta de prioridade"]
+  };
 
-<!-- ⚠️ IMPORTANTE:
-     Eu não consigo duplicar o SEC_MOD duas vezes (já te mandei completo).
-     Então: dentro do resultado.html, substitua TODO o bloco acima do SEC_MOD
-     por:   const SEC_MOD = { ... }  (o mesmo que mandei no primeiro bloco)
--->
-<script>
-  // ===== Helpers =====
-  function uniqTop(arr, max=8){
+  // Helpers
+  function uniq(arr){
     const out=[]; const seen=new Set();
     for(const x of arr){
       const k=(x||"").toLowerCase().trim();
       if(!k || seen.has(k)) continue;
       seen.add(k); out.push(x);
-      if(out.length>=max) break;
     }
     return out;
   }
-
-  function getSec(primary, sec){
-    const s = SEC_MOD?.[primary]?.[sec];
-    if(!s) return null;
-    return { title: s.title || "", text: s.text || "" };
+  function limit(arr, n){ return arr.slice(0,n); }
+  function key84(a,b,c){
+    const s=[a,b,c].sort((x,y)=>x-y);
+    return `${s[0]}-${s[1]}-${s[2]}`;
   }
 
-  function generateTriade(primary, secA, secB){
-    const sA = getSec(primary, secA);
-    const sB = getSec(primary, secB);
+  // ✅ TRIade_MAP completo (84 combinações) gerado automaticamente
+  function buildTriadeMap84(){
+    const map = {};
+    for(let a=1;a<=9;a++){
+      for(let b=a+1;b<=9;b++){
+        for(let c=b+1;c<=9;c++){
+          const k = `${a}-${b}-${c}`;
 
-    const resumo = `Tipo ${primary} aparece como o mais provável, com influência de Tipo ${secA} e Tipo ${secB}.`;
+          // base (sem dominante) — bem simples
+          const funcionamentoBase =
+            `Essa combinação mistura características dos Tipos ${a}, ${b} e ${c}. ` +
+            `Na prática, você pode alternar entre formas diferentes de agir, dependendo da situação.`;
 
-    const parts = [];
-    parts.push(`Seu tipo principal é o <b>Tipo ${primary}</b>.`);
+          const fortes = limit(
+            uniq([...(TYPE_FORTES[a]||[]), ...(TYPE_FORTES[b]||[]), ...(TYPE_FORTES[c]||[])]),
+            7
+          );
 
-    if(sA) parts.push(`Com influência do <b>Tipo ${secA}</b> (${sA.title}), você tende a: ${sA.text}`);
-    else   parts.push(`Com influência do <b>Tipo ${secA}</b>, você tende a acionar padrões desse tipo quando pressionado(a).`);
+          const atencao = limit(
+            uniq([...(TYPE_ATENCAO[a]||[]), ...(TYPE_ATENCAO[b]||[]), ...(TYPE_ATENCAO[c]||[])]),
+            7
+          );
 
-    if(sB) parts.push(`Com influência do <b>Tipo ${secB}</b> (${sB.title}), você tende a: ${sB.text}`);
-    else   parts.push(`Com influência do <b>Tipo ${secB}</b>, você tende a acionar padrões desse tipo quando pressionado(a).`);
-
-    const fortes = uniqTop([
-      ...(TYPE_STRENGTHS[primary]||[]),
-      ...(TYPE_STRENGTHS[secA]||[]),
-      ...(TYPE_STRENGTHS[secB]||[])
-    ], 8);
-
-    const melhorar = uniqTop([
-      ...(TYPE_WEAKNESSES[primary]||[]),
-      ...(TYPE_WEAKNESSES[secA]||[]),
-      ...(TYPE_WEAKNESSES[secB]||[])
-    ], 8);
-
-    return { resumo, funciona: parts.join(" "), fortes, melhorar };
+          map[k] = { funcionamentoBase, fortes, atencao };
+        }
+      }
+    }
+    return map;
   }
+
+  const TRIADE_MAP = buildTriadeMap84();
 
   function getLocalJSON(key){
     try{ return JSON.parse(localStorage.getItem(key) || "null"); }
@@ -532,7 +522,6 @@
       const tipo = TIPOS[it.t];
       const rank = (idx+1) + "º — Tipo " + it.t;
       const color = TYPE_COLORS[it.t] || "#111827";
-
       return `
         <div class="topItem">
           <div class="left">
@@ -549,7 +538,7 @@
     }).join("");
   }
 
-  // ===== PIE (SVG) =====
+  // PIE (SVG)
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -560,7 +549,6 @@
     const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
     return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
   }
-
   function renderPie(top3){
     const total = top3.reduce((s,x)=>s+x.v,0) || 1;
     let start = 0;
@@ -584,31 +572,60 @@
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
       </svg>
     `;
-
     document.getElementById("pieWrap").innerHTML = svg;
   }
 
-  function renderTriadeTexts(top3){
+  function renderTextos(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
-    const data = generateTriade(t1,t2,t3);
 
-    document.getElementById("quickResumo").textContent = data.resumo;
+    const k = key84(t1,t2,t3);
+    const base = TRIADE_MAP[k] || null;
 
-    const n1 = TIPOS[t1]?.nome?.split(" / ")[0] || `Tipo ${t1}`;
-    document.getElementById("comoFunciona").innerHTML =
-      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. Você combina o <b>${n1}</b> (dominante) com influências de <b>Tipo ${t2}</b> e <b>Tipo ${t3}</b>. ` + data.funciona;
+    // Resumo rápido bem simples
+    document.getElementById("quickResumo").textContent =
+      `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`;
 
-    document.getElementById("listaFortes").innerHTML = (data.fortes||[]).map(x=>`<li>${x}</li>`).join("");
-    document.getElementById("listaMelhorar").innerHTML = (data.melhorar||[]).map(x=>`<li>${x}</li>`).join("");
+    // Funcionamento bem humano (dominante + secundárias)
+    const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
+    const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
+    const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
+
+    const funcionamento =
+      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. ` +
+      `O seu tipo dominante é o <b>Tipo ${t1}</b> (${n1}). ` +
+      `Na prática, isso aparece como: <b>${TIPOS[t1]?.curta || ""}</b> ` +
+      `<br><br>` +
+      `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
+      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>. ` +
+      `<br><br>` +
+      (base?.funcionamentoBase || "");
+
+    document.getElementById("comoFunciona").innerHTML = funcionamento;
+
+    // Fortes/Atenção: prioriza dominante primeiro, depois as outras listas
+    const fortes = limit(
+      uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
+      7
+    );
+    const atencao = limit(
+      uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]),
+      7
+    );
+
+    document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
+    document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
   }
 
+  // botões
   document.getElementById("btnVoltar").addEventListener("click", ()=>{
     window.location.href = "/pages/page4";
   });
   document.getElementById("btnRefazer").addEventListener("click", ()=>{
+    localStorage.removeItem(RESPOSTAS_KEY);
     window.location.href = "/";
   });
 
+  // init
   (async function init(){
     try{
       const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
@@ -625,7 +642,8 @@
 
       renderTop3(top3);
       renderPie(top3);
-      renderTriadeTexts(top3);
+      renderTextos(top3);
+
     }catch(err){
       console.error(err);
       showError(err?.message || String(err));
