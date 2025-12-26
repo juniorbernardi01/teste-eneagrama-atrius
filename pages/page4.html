@@ -1,271 +1,58 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quem sou eu — Passo 4</title>
-
-<!-- EmailJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-<style>
-:root{
-  --accent:#f07a00;
-  --accent-weak: rgba(240,122,0,.12);
-  --accent-border: rgba(240,122,0,.45);
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --bd:#e7e7e7;
-  --text:#111;
-  --muted:#666;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-.wrap{max-width:980px;margin:auto;padding:16px;}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 10px 28px rgba(0,0,0,.06);
-}
-h1{margin:0 0 6px;font-size:32px;}
-.muted{color:var(--muted);font-size:14px;line-height:1.4}
-
-.step{margin:12px 0}
-.bar{height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;margin-top:6px;}
-.fill{height:100%;width:100%;background:var(--accent);}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-@media(max-width:768px){ .grid{grid-template-columns:1fr;} }
-
-.word{
-  border:1px solid var(--bd);
-  border-radius:16px;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  cursor:pointer;
-  background:#fff;
-  transition:all .15s ease;
-}
-.word.selected{
-  background:var(--accent-weak);
-  border-color:var(--accent-border);
-  box-shadow:0 0 0 3px var(--accent-weak);
-}
-.word small{color:#888;font-weight:800;min-width:26px}
-.word input{transform:scale(1.2)}
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-}
-.btn{
-  padding:14px;
-  border-radius:14px;
-  border:0;
-  font-weight:900;
-  cursor:pointer;
-}
-.btn-primary{background:var(--accent);color:#fff;flex:1}
-.btn-outline{background:#fff;border:1px solid var(--bd)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teste — Página 4</title>
+  <link rel="stylesheet" href="../styles.css">
 </head>
-
 <body>
-<div class="wrap">
-<div class="card">
+  <div class="wrap">
+    <div class="card">
+      <h1>Página 4</h1>
+      <p class="muted">Última página. Depois você verá o resultado.</p>
 
-<h1>Quem sou eu</h1>
-<p class="muted">Marque apenas as palavras que realmente combinam com você ao longo da vida.</p>
+      <form id="qForm" autocomplete="off">
+        <div class="q">
+          <h3>13) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q13" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q13" value="B"> Opção B</label>
+        </div>
 
-<div class="step">
-  <b>Passo 4 de 4 — Identificação pessoal</b>
-  <div class="bar"><div class="fill"></div></div>
-</div>
+        <div class="q">
+          <h3>14) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q14" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q14" value="B"> Opção B</label>
+        </div>
 
-<p class="muted"><b>Instruções:</b> selecione pelo menos <b>6 opções</b>.</p>
+        <div class="q">
+          <h3>15) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q15" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q15" value="B"> Opção B</label>
+        </div>
 
-<form id="formP4">
-  <div class="grid" id="gridWords"></div>
+        <div class="q">
+          <h3>16) (troque o texto) Opção A OU Opção B</h3>
+          <label class="opt"><input type="radio" name="q16" value="A"> Opção A</label>
+          <label class="opt"><input type="radio" name="q16" value="B"> Opção B</label>
+        </div>
 
-  <div class="actions">
-    <button type="button" class="btn btn-outline" onclick="history.back()">Voltar</button>
-    <button type="button" id="btnFinish" class="btn btn-primary">Ver resultado</button>
+        <div class="row">
+          <button class="btn secondary" type="button" id="backBtn">Voltar</button>
+          <button class="btn" type="submit">Ver resultado</button>
+        </div>
+      </form>
+    </div>
   </div>
-</form>
 
-</div>
-</div>
-
-<script>
-/* ================= EMAILJS ================= */
-emailjs.init("dMy7jYWSeALMDD7TI");
-
-/* ================= CONFIG ================= */
-const STORAGE_KEY = "respostas";              // respostas do teste (todas as páginas)
-const USERDATA_KEY = "userData";             // dados do lead (nome/email/telefone)
-const LEAD_OLD_KEY = "atrius_eneagrama_lead_v1"; // caso ainda exista do index antigo
-const MIN = 6;
-
-/* ================= PALAVRAS ================= */
-const palavras = [
-  "Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
-  "Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
-  "Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
-  "Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
-  "Direto(a)","Assertivo(a)","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)"
-];
-
-/* ================= HELPERS ================= */
-function getList(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch{ return []; }
-}
-function setList(l){ localStorage.setItem(STORAGE_KEY, JSON.stringify(l)); }
-
-function upsertCheckbox(name, checked){
-  let l = getList().filter(x => x.pergunta !== name);
-  if(checked) l.push({ pergunta:name, alternativa:"S" });
-  setList(l);
-}
-
-function countSelected(){
-  return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
-}
-
-/* ✅ LIMPEZA COMPLETA DO TESTE (pra próxima pessoa) */
-function clearTestStorage(){
-  // apaga respostas + lead
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(USERDATA_KEY);
-  localStorage.removeItem(LEAD_OLD_KEY);
-
-  // se você tiver outras chaves antigas, pode colocar aqui também:
-  // localStorage.removeItem("respostas_v2");
-}
-
-/* ================= BUILD ================= */
-function build(){
-  const grid = document.getElementById("gridWords");
-  grid.innerHTML = palavras.map((p,i)=>{
-    const n = String(i+1).padStart(2,"0");
-    return `
-      <div class="word" data-name="P4_${n}">
-        <span><small>${i+1}.</small> ${p}</span>
-        <input type="checkbox" name="P4_${n}">
-      </div>
-    `;
-  }).join("");
-
-  grid.querySelectorAll(".word").forEach(card=>{
-    const cb = card.querySelector("input");
-    card.addEventListener("click", e=>{
-      if(e.target !== cb) cb.checked = !cb.checked;
-      card.classList.toggle("selected", cb.checked);
-      upsertCheckbox(cb.name, cb.checked);
+  <script src="../script.js"></script>
+  <script>
+    APP.initQuestionPage({
+      formId: "qForm",
+      qKeys: ["q13","q14","q15","q16"],
+      prevHref: "page3.html",
+      nextHref: "../resultado.html"
     });
-    cb.addEventListener("change",()=>{
-      card.classList.toggle("selected", cb.checked);
-      upsertCheckbox(cb.name, cb.checked);
-    });
-  });
-}
-
-function restore(){
-  getList().forEach(r=>{
-    if(!r.pergunta.startsWith("P4_")) return;
-    const cb = document.querySelector(`input[name="${r.pergunta}"]`);
-    if(cb){
-      cb.checked = true;
-      cb.closest(".word").classList.add("selected");
-    }
-  });
-}
-
-/* ================= EMAIL ================= */
-async function sendEmailReport(){
-  const respostas = getList();
-
-  const res = await fetch("../data/matriz.json",{cache:"no-store"});
-  const matriz = await res.json();
-
-  const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-  respostas.forEach(r=>{
-    const key = `${r.pergunta}_${r.alternativa}`;
-    const w = matriz[key];
-    if(!w) return;
-    for(const t in w) score[t] += w[t];
-  });
-
-  const top = Object.entries(score)
-    .map(([t,v])=>({t, v}))
-    .sort((a,b)=>b.v-a.v)
-    .slice(0,3);
-
-  const html = `
-    <h2>Resultado Eneagrama</h2>
-    <p><b>Top 3:</b></p>
-    <ul>
-      <li>Tipo ${top[0].t} — ${top[0].v}</li>
-      <li>Tipo ${top[1].t} — ${top[1].v}</li>
-      <li>Tipo ${top[2].t} — ${top[2].v}</li>
-    </ul>
-    <p><b>Pontuação completa:</b></p>
-    <pre>${JSON.stringify(score,null,2)}</pre>
-  `;
-
-  await emailjs.send(
-    "service_676gehg",
-    "template_jkxxqz5",
-    {
-      subject: "Resultado Eneagrama — Novo teste concluído",
-      message_html: html
-    }
-  );
-}
-
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded",()=>{
-  build();
-  restore();
-
-  document.getElementById("btnFinish").addEventListener("click", async ()=>{
-    if(countSelected() < MIN){
-      alert("Selecione pelo menos " + MIN + " opções.");
-      return;
-    }
-
-    // 1) Envia e-mail
-    try{
-      await sendEmailReport();
-    }catch(err){
-      console.error("Erro ao enviar email:", err);
-      // mesmo se falhar, pode continuar para o resultado se você quiser:
-      // (se preferir bloquear, é só dar return aqui)
-    }
-
-    // 2) Vai para a página de resultado (ainda com dados no localStorage)
-    window.location.href = "../resultado.html";
-
-    // 3) ✅ Limpa TUDO para a próxima pessoa (depois que navegar)
-    //    (esse setTimeout garante que o resultado carregue antes de limpar)
-    setTimeout(clearTestStorage, 800);
-  });
-});
-</script>
-
+  </script>
 </body>
 </html>
