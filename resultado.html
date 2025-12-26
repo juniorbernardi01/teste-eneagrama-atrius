@@ -15,16 +15,16 @@
       --shadow:0 12px 34px rgba(15,23,42,.10);
       --accent:#f07a00;
 
-      /* Paleta por tipo (conforme sua sugestão) */
-      --t1:#9ca3af;   /* Cinza (pureza) */
-      --t2:#22c55e;   /* Verde (calor) */
-      --t3:#d4af37;   /* Ouro (sucesso) */
-      --t4:#7c3aed;   /* Roxo (profundidade) */
-      --t5:#0f172a;   /* Azul escuro (intelecto) */
-      --t6:#8b6b4a;   /* Terroso (estabilidade) */
+      /* Paleta por tipo */
+      --t1:#9ca3af;   /* Cinza */
+      --t2:#22c55e;   /* Verde */
+      --t3:#d4af37;   /* Ouro */
+      --t4:#7c3aed;   /* Roxo */
+      --t5:#0f172a;   /* Azul escuro */
+      --t6:#8b6b4a;   /* Terroso */
       --t7:#f97316;   /* Laranja */
-      --t8:#111827;   /* Preto (força) */
-      --t9:#38bdf8;   /* Azul céu (harmonia) */
+      --t8:#111827;   /* Preto */
+      --t9:#38bdf8;   /* Azul céu */
     }
 
     *{ box-sizing:border-box }
@@ -184,17 +184,6 @@
     .section{
       margin-top:16px;
     }
-    .section h3{
-      margin:0 0 8px;
-      font-size:20px;
-      letter-spacing:-.2px;
-    }
-    .section p{
-      margin:0;
-      color:#334155;
-      font-size:14px;
-      line-height:1.45;
-    }
 
     .gridBottom{
       display:grid;
@@ -241,7 +230,7 @@
     .shareWrap{
       display:flex;
       justify-content:center;
-      margin-top:18px;
+      margin-top:14px;
     }
     .btnWhats{
       background:#25D366;
@@ -256,6 +245,8 @@
       align-items:center;
       gap:10px;
       box-shadow:0 10px 22px rgba(37,211,102,.25);
+      width:100%;
+      justify-content:center;
     }
     .btnWhats svg{ width:18px; height:18px; fill:#fff; }
 
@@ -269,8 +260,6 @@
       .topItem{ padding:12px; }
       .desc{ font-size:12.5px; }
       .gridBottom{ grid-template-columns:1fr; }
-      .btnWhats{ width:100%; justify-content:center; }
-      .shareWrap{ margin-top:14px; }
     }
   </style>
 </head>
@@ -285,7 +274,7 @@
     </div>
 
     <div class="gridTop">
-      <!-- LEFT: Top 3 + Pizza -->
+      <!-- LEFT -->
       <div class="card">
         <h2>Sua tríade principal (Top 3)</h2>
         <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
@@ -303,13 +292,13 @@
         </div>
       </div>
 
-      <!-- RIGHT: Resumo rápido em bloco branco -->
+      <!-- RIGHT -->
       <div class="card">
         <div class="smallTitle">Resumo rápido</div>
         <div class="quick" id="quickResumo">Carregando…</div>
 
         <div class="shareWrap">
-          <button class="btnWhats" id="btnWhats" type="button" aria-label="Enviar resultado por WhatsApp">
+          <button class="btnWhats" id="btnWhats" type="button">
             <svg viewBox="0 0 32 32" aria-hidden="true">
               <path d="M19.11 17.35c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.15-.42-2.19-1.35-.81-.72-1.36-1.61-1.52-1.88-.16-.27-.02-.42.12-.56.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.95.93-.95 2.27 0 1.34.98 2.64 1.11 2.82.14.18 1.93 2.95 4.69 4.13.66.29 1.17.46 1.57.59.66.21 1.26.18 1.74.11.53-.08 1.6-.65 1.82-1.27.23-.62.23-1.15.16-1.27-.07-.12-.25-.2-.52-.34zM16.02 3C9.4 3 4 8.23 4 14.66c0 2.25.67 4.44 1.93 6.32L5 29l8.25-2.6c1.78.95 3.79 1.45 5.83 1.45 6.62 0 12.02-5.23 12.02-11.66C31.1 8.23 25.7 3 19.08 3h-3.06zm0 22.02c-1.88 0-3.72-.52-5.31-1.51l-.38-.24-4.89 1.54 1.6-4.67-.26-.39a9.9 9.9 0 0 1-1.64-5.49c0-5.46 4.64-9.9 10.34-9.9h3.06c5.7 0 10.34 4.44 10.34 9.9 0 5.46-4.64 9.9-10.34 9.9h-3.52z"/>
             </svg>
@@ -319,9 +308,10 @@
       </div>
     </div>
 
-    <div class="section">
-      <h3>Como você tende a funcionar</h3>
-      <p id="comoFunciona">Carregando…</p>
+    <!-- Como funciona em card branco -->
+    <div class="card section">
+      <h3 style="margin:0 0 8px; font-size:20px;">Como você tende a funcionar</h3>
+      <p id="comoFunciona" style="margin:0;color:#334155;font-size:14px;line-height:1.45;">Carregando…</p>
     </div>
 
     <div class="gridBottom">
@@ -335,12 +325,14 @@
         <ul id="listaAtencao"></ul>
       </div>
     </div>
-
   </div>
 
 <script>
   const RESPOSTAS_KEY = "respostas";
   const MATRIZ_URL = "/data/matriz.json";
+
+  // ✅ Número fixo do WhatsApp (somente dígitos, com DDI)
+  const WHATS_NUMBER = "5551995912176"; // +55 51 99591-2176
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
@@ -350,7 +342,6 @@
     7: cssVar("--t7"), 8: cssVar("--t8"), 9: cssVar("--t9")
   };
 
-  // Nomes + frase simples
   const TIPOS = {
     1:{ nome:"Perfeccionista / Reformador", curta:"Gosta de fazer certo, com padrão e qualidade." },
     2:{ nome:"Prestativo / Cuidador", curta:"Gosta de ajudar, cuidar e manter as pessoas bem." },
@@ -363,7 +354,6 @@
     9:{ nome:"Pacificador", curta:"Gosta de paz, harmonia e evitar conflito." }
   };
 
-  // Influência simples (linguagem bem acessível)
   const INFLUENCIA = {
     1:"mais cobrança e vontade de fazer certo",
     2:"mais cuidado com pessoas e busca de aprovação",
@@ -376,7 +366,6 @@
     9:"mais calma, paciência e evitar briga"
   };
 
-  // Pontos fortes por tipo (simples)
   const TYPE_FORTES = {
     1:["Capricho e qualidade","Organização","Responsabilidade","Foco em melhorar","Cuidado com erros"],
     2:["Empatia","Ajuda o time","Boa convivência","Apoia pessoas","Cria conexão"],
@@ -389,7 +378,6 @@
     9:["Calma","Mediação","Escuta","Equilíbrio","Boa convivência"]
   };
 
-  // Pontos de atenção por tipo (simples)
   const TYPE_ATENCAO = {
     1:["Rigidez","Crítica demais","Impaciência","Se cobrar muito","Dificuldade em delegar"],
     2:["Dificuldade de dizer não","Querer agradar sempre","Se frustrar quando não valorizam","Se doar demais","Guardar mágoa"],
@@ -402,7 +390,6 @@
     9:["Procrastinar","Evitar conflito","Engolir frustração","Dificuldade de decidir","Falta de prioridade"]
   };
 
-  // Helpers
   function uniq(arr){
     const out=[]; const seen=new Set();
     for(const x of arr){
@@ -413,29 +400,20 @@
     return out;
   }
   function limit(arr, n){ return arr.slice(0,n); }
+
   function key84(a,b,c){
     const s=[a,b,c].sort((x,y)=>x-y);
     return `${s[0]}-${s[1]}-${s[2]}`;
   }
 
-  // ✅ TRIade_MAP completo (84 combinações) gerado automaticamente
   function buildTriadeMap84(){
     const map = {};
     for(let a=1;a<=9;a++){
       for(let b=a+1;b<=9;b++){
         for(let c=b+1;c<=9;c++){
           const k = `${a}-${b}-${c}`;
-
-          const fortes = limit(
-            uniq([...(TYPE_FORTES[a]||[]), ...(TYPE_FORTES[b]||[]), ...(TYPE_FORTES[c]||[])]),
-            7
-          );
-
-          const atencao = limit(
-            uniq([...(TYPE_ATENCAO[a]||[]), ...(TYPE_ATENCAO[b]||[]), ...(TYPE_ATENCAO[c]||[])]),
-            7
-          );
-
+          const fortes = limit(uniq([...(TYPE_FORTES[a]||[]), ...(TYPE_FORTES[b]||[]), ...(TYPE_FORTES[c]||[])]), 7);
+          const atencao = limit(uniq([...(TYPE_ATENCAO[a]||[]), ...(TYPE_ATENCAO[b]||[]), ...(TYPE_ATENCAO[c]||[])]), 7);
           map[k] = { fortes, atencao };
         }
       }
@@ -448,6 +426,23 @@
   function getLocalJSON(key){
     try{ return JSON.parse(localStorage.getItem(key) || "null"); }
     catch{ return null; }
+  }
+
+  // ✅ tenta achar nome/email/telefone em várias chaves
+  function readUserData(){
+    const candidates = [
+      getLocalJSON("userData"),
+      getLocalJSON("dados_iniciais"),
+      getLocalJSON("dadosUsuario")
+    ].filter(Boolean);
+
+    const raw = candidates[0] || {};
+
+    const nome = raw.nome || raw.name || raw.nomeCompleto || "(não informado)";
+    const email = raw.email || raw.mail || "(não informado)";
+    const telefone = raw.telefone || raw.phone || raw.fone || "(não informado)";
+
+    return { nome, email, telefone };
   }
 
   function showError(msg){
@@ -541,15 +536,14 @@
 
   function renderTextos(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
-
     const k = key84(t1,t2,t3);
     const base = TRIADE_MAP[k] || null;
 
-    // Resumo rápido
-    document.getElementById("quickResumo").textContent =
+    const resumoRapido =
       `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`;
 
-    // Funcionamento (sem aquela frase genérica final)
+    document.getElementById("quickResumo").textContent = resumoRapido;
+
     const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
     const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
     const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
@@ -564,7 +558,6 @@
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
-    // Fortes/Atenção
     const fortes = (base?.fortes && base.fortes.length)
       ? base.fortes
       : limit(uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]), 7);
@@ -576,19 +569,28 @@
     document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
     document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
 
-    // WhatsApp message (guarda no botão)
+    // ✅ monta mensagem do WhatsApp com dados do usuário + resumo
+    const user = readUserData();
     const msg =
-      `*Resultado do Teste (Eneagrama)*\n` +
-      `Tríade: ${t1}-${t2}-${t3}\n` +
-      `Dominante: Tipo ${t1} (${TIPOS[t1]?.nome || ""})\n` +
-      `Influências: Tipo ${t2} e Tipo ${t3}\n\n` +
-      `Resumo: ${document.getElementById("quickResumo").textContent}`;
+`*Resultado do Teste Eneagrama (Atrius)*
+Nome: ${user.nome}
+Email: ${user.email}
+Telefone: ${user.telefone}
 
-    const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+${resumoRapido}
+
+Tríade: ${t1}-${t2}-${t3}
+Dominante: Tipo ${t1} (${TIPOS[t1]?.nome || ""})
+
+Pontuações (Top 3):
+1º Tipo ${t1}: ${top3[0].v}
+2º Tipo ${t2}: ${top3[1].v}
+3º Tipo ${t3}: ${top3[2].v}`;
+
+    const waUrl = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
     document.getElementById("btnWhats").onclick = ()=> window.open(waUrl, "_blank", "noopener,noreferrer");
   }
 
-  // init
   (async function init(){
     try{
       const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
