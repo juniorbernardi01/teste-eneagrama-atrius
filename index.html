@@ -16,7 +16,6 @@
       --btn:#e67e22;
       --btnHover:#d87018;
       --error:#dc2626;
-      --ok:#16a34a;
     }
 
     *{ box-sizing:border-box }
@@ -227,14 +226,32 @@ Utilize o tempo que julgar necessário.
   </div>
 
   <script>
-    // mantém seu storage atual
-    const STORAGE_KEY = "atrius_eneagrama_lead_v1";
+    // =========================
+    // ✅ RESET TOTAL AO ENTRAR NO SITE
+    // =========================
+    // Sempre que alguém abrir eneagrama.atrius.ind.br (index),
+    // o teste começa do zero.
+    const TEST_KEYS_TO_CLEAR = [
+      "respostas",                 // respostas das páginas 1-4
+      "atrius_eneagrama_lead_v1"    // cadastro do lead
+    ];
 
-    // ✅ chave PADRÃO lida pelo resultado.html (WhatsApp)
-    const USERDATA_KEY = "userData";
+    // Se você tiver outras chaves, adicione aqui.
+    // Ex: "eneagrama_state", "progress", etc.
 
-    // ✅ Redireciona SEM .html
-    const NEXT_PAGE = "/pages/page1";
+    (function resetOnLanding(){
+      try{
+        TEST_KEYS_TO_CLEAR.forEach(k => localStorage.removeItem(k));
+      }catch(e){
+        console.warn("Não consegui limpar localStorage:", e);
+      }
+    })();
+
+    // =========================
+    // CONFIG
+    // =========================
+    const LEAD_KEY = "atrius_eneagrama_lead_v1";
+    const NEXT_PAGE = "/pages/page1"; // GitHub Pages resolve /pages/page1 -> /pages/page1.html
 
     const nome = document.getElementById("nome");
     const sobrenome = document.getElementById("sobrenome");
@@ -341,31 +358,13 @@ Utilize o tempo que julgar necessário.
         return;
       }
 
-      const nomeTrim = nome.value.trim();
-      const sobrenomeTrim = sobrenome.value.trim();
-      const nomeCompleto = `${nomeTrim} ${sobrenomeTrim}`.trim();
-      const emailTrim = email.value.trim();
-      const telFmt = telefone.value.trim();
-      const telDigits = telefone.value.replace(/\D/g,"");
-
-      // ✅ 1) mantém seu storage original (compatibilidade)
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        nome: nomeTrim,
-        sobrenome: sobrenomeTrim,
-        nome_completo: nomeCompleto,
-        email: emailTrim,
-        telefone: telFmt,
-        telefone_digits: telDigits,
-        createdAt: new Date().toISOString()
-      }));
-
-      // ✅ 2) storage PADRÃO para o resultado/WhatsApp
-      localStorage.setItem(USERDATA_KEY, JSON.stringify({
-        nome: nomeCompleto,          // o resultado lê "nome"
-        nomeCompleto: nomeCompleto,  // extra
-        email: emailTrim,
-        telefone: telFmt,
-        telefone_digits: telDigits,
+      localStorage.setItem(LEAD_KEY, JSON.stringify({
+        nome: nome.value.trim(),
+        sobrenome: sobrenome.value.trim(),
+        nome_completo: `${nome.value.trim()} ${sobrenome.value.trim()}`.trim(),
+        email: email.value.trim(),
+        telefone: telefone.value.trim(),
+        telefone_digits: telefone.value.replace(/\D/g,""),
         createdAt: new Date().toISOString()
       }));
 
