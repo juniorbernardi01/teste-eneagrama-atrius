@@ -161,6 +161,7 @@
       gap:10px;
       min-height: 220px;
     }
+    .pieHint{ display:none; }
 
     .summaryCard{
       margin-top:14px;
@@ -226,10 +227,7 @@
       line-height:1.35;
     }
 
-    .btnRow{
-      display:flex;
-      justify-content:flex-end;
-    }
+    .btnRow{ display:flex; justify-content:flex-end; }
 
     .btnWA{
       display:inline-flex;
@@ -248,9 +246,7 @@
     }
     .btnWA:hover{ background:var(--waHover); }
 
-    .section{
-      margin-top:16px;
-    }
+    .section{ margin-top:16px; }
     .section h3{
       margin:0 0 10px;
       font-size:20px;
@@ -327,7 +323,7 @@
 </head>
 
 <body>
-  <div class="wrap" id="reportRoot">
+  <div class="wrap">
     <div class="header">
       <div class="title">
         <h1>Quem sou eu</h1>
@@ -369,30 +365,10 @@
       </div>
     </div>
 
-    <!-- PONTUAÇÃO (BARRAS) -->
-    <div class="section">
-      <h3>Pontuação</h3>
-      <div class="funcCard">
-        <p class="funcText" style="margin-bottom:10px;color:var(--muted);font-size:13px;">
-          Quanto maior a barra, maior a compatibilidade com aquele tipo.
-        </p>
-        <div id="barsWrap"></div>
-      </div>
-    </div>
-
-    <!-- COMO FUNCIONA -->
     <div class="section">
       <h3>Como você tende a funcionar</h3>
       <div class="funcCard">
         <p class="funcText" id="comoFunciona">Carregando…</p>
-      </div>
-    </div>
-
-    <!-- GUIA DE COMUNICAÇÃO -->
-    <div class="section">
-      <h3>Guia rápido de comunicação</h3>
-      <div class="funcCard">
-        <p class="funcText" id="guiaComunicacao">Carregando…</p>
       </div>
     </div>
 
@@ -409,22 +385,24 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 <script>
-  // EmailJS (SEUS DADOS)
-  const EMAILJS_PUBLIC_KEY = "dMy7jYWSeALMDD7TI";
-  const EMAILJS_SERVICE_ID = "service_676gehg";
-  const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
-
+  // ===== Keys do projeto (PADRÃO) =====
   const RESPOSTAS_KEY = "respostas";
-  const LEAD_KEY = "atrius_eneagrama_lead_v1";
-  const MATRIZ_URL = "/data/matriz.json";
+  const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
+  const LEAD_KEY_FALLBACK_1 = "lead";
+  const LEAD_KEY_FALLBACK_2 = "atrius_lead";
+  const LEAD_KEY_FALLBACK_3 = "lead_inicial";
+
+  const TEST_ID_KEY = "atrius_eneagrama_test_id";
+  const SESSION_ACTIVE_KEY = "atrius_eneagrama_active";
+
+  // ✅ caminho relativo (evita problemas com domínio/subpasta)
+  const MATRIZ_URL = "data/matriz.json";
 
   const WHATS_NUMBER = "555195912176";
-  const EMAIL_LOCK_KEY = "atrius_email_sent_once_v1";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
   const TYPE_COLORS = {
     1: cssVar("--t1"), 2: cssVar("--t2"), 3: cssVar("--t3"),
     4: cssVar("--t4"), 5: cssVar("--t5"), 6: cssVar("--t6"),
@@ -455,7 +433,7 @@
     9:"mais calma e evitar briga"
   };
 
-  const TYPE_FORTES = {
+  const TYPE_FORTES = { /* (mantido igual ao seu código) */
     1:["Cuida da qualidade e do capricho","Organiza e coloca ordem no que está bagunçado","É responsável e confiável","Percebe erros e evita retrabalho","Gosta de melhorar as coisas aos poucos","Cumpre regras e combinações","Mantém padrão mesmo com pressão"],
     2:["Ajuda as pessoas de verdade","Percebe quando alguém não está bem","Cria um clima bom no time","É prestativo(a) e acolhedor(a)","Tem facilidade para cooperar","Faz o outro se sentir importante","Resolve coisas com gentileza"],
     3:["Entrega resultado e faz acontecer","Foca em metas e não se perde","Tem energia e ritmo de trabalho","Se adapta para dar certo","Motiva o time pelo exemplo","Aprende rápido o que precisa para vencer","Gosta de crescer e evoluir"],
@@ -467,7 +445,7 @@
     9:["É calmo(a) e equilibrado(a)","Evita brigas e acalma o ambiente","Escuta bem as pessoas","Ajuda o time a se entender","Tem paciência e constância","Gosta de harmonia e paz","Trabalha bem em grupo"]
   };
 
-  const TYPE_ATENCAO = {
+  const TYPE_ATENCAO = { /* (mantido igual ao seu código) */
     1:["Pode se cobrar demais","Pode ficar rígido(a) e inflexível","Pode criticar muito (a si e aos outros)","Pode ter dificuldade de relaxar","Pode ficar impaciente com erros","Pode querer tudo do seu jeito","Pode ter dificuldade em delegar"],
     2:["Pode dizer “sim” demais e se sobrecarregar","Pode ter medo de desagradar","Pode esperar reconhecimento e se frustrar","Pode se envolver demais com problemas dos outros","Pode guardar mágoa sem falar","Pode se esquecer de si","Pode evitar conversas difíceis"],
     3:["Pode ficar ansioso(a) por resultado","Pode querer fazer tudo rápido demais","Pode se comparar com os outros","Pode confundir valor pessoal com desempenho","Pode colocar imagem acima do descanso","Pode ter dificuldade de parar e respirar","Pode ficar irritado(a) com lentidão"],
@@ -477,18 +455,6 @@
     7:["Pode se dispersar e perder foco","Pode começar e não terminar","Pode evitar assuntos difíceis","Pode agir por impulso","Pode exagerar no ritmo e cansar","Pode ter dificuldade com rotina","Pode prometer mais do que dá conta"],
     8:["Pode falar duro e assustar","Pode querer controlar demais","Pode perder a paciência rápido","Pode bater de frente sem necessidade","Pode ter dificuldade de mostrar fragilidade","Pode ser “8 ou 80” em decisões","Pode insistir quando seria melhor ouvir"],
     9:["Pode adiar decisões (procrastinar)","Pode evitar conflito e engolir incômodo","Pode dizer “tanto faz” e perder prioridade","Pode aceitar demais para manter paz","Pode demorar para reagir","Pode acumular stress em silêncio","Pode se acomodar quando precisa agir"]
-  };
-
-  const GUIA_BASE = {
-    1:{ falar:"Seja objetivo e organizado. Traga fatos e critérios claros.", cobrar:"Combine padrão + prazo. Mostre o “certo” e o que precisa melhorar.", elogiar:"Elogie qualidade, capricho, responsabilidade e consistência.", espera:"“Ficou bem feito”, “Está correto”, “Confio no teu padrão”.", evitar:"Ambiguidade, improviso, relativizar erro, “depois a gente vê”." },
-    2:{ falar:"Converse com calor humano e reconhecimento do esforço.", cobrar:"Peça com gentileza e clareza. Mostre como isso ajuda o time.", elogiar:"Elogie cuidado, apoio, cooperação e disponibilidade.", espera:"“Obrigado”, “Você ajudou muito”, “Contamos com você”.", evitar:"Frieza, ingratidão, cobrança dura sem contexto." },
-    3:{ falar:"Seja direto e orientado a meta. Mostre objetivo e impacto.", cobrar:"Cobre por resultado + indicador. Dê autonomia e velocidade.", elogiar:"Elogie entrega, performance, superação e eficiência.", espera:"“Ótimo resultado”, “Você fez acontecer”, “Isso foi decisivo”.", evitar:"Críticas vagas sem métrica, lentidão e desorganização." },
-    4:{ falar:"Valide sentimentos e propósito. Seja verdadeiro.", cobrar:"Conecte a cobrança ao significado/qualidade. Dê espaço.", elogiar:"Elogie autenticidade, profundidade e diferencial.", espera:"“Seu olhar fez diferença”, “Você trouxe algo único”.", evitar:"Minimizar emoções, ironia, “engole e segue”." },
-    5:{ falar:"Seja claro e lógico. Dê contexto e dados.", cobrar:"Defina prioridade, critério e prazo. Evite pressão emocional.", elogiar:"Elogie estratégia, análise e precisão.", espera:"“Sua análise foi fundamental”, “Boa solução”.", evitar:"Cobrança invasiva, urgência sem motivo, excesso de reunião." },
-    6:{ falar:"Traga segurança: plano, risco e próximos passos.", cobrar:"Cobre com previsibilidade (o que, quando, como).", elogiar:"Elogie lealdade e prevenção de riscos.", espera:"“Você pode confiar”, “Boa cautela”.", evitar:"Mudança brusca sem aviso, promessas vagas." },
-    7:{ falar:"Seja leve e objetivo. Mostre possibilidades.", cobrar:"Quebre em etapas curtas e claras.", elogiar:"Elogie energia, criatividade e iniciativa.", espera:"“Excelente ideia”, “Isso destravou”.", evitar:"Rigidez excessiva e monotonia." },
-    8:{ falar:"Seja firme e transparente. Sem rodeios.", cobrar:"Cobre com clareza e respeito, com limite e responsabilidade.", elogiar:"Elogie coragem, proteção e decisão.", espera:"“Boa postura”, “Você sustentou a pressão”.", evitar:"Enrolação, passividade, falta de verdade." },
-    9:{ falar:"Seja calmo e claro. Peça posicionamento.", cobrar:"Cobre com gentileza e prazos. Ajude a priorizar.", elogiar:"Elogie equilíbrio, constância e cooperação.", espera:"“Boa estabilidade”, “Você trouxe harmonia”.", evitar:"Urgência caótica e conflito desnecessário." }
   };
 
   function uniq(arr){
@@ -507,6 +473,15 @@
     catch{ return null; }
   }
 
+  function getLead(){
+    const keys = [LEAD_KEY_MAIN, LEAD_KEY_FALLBACK_1, LEAD_KEY_FALLBACK_2, LEAD_KEY_FALLBACK_3];
+    for(const k of keys){
+      const obj = getLocalJSON(k);
+      if(obj && (obj.email || obj.nome || obj.nome_completo)) return obj;
+    }
+    return null;
+  }
+
   function showError(msg){
     const el = document.getElementById("errBox");
     el.style.display = "block";
@@ -515,7 +490,7 @@
 
   async function loadMatriz(){
     const res = await fetch(MATRIZ_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json.");
+    if(!res.ok) throw new Error("Não consegui carregar data/matriz.json. Verifique se o arquivo existe na pasta /data.");
     return res.json();
   }
 
@@ -595,14 +570,6 @@
     document.getElementById("pieWrap").innerHTML = svg;
   }
 
-  function formatUserLine(user){
-    if(!user) return "Nome: —<br>Email: —<br>Telefone: —";
-    const nome = user.nome_completo || "—";
-    const email = user.email || "—";
-    const tel = user.telefone || "—";
-    return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
-  }
-
   function renderTextos(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
 
@@ -613,66 +580,44 @@
     const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
     const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
 
-    document.getElementById("comoFunciona").innerHTML =
+    const funcionamento =
       `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. ` +
       `O seu tipo dominante é o <b>Tipo ${t1}</b> (${n1}). ` +
       `Na prática, isso aparece como: <b>${TIPOS[t1]?.curta || ""}</b>.` +
       `<br><br>` +
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
-      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.`;
+      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
+      `<br><br>` +
+      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
 
-    const fortes = limit(uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]), 7);
-    const atencao = limit(uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]), 7);
+    document.getElementById("comoFunciona").innerHTML = funcionamento;
+
+    const fortes = limit(
+      uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
+      7
+    );
+    const atencao = limit(
+      uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]),
+      7
+    );
 
     document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
     document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
-
-    const g = GUIA_BASE[t1] || {};
-    const guia =
-      `<b>Foco principal (Tipo ${t1})</b><br>` +
-      `• <b>Como falar:</b> ${g.falar || ""}<br>` +
-      `• <b>Como cobrar:</b> ${g.cobrar || ""}<br>` +
-      `• <b>Como elogiar:</b> ${g.elogiar || ""}<br>` +
-      `• <b>O que espera ouvir:</b> ${g.espera || ""}<br>` +
-      `• <b>Evite:</b> ${g.evitar || ""}<br><br>` +
-      `<b>Ajustes por influência</b><br>` +
-      `• <b>Tipo ${t2}:</b> ${GUIA_BASE[t2]?.falar || ""}<br>` +
-      `• <b>Tipo ${t3}:</b> ${GUIA_BASE[t3]?.falar || ""}`;
-
-    document.getElementById("guiaComunicacao").innerHTML = guia;
   }
 
-  function buildBarsHtml(score){
-    const values = Object.values(score).map(Number);
-    const max = Math.max(...values, 1);
-
-    let html = "";
-    for(let t=1;t<=9;t++){
-      const val = Number(score[t] || 0);
-      const pct = Math.round((val / max) * 100);
-      const color = TYPE_COLORS[t] || "#111827";
-
-      html += `
-        <div style="display:flex;align-items:center;gap:12px;margin:10px 0;">
-          <div style="min-width:34px;text-align:center;font-weight:900;color:#0b2a5b;background:#eef2ff;border-radius:10px;padding:6px 0;">
-            ${t}
-          </div>
-          <div style="flex:1;height:12px;background:#eeeeee;border-radius:999px;overflow:hidden;">
-            <div style="height:100%;width:${pct}%;background:${color};border-radius:999px;"></div>
-          </div>
-          <div style="min-width:44px;text-align:right;font-weight:900;color:#0f172a;">
-            ${pct}%
-          </div>
-        </div>
-      `;
-    }
-    return html;
+  function formatUserLine(user){
+    if(!user) return "Nome: — | Email: — | Telefone: —";
+    const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
+    const email = user.email || "—";
+    const tel = user.telefone || "—";
+    return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
   }
 
   function buildWhatsText(user, top3){
-    const nome = user?.nome_completo || "—";
-    const email = user?.email || "—";
-    const telefone = user?.telefone || "—";
+    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
+    const email = (user?.email || "—");
+    const telefone = (user?.telefone || "—");
+
     const linhas = [];
     linhas.push("✅ *Resultado do Teste (Eneagrama)*");
     linhas.push("");
@@ -684,45 +629,53 @@
     linhas.push(`1) Tipo ${top3[0].t} — ${top3[0].v}`);
     linhas.push(`2) Tipo ${top3[1].t} — ${top3[1].v}`);
     linhas.push(`3) Tipo ${top3[2].t} — ${top3[2].v}`);
+    linhas.push("");
+    linhas.push(`Resumo: Tipo ${top3[0].t} dominante, com influência de ${top3[1].t} e ${top3[2].t}.`);
     return linhas.join("\n");
   }
 
-  async function sendEmailRelatorio(assunto, relatorioHtml){
-    try{
-      if(sessionStorage.getItem(EMAIL_LOCK_KEY) === "1") return; // não enviar 2x
-      sessionStorage.setItem(EMAIL_LOCK_KEY, "1");
+  let __lastTop3 = null;
+  let __lastUser = null;
 
-      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        assunto,
-        relatorio_html: relatorioHtml
-      });
-    }catch(err){
-      console.error("EmailJS erro:", err);
+  document.getElementById("btnWhats").addEventListener("click", ()=>{
+    if(!__lastTop3){
+      alert("Ainda estou carregando o resultado. Tente novamente em 1 segundo.");
+      return;
     }
-  }
+    const msg = buildWhatsText(__lastUser, __lastTop3);
+    const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+  });
 
   (async function init(){
     try{
-      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
-      const user = getLocalJSON(LEAD_KEY) || null;
+      // ✅ guard: se não veio de uma sessão de teste, volta pro início
+      const active = sessionStorage.getItem(SESSION_ACTIVE_KEY) === "1";
+      const currentTestId = localStorage.getItem(TEST_ID_KEY);
+      const user = getLead();
 
-      document.getElementById("dadosUser").innerHTML = formatUserLine(user);
-
-      if(!user){
-        showError("Não encontrei os dados iniciais. Volte e inicie o teste novamente.");
-        document.getElementById("quickResumo").textContent = "Sem dados.";
-        document.getElementById("comoFunciona").textContent = "Sem dados.";
-        document.getElementById("guiaComunicacao").textContent = "Sem dados.";
+      if(!active || !currentTestId || !user){
+        // não dá loop: manda pro index
+        window.location.href = "index.html";
         return;
       }
 
-      if(!Array.isArray(respostas) || respostas.length === 0){
-        showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
+      // ✅ trava anti-dado antigo: lead precisa ser do testId atual (quando existir)
+      if(user.testId && currentTestId && String(user.testId) !== String(currentTestId)){
+        showError("Este resultado não pertence ao teste atual. Inicie um novo teste na página inicial.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
-        document.getElementById("guiaComunicacao").textContent = "Sem dados.";
+        return;
+      }
+
+      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
+      __lastUser = user;
+      document.getElementById("dadosUser").innerHTML = formatUserLine(user);
+
+      if(!Array.isArray(respostas) || respostas.length === 0){
+        showError("Não encontrei respostas salvas deste teste. Volte e finalize o teste novamente.");
+        document.getElementById("quickResumo").textContent = "Sem dados.";
+        document.getElementById("comoFunciona").textContent = "Sem dados.";
         return;
       }
 
@@ -730,43 +683,17 @@
       const score = computeScore(respostas, matriz);
       const top3 = top3FromScore(score);
 
+      __lastTop3 = top3;
+
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
-
-      const barsHtml = buildBarsHtml(score);
-      document.getElementById("barsWrap").innerHTML = barsHtml;
-
-      // WhatsApp
-      document.getElementById("btnWhats").addEventListener("click", ()=>{
-        const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(buildWhatsText(user, top3))}`;
-        window.open(url, "_blank");
-      });
-
-      // Envio de e-mail (idêntico ao relatório da página)
-      const nomeFull = (user.nome_completo || "Participante").trim();
-      const assunto = `Resultado eneagrama - ${nomeFull}`;
-
-      // Monta HTML completo do relatório para o e-mail (com CSS inline básico)
-      const relatorioHtml =
-        `<div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:16px;color:#0f172a;">` +
-          `<div style="max-width:900px;margin:0 auto;">` +
-            `<h1 style="margin:0 0 6px;font-size:34px;">Quem sou eu</h1>` +
-            `<div style="color:#64748b;font-size:14px;margin-bottom:14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>` +
-            `<div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">` +
-              document.querySelector("#reportRoot").innerHTML +
-            `</div>` +
-          `</div>` +
-        `</div>`;
-
-      await sendEmailRelatorio(assunto, relatorioHtml);
 
     }catch(err){
       console.error(err);
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
-      document.getElementById("guiaComunicacao").textContent = "Erro ao carregar.";
     }
   })();
 </script>
