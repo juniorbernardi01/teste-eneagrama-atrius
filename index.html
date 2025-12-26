@@ -233,29 +233,45 @@ Utilize o tempo que julgar necessário.
     const RESPOSTAS_KEY = "respostas";
     const LEAD_KEY = "atrius_eneagrama_lead_v1";
 
-    // ✅ aqui vai SEMPRE com .html pra não depender do fallback
-    const NEXT_PAGE = "/pages/page1.html";
+    // ✅ chaves do "controle mestre" do teste
+    const TEST_ID_KEY = "atrius_eneagrama_test_id";
+    const SESSION_ACTIVE_KEY = "atrius_eneagrama_active"; // sessionStorage
 
-    // ✅ trava anti-reset quando o usuário clica em iniciar (pra não apagar campo digitado)
-    const LOCK_KEY = "atrius_starting_redirect";
+    // ✅ rota RELATIVA (mais segura em GitHub Pages e domínios)
+    const NEXT_PAGE = "pages/page1.html";
 
-    // ✅ reset total ao entrar no link do teste
-    // Regra: Toda vez que abrir eneagrama.atrius.ind.br/teste.html (ou /), começa do zero.
-    // Mas NÃO resetar durante o clique de "Iniciar Teste" (evita apagar antes do redirect).
-    (function resetOnEntry(){
+    // =========================
+    // RESET TOTAL (SEMPRE que entra no INDEX)
+    // =========================
+    function hardResetNewTest() {
       try{
-        const locked = sessionStorage.getItem(LOCK_KEY) === "1";
-        if(!locked){
-          localStorage.removeItem(RESPOSTAS_KEY);
-          localStorage.removeItem(LEAD_KEY);
-        }
-        // se estava travado de uma tentativa anterior, destrava agora
-        sessionStorage.removeItem(LOCK_KEY);
+        localStorage.removeItem(RESPOSTAS_KEY);
+        localStorage.removeItem(LEAD_KEY);
+
+        // novo id de teste (ajuda as páginas a validarem que é um teste atual)
+        localStorage.setItem(TEST_ID_KEY, String(Date.now()));
+
+        // marca sessão ativa (vale só nessa aba)
+        sessionStorage.setItem(SESSION_ACTIVE_KEY, "1");
       }catch(e){
         console.warn("Falha ao limpar storage:", e);
       }
-    })();
+    }
 
+    // Roda no load normal
+    hardResetNewTest();
+
+    // Roda também quando o usuário volta pra essa página via "Voltar" (BFCache),
+    // evitando reaproveitar dados antigos.
+    window.addEventListener("pageshow", (ev) => {
+      if (ev && ev.persisted) {
+        hardResetNewTest();
+      }
+    });
+
+    // =========================
+    // FORM / VALIDAÇÃO
+    // =========================
     const nome = document.getElementById("nome");
     const sobrenome = document.getElementById("sobrenome");
     const email = document.getElementById("email");
@@ -354,13 +370,13 @@ Utilize o tempo que julgar necessário.
         validarTelefone(true);
 
       if(!ok){
-        const firstBad = [nome, sobrenome, email, telefone].find(el => el.classList.contains("is-invalid"));
+        const firstBad = [nome, sobrenrenome, email, telefone].find(el => el.classList.contains("is-invalid"));
         if(firstBad) firstBad.focus();
         return;
       }
 
-      // ✅ trava o reset durante o redirect (evita apagar se houver reload)
-      try{ sessionStorage.setItem(LOCK_KEY, "1"); }catch(_){}
+      // garante que a sessão está ativa
+      try { sessionStorage.setItem(SESSION_ACTIVE_KEY, "1"); } catch(_){}
 
       localStorage.setItem(LEAD_KEY, JSON.stringify({
         nome: nome.value.trim(),
@@ -369,10 +385,10 @@ Utilize o tempo que julgar necessário.
         email: email.value.trim(),
         telefone: telefone.value.trim(),
         telefone_digits: telefone.value.replace(/\D/g,""),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        testId: localStorage.getItem(TEST_ID_KEY) || null
       }));
 
-      // ✅ vai pra Page1
       window.location.assign(NEXT_PAGE);
     });
 
