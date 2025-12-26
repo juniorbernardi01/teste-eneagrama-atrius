@@ -3,69 +3,346 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quem sou eu</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Teste - Competências Emocionais</title>
+
+  <style>
+    :root{
+      --bg:#f3f5f8;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --border:#e5e7eb;
+      --shadow:0 10px 30px rgba(15,23,42,.10);
+      --btn:#e67e22;
+      --btnHover:#d87018;
+      --error:#dc2626;
+      --ok:#16a34a;
+    }
+
+    *{ box-sizing:border-box }
+
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .page{
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:16px 16px 40px;
+    }
+
+    .container{
+      width:min(920px, 100%);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo img{
+      max-width:220px;
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    .card{
+      width:100%;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:42px 42px 34px;
+    }
+
+    h1{
+      margin:0;
+      text-align:center;
+      font-size:34px;
+      color:#0b2a5b;
+    }
+
+    .subtitle{
+      margin:14px auto 28px;
+      max-width:720px;
+      text-align:center;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
+      white-space:pre-line;
+    }
+
+    form{
+      max-width:740px;
+      margin:0 auto;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    label{
+      display:block;
+      font-size:14px;
+      margin:14px 0 6px;
+      color:#334155;
+    }
+
+    .req{
+      color:var(--error);
+      font-weight:800;
+      margin-left:4px;
+    }
+
+    input{
+      width:100%;
+      padding:14px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      font-size:15px;
+      outline:none;
+      background:#fff;
+      transition:border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    input:focus{
+      border-color:#94a3b8;
+      box-shadow:0 0 0 3px rgba(148,163,184,.25);
+    }
+
+    input.is-invalid{
+      border-color:var(--error);
+      box-shadow:0 0 0 3px rgba(220,38,38,.15);
+      background:#fff7f7;
+    }
+
+    input.is-valid{
+      border-color:rgba(22,163,74,.65);
+      box-shadow:0 0 0 3px rgba(22,163,74,.12);
+      background:#f7fff9;
+    }
+
+    .error{
+      font-size:12px;
+      color:var(--error);
+      margin-top:6px;
+      display:none;
+    }
+
+    .btn{
+      margin-top:26px;
+      width:100%;
+      padding:14px;
+      border:0;
+      border-radius:12px;
+      background:var(--btn);
+      color:#fff;
+      font-weight:800;
+      font-size:16px;
+      cursor:pointer;
+      transition:background .15s, opacity .15s;
+    }
+
+    .btn:hover{ background:var(--btnHover); }
+
+    .btn:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+
+    .hint{
+      margin-top:12px;
+      text-align:center;
+      font-size:12px;
+      color:#64748b;
+    }
+
+    @media (max-width:600px){
+      .card{ padding:26px 18px; }
+      h1{ font-size:24px; }
+      .logo img{ max-width:160px; }
+      .subtitle{ font-size:14px; margin-bottom:18px; }
+      .row{ grid-template-columns:1fr; }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <img src="logo-atrius.png" alt="Atrius" class="logo" />
-      <h1>Quem sou eu</h1>
+  <div class="page">
+    <div class="container">
 
-      <p class="muted">
-        <b>Seja bem vindo(a)!</b><br>
-        Reserve alguns minutos do seu tempo, concentre-se e boa pesquisa!
-      </p>
-      <p class="muted">
-        Estas questões fazem parte da entrevista e não têm respostas certas ou erradas.
-        Têm como objetivo principal conhecê-lo(a).
-      </p>
+      <div class="logo">
+        <img src="logo-atrius.png" alt="Logo da Empresa">
+      </div>
 
-      <form id="cadForm" autocomplete="off">
-        <div class="grid">
-          <div>
-            <label>Nome *</label>
-            <input id="nome" required autocomplete="off">
-          </div>
-          <div>
-            <label>Email</label>
-            <input id="email" type="email" autocomplete="off">
-          </div>
-          <div>
-            <label>Telefone</label>
-            <input id="telefone" autocomplete="off">
-          </div>
-          <div>
-            <label>Empresa</label>
-            <input id="empresa" autocomplete="off">
-          </div>
+      <div class="card">
+        <h1>Teste - Competências Emocionais</h1>
+
+        <div class="subtitle">
+Estas questões fazem parte da entrevista e não têm respostas certas ou erradas.
+Têm como objetivo principal conhecê-lo(a) melhor, por isso responda com sinceridade.
+
+Utilize o tempo que julgar necessário.
         </div>
 
-        <div class="row">
-          <button class="btn" type="submit">Iniciar teste</button>
-          <span class="hint">Ao abrir esta página, o teste é zerado para o próximo participante.</span>
-        </div>
-      </form>
+        <form id="leadForm" novalidate>
+          <div class="row">
+            <div>
+              <label for="nome">Nome<span class="req">*</span></label>
+              <input id="nome" placeholder="Ex: Maria">
+              <div class="error" id="errNome">Informe seu nome.</div>
+            </div>
+
+            <div>
+              <label for="sobrenome">Sobrenome<span class="req">*</span></label>
+              <input id="sobrenome" placeholder="Ex: Silva">
+              <div class="error" id="errSobrenome">Informe seu sobrenome.</div>
+            </div>
+          </div>
+
+          <label for="email">Email<span class="req">*</span></label>
+          <input id="email" placeholder="ex: maria@empresa.com">
+          <div class="error" id="errEmail">Informe um e-mail válido.</div>
+
+          <label for="telefone">Telefone (DDD + número)<span class="req">*</span></label>
+          <input id="telefone" placeholder="(51) 99999-9999" maxlength="15">
+          <div class="error" id="errTelefone">Informe um telefone válido.</div>
+
+          <button class="btn" id="btnStart" type="submit" disabled>Iniciar Teste</button>
+
+          <div class="hint">
+            Ao continuar, seus dados serão utilizados junto do resultado final.
+          </div>
+        </form>
+      </div>
+
     </div>
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    // zera ao entrar no cadastro
-    APP.clearAll();
-    // zera também se voltar pelo histórico
-    window.addEventListener("pageshow", () => APP.clearAll());
+<script>
+/* ===================== CHAVES ===================== */
+const RESPOSTAS_KEY = "respostas";
+const USERDATA_KEY  = "userData";
 
-    document.getElementById("cadForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      APP.setCadastro({
-        nome: document.getElementById("nome").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        telefone: document.getElementById("telefone").value.trim(),
-        empresa: document.getElementById("empresa").value.trim(),
-      });
-      window.location.href = "pages/page1.html";
-    });
-  </script>
+/* GitHub Pages */
+const NEXT_PAGE = "/pages/page1";
+
+/* ===================== ELEMENTOS ===================== */
+const nome = document.getElementById("nome");
+const sobrenome = document.getElementById("sobrenome");
+const email = document.getElementById("email");
+const telefone = document.getElementById("telefone");
+const btnStart = document.getElementById("btnStart");
+
+const errNome = document.getElementById("errNome");
+const errSobrenome = document.getElementById("errSobrenome");
+const errEmail = document.getElementById("errEmail");
+const errTelefone = document.getElementById("errTelefone");
+
+/* ===================== RESET TOTAL ===================== */
+function clearTestStorage(){
+  localStorage.removeItem(RESPOSTAS_KEY);
+  localStorage.removeItem(USERDATA_KEY);
+}
+
+/* ===================== VALIDACOES ===================== */
+function setValid(el, ok){
+  el.classList.remove("is-valid","is-invalid");
+  if(ok) el.classList.add("is-valid");
+  else el.classList.add("is-invalid");
+}
+
+function showErr(el, show){
+  el.style.display = show ? "block" : "none";
+}
+
+function validarNome(show=false){
+  const ok = nome.value.trim().length >= 2;
+  setValid(nome, ok);
+  showErr(errNome, show && !ok);
+  return ok;
+}
+
+function validarSobrenome(show=false){
+  const ok = sobrenome.value.trim().length >= 2;
+  setValid(sobrenome, ok);
+  showErr(errSobrenome, show && !ok);
+  return ok;
+}
+
+function validarEmail(show=false){
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+  setValid(email, ok);
+  showErr(errEmail, show && !ok);
+  return ok;
+}
+
+function validarTelefone(show=false){
+  const d = telefone.value.replace(/\D/g,"");
+  const ok = d.length === 10 || d.length === 11;
+  setValid(telefone, ok);
+  showErr(errTelefone, show && !ok);
+  return ok;
+}
+
+function updateButton(){
+  btnStart.disabled = !(
+    validarNome() &&
+    validarSobrenome() &&
+    validarEmail() &&
+    validarTelefone()
+  );
+}
+
+function formatPhoneBR(d){
+  d = d.replace(/\D/g,"").slice(0,11);
+  if(d.length < 3) return `(${d}`;
+  if(d.length < 7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+  if(d.length < 11) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+}
+
+/* ===================== EVENTOS ===================== */
+[nome,sobrenome,email].forEach(el =>
+  el.addEventListener("input", ()=>{ updateButton(); })
+);
+
+telefone.addEventListener("input", ()=>{
+  telefone.value = formatPhoneBR(telefone.value);
+  updateButton();
+});
+
+[nome,sobrenome,email,telefone].forEach(el =>
+  el.addEventListener("blur", ()=>updateButton())
+);
+
+document.getElementById("leadForm").addEventListener("submit", e=>{
+  e.preventDefault();
+
+  if(!updateButton()) return;
+
+  /* 🔥 ZERA QUALQUER TESTE ANTIGO ANTES */
+  clearTestStorage();
+
+  /* salva dados do usuário */
+  localStorage.setItem(USERDATA_KEY, JSON.stringify({
+    nome: nome.value.trim(),
+    sobrenome: sobrenome.value.trim(),
+    nomeCompleto: `${nome.value.trim()} ${sobrenome.value.trim()}`,
+    email: email.value.trim(),
+    telefone: telefone.value.trim(),
+    createdAt: new Date().toISOString()
+  }));
+
+  window.location.href = NEXT_PAGE;
+});
+</script>
 </body>
 </html>
