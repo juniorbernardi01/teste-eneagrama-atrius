@@ -15,15 +15,16 @@
       --shadow:0 12px 34px rgba(15,23,42,.10);
       --accent:#f07a00;
 
-      --t1:#9ca3af;
-      --t2:#22c55e;
-      --t3:#d4af37;
-      --t4:#7c3aed;
-      --t5:#0f172a;
-      --t6:#8b6b4a;
-      --t7:#f97316;
-      --t8:#111827;
-      --t9:#38bdf8;
+      /* Paleta por tipo */
+      --t1:#9ca3af;   /* Cinza */
+      --t2:#22c55e;   /* Verde */
+      --t3:#d4af37;   /* Ouro */
+      --t4:#7c3aed;   /* Roxo */
+      --t5:#0f172a;   /* Azul escuro */
+      --t6:#8b6b4a;   /* Terroso */
+      --t7:#f97316;   /* Laranja */
+      --t8:#111827;   /* Preto */
+      --t9:#38bdf8;   /* Azul céu */
 
       --soft:#fff6ee;
       --softBorder:rgba(240,122,0,.35);
@@ -76,6 +77,7 @@
       font-size:18px;
     }
 
+    /* Top grid: lista + pizza */
     .topArea{
       display:grid;
       grid-template-columns: 1fr 320px;
@@ -161,8 +163,8 @@
       gap:10px;
       min-height: 220px;
     }
-    .pieHint{ display:none; }
 
+    /* Card de resumo + WhatsApp */
     .summaryCard{
       margin-top:14px;
       background:var(--soft);
@@ -227,7 +229,10 @@
       line-height:1.35;
     }
 
-    .btnRow{ display:flex; justify-content:flex-end; }
+    .btnRow{
+      display:flex;
+      justify-content:flex-end;
+    }
 
     .btnWA{
       display:inline-flex;
@@ -246,7 +251,10 @@
     }
     .btnWA:hover{ background:var(--waHover); }
 
-    .section{ margin-top:16px; }
+    /* Seção funcionamento em card branco */
+    .section{
+      margin-top:16px;
+    }
     .section h3{
       margin:0 0 10px;
       font-size:20px;
@@ -266,6 +274,7 @@
       line-height:1.55;
     }
 
+    /* Bottom lists */
     .gridBottom{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -331,6 +340,7 @@
       </div>
     </div>
 
+    <!-- TOP CARD -->
     <div class="card">
       <h2>Sua tríade principal (Top 3)</h2>
       <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
@@ -346,6 +356,7 @@
         </div>
       </div>
 
+      <!-- RESUMO + WHATSAPP -->
       <div class="summaryCard">
         <div class="summaryRow">
           <div class="miniInfo">
@@ -360,11 +371,25 @@
         </div>
 
         <div class="btnRow">
-          <button class="btnWA" id="btnWhats">Enviar no WhatsApp</button>
+          <button class="btnWA" id="btnWhats">
+            Enviar no WhatsApp
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- PONTUAÇÃO (BARRAS 1-9) -->
+    <div class="section">
+      <h3>Pontuação</h3>
+      <div class="funcCard">
+        <p class="funcText" style="margin-bottom:10px;color:var(--muted);font-size:13px;">
+          Quanto maior a barra, maior a compatibilidade com aquele tipo.
+        </p>
+        <div id="barsWrap"></div>
+      </div>
+    </div>
+
+    <!-- FUNCIONAMENTO -->
     <div class="section">
       <h3>Como você tende a funcionar</h3>
       <div class="funcCard">
@@ -372,6 +397,15 @@
       </div>
     </div>
 
+    <!-- GUIA DE COMUNICAÇÃO -->
+    <div class="section">
+      <h3>Guia rápido de comunicação</h3>
+      <div class="funcCard">
+        <p class="funcText" id="guiaComunicacao">Carregando…</p>
+      </div>
+    </div>
+
+    <!-- LISTAS -->
     <div class="gridBottom">
       <div class="listBox">
         <h4>Pontos fortes</h4>
@@ -385,20 +419,31 @@
     </div>
   </div>
 
+  <!-- EMAILJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
-  // ===== Keys do projeto (PADRÃO) =====
+  // =========================
+  // EMAILJS CONFIG (SEUS IDS)
+  // =========================
+  const EMAILJS_PUBLIC_KEY = "dMy7jYWSeALMDD7TI";
+  const EMAILJS_SERVICE_ID = "service_676gehg";
+  const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
+
+  // =========================
+  // KEYS DO PROJETO
+  // =========================
   const RESPOSTAS_KEY = "respostas";
   const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
-  const LEAD_KEY_FALLBACK_1 = "lead";
-  const LEAD_KEY_FALLBACK_2 = "atrius_lead";
-  const LEAD_KEY_FALLBACK_3 = "lead_inicial";
+  const LEAD_KEY_FALLBACK = "lead";
 
-  const TEST_ID_KEY = "atrius_eneagrama_test_id";
-  const SESSION_ACTIVE_KEY = "atrius_eneagrama_active";
+  // ✅ Como seu resultado.html está na raiz, manter /data/ é o ideal
+  const MATRIZ_URL = "/data/matriz.json";
 
-  // ✅ caminho relativo (evita problemas com domínio/subpasta)
-  const MATRIZ_URL = "data/matriz.json";
+  // Anti-duplicidade de envio
+  const EMAIL_SENT_LOCK_PREFIX = "atrius_eneagrama_email_sent_";
 
+  // WhatsApp destino
   const WHATS_NUMBER = "555195912176";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
@@ -433,7 +478,7 @@
     9:"mais calma e evitar briga"
   };
 
-  const TYPE_FORTES = { /* (mantido igual ao seu código) */
+  const TYPE_FORTES = {
     1:["Cuida da qualidade e do capricho","Organiza e coloca ordem no que está bagunçado","É responsável e confiável","Percebe erros e evita retrabalho","Gosta de melhorar as coisas aos poucos","Cumpre regras e combinações","Mantém padrão mesmo com pressão"],
     2:["Ajuda as pessoas de verdade","Percebe quando alguém não está bem","Cria um clima bom no time","É prestativo(a) e acolhedor(a)","Tem facilidade para cooperar","Faz o outro se sentir importante","Resolve coisas com gentileza"],
     3:["Entrega resultado e faz acontecer","Foca em metas e não se perde","Tem energia e ritmo de trabalho","Se adapta para dar certo","Motiva o time pelo exemplo","Aprende rápido o que precisa para vencer","Gosta de crescer e evoluir"],
@@ -445,7 +490,7 @@
     9:["É calmo(a) e equilibrado(a)","Evita brigas e acalma o ambiente","Escuta bem as pessoas","Ajuda o time a se entender","Tem paciência e constância","Gosta de harmonia e paz","Trabalha bem em grupo"]
   };
 
-  const TYPE_ATENCAO = { /* (mantido igual ao seu código) */
+  const TYPE_ATENCAO = {
     1:["Pode se cobrar demais","Pode ficar rígido(a) e inflexível","Pode criticar muito (a si e aos outros)","Pode ter dificuldade de relaxar","Pode ficar impaciente com erros","Pode querer tudo do seu jeito","Pode ter dificuldade em delegar"],
     2:["Pode dizer “sim” demais e se sobrecarregar","Pode ter medo de desagradar","Pode esperar reconhecimento e se frustrar","Pode se envolver demais com problemas dos outros","Pode guardar mágoa sem falar","Pode se esquecer de si","Pode evitar conversas difíceis"],
     3:["Pode ficar ansioso(a) por resultado","Pode querer fazer tudo rápido demais","Pode se comparar com os outros","Pode confundir valor pessoal com desempenho","Pode colocar imagem acima do descanso","Pode ter dificuldade de parar e respirar","Pode ficar irritado(a) com lentidão"],
@@ -457,6 +502,60 @@
     9:["Pode adiar decisões (procrastinar)","Pode evitar conflito e engolir incômodo","Pode dizer “tanto faz” e perder prioridade","Pode aceitar demais para manter paz","Pode demorar para reagir","Pode acumular stress em silêncio","Pode se acomodar quando precisa agir"]
   };
 
+  // =========================
+  // GUIA DE COMUNICAÇÃO
+  // =========================
+  const GUIA_BASE = {
+    1:{ falar:"Seja objetivo e organizado. Traga fatos e critérios claros.",
+        cobrar:"Combine padrão + prazo. Mostre o “certo” e o que precisa melhorar.",
+        elogiar:"Elogie qualidade, capricho, responsabilidade e consistência.",
+        espera:"“Ficou bem feito”, “Está correto”, “Confio no teu padrão”.",
+        evitar:"Ambiguidade, improviso, relativizar erro, “depois a gente vê”." },
+    2:{ falar:"Converse com calor humano e reconhecimento do esforço.",
+        cobrar:"Peça com gentileza e clareza. Mostre como isso ajuda o time/pessoas.",
+        elogiar:"Elogie cuidado, apoio, cooperação e disponibilidade.",
+        espera:"“Obrigado”, “Você ajudou muito”, “Contamos com você”.",
+        evitar:"Frieza, ingratidão, cobrança dura sem contexto humano." },
+    3:{ falar:"Seja direto e orientado a meta. Mostre objetivo e impacto.",
+        cobrar:"Cobre por resultado + indicador. Dê autonomia e velocidade.",
+        elogiar:"Elogie entrega, performance, superação e eficiência.",
+        espera:"“Ótimo resultado”, “Você fez acontecer”, “Isso foi decisivo”.",
+        evitar:"Desorganização, lentidão, críticas vagas sem métrica." },
+    4:{ falar:"Valide sentimentos e propósito. Seja verdadeiro, sem superficialidade.",
+        cobrar:"Conecte a cobrança ao significado/qualidade. Dê espaço pra expressão.",
+        elogiar:"Elogie autenticidade, profundidade, visão e diferencial.",
+        espera:"“Seu olhar fez diferença”, “Você trouxe algo único”.",
+        evitar:"Minimizar emoções, ironia, “engole e segue”." },
+    5:{ falar:"Seja claro e lógico. Dê contexto, dados e tempo para pensar.",
+        cobrar:"Defina prioridade, critério e prazo. Evite pressão emocional.",
+        elogiar:"Elogie estratégia, análise, precisão e solução inteligente.",
+        espera:"“Sua análise foi fundamental”, “Boa solução”.",
+        evitar:"Cobrança invasiva, urgência sem motivo, excesso de reunião." },
+    6:{ falar:"Traga segurança: combine plano, risco, próximos passos e expectativas.",
+        cobrar:"Cobre com previsibilidade: o que, quando, como e como será avaliado.",
+        elogiar:"Elogie lealdade, responsabilidade, prevenção de riscos.",
+        espera:"“Está seguro”, “Você pode confiar”, “Boa cautela”.",
+        evitar:"Mudança brusca sem aviso, promessas vagas, inconsistência." },
+    7:{ falar:"Seja leve e objetivo. Mostre possibilidades e próximos passos.",
+        cobrar:"Quebre em etapas curtas e claras. Ajude a manter foco.",
+        elogiar:"Elogie energia, criatividade, iniciativa e solução rápida.",
+        espera:"“Excelente ideia”, “Isso destravou o problema”.",
+        evitar:"Excesso de rigidez e monotonia, foco só no problema." },
+    8:{ falar:"Seja firme, direto e transparente. Sem rodeios.",
+        cobrar:"Cobre com clareza e respeito. Mostre limite e responsabilidade.",
+        elogiar:"Elogie coragem, proteção, decisão e liderança.",
+        espera:"“Boa postura”, “Você sustentou a pressão”.",
+        evitar:"Manipulação, passividade, enrolação, falta de verdade." },
+    9:{ falar:"Seja calmo e claro. Dê segurança e peça posicionamento.",
+        cobrar:"Cobre com gentileza e prazos. Ajude a priorizar e decidir.",
+        elogiar:"Elogie equilíbrio, constância, cooperação e paz no time.",
+        espera:"“Você trouxe harmonia”, “Boa estabilidade”.",
+        evitar:"Pressão agressiva, conflito desnecessário, urgência caótica." }
+  };
+
+  // =========================
+  // HELPERS
+  // =========================
   function uniq(arr){
     const out=[]; const seen=new Set();
     for(const x of arr){
@@ -474,11 +573,10 @@
   }
 
   function getLead(){
-    const keys = [LEAD_KEY_MAIN, LEAD_KEY_FALLBACK_1, LEAD_KEY_FALLBACK_2, LEAD_KEY_FALLBACK_3];
-    for(const k of keys){
-      const obj = getLocalJSON(k);
-      if(obj && (obj.email || obj.nome || obj.nome_completo)) return obj;
-    }
+    const a = getLocalJSON(LEAD_KEY_MAIN);
+    if(a && (a.email || a.nome || a.nome_completo)) return a;
+    const b = getLocalJSON(LEAD_KEY_FALLBACK);
+    if(b && (b.email || b.nome || b.nome_completo)) return b;
     return null;
   }
 
@@ -490,7 +588,7 @@
 
   async function loadMatriz(){
     const res = await fetch(MATRIZ_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("Não consegui carregar data/matriz.json. Verifique se o arquivo existe na pasta /data.");
+    if(!res.ok) throw new Error("Não consegui carregar /data/matriz.json. Verifique se o arquivo existe na pasta /data.");
     return res.json();
   }
 
@@ -512,6 +610,17 @@
       .slice(0,3);
   }
 
+  function formatUserLine(user){
+    if(!user) return "Nome: — | Email: — | Telefone: —";
+    const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
+    const email = user.email || "—";
+    const tel = user.telefone || "—";
+    return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
+  }
+
+  // =========================
+  // RENDER: TOP3 + PIE
+  // =========================
   function renderTop3(top3){
     const list = document.getElementById("topList");
     list.innerHTML = top3.map((it, idx)=>{
@@ -570,6 +679,9 @@
     document.getElementById("pieWrap").innerHTML = svg;
   }
 
+  // =========================
+  // RENDER: TEXTO + LISTAS
+  // =========================
   function renderTextos(top3){
     const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
 
@@ -605,14 +717,112 @@
     document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
   }
 
-  function formatUserLine(user){
-    if(!user) return "Nome: — | Email: — | Telefone: —";
-    const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
-    const email = user.email || "—";
-    const tel = user.telefone || "—";
-    return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
+  // =========================
+  // BARRAS (TELA + EMAIL)
+  // =========================
+  function buildBarsHtml(score){
+    const values = Object.values(score).map(Number);
+    const max = Math.max(...values, 1);
+
+    let html = "";
+    for(let t=1;t<=9;t++){
+      const val = Number(score[t] || 0);
+      const pct = Math.round((val / max) * 100);
+      const color = TYPE_COLORS[t] || "#111827";
+
+      html += `
+        <div style="display:flex;align-items:center;gap:12px;margin:10px 0;">
+          <div style="min-width:34px;text-align:center;font-weight:900;color:#0b2a5b;background:#eef2ff;border-radius:10px;padding:6px 0;">
+            ${t}
+          </div>
+          <div style="flex:1;height:12px;background:#eeeeee;border-radius:999px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${color};border-radius:999px;"></div>
+          </div>
+          <div style="min-width:44px;text-align:right;font-weight:900;color:#0f172a;">
+            ${pct}%
+          </div>
+        </div>
+      `;
+    }
+    return html;
   }
 
+  // =========================
+  // GUIA DE COMUNICAÇÃO (TELA + EMAIL)
+  // =========================
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  function buildGuiaHtml(top3){
+    const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
+    const g = GUIA_BASE[t1] || {};
+
+    const ajuste2 = GUIA_BASE[t2]
+      ? `• <b>Influência do Tipo ${t2}:</b> ajuste a comunicação para também considerar: <i>${escapeHtml(GUIA_BASE[t2].falar || "")}</i>.`
+      : "";
+
+    const ajuste3 = GUIA_BASE[t3]
+      ? `• <b>Influência do Tipo ${t3}:</b> ajuste a comunicação para também considerar: <i>${escapeHtml(GUIA_BASE[t3].falar || "")}</i>.`
+      : "";
+
+    return `
+      <div style="line-height:1.55;">
+        <div style="font-weight:900;margin-bottom:8px;">Foco principal (Tipo ${t1})</div>
+        <ul style="margin:0;padding-left:18px;">
+          <li><b>Como falar:</b> ${escapeHtml(g.falar || "")}</li>
+          <li><b>Como cobrar:</b> ${escapeHtml(g.cobrar || "")}</li>
+          <li><b>Como elogiar:</b> ${escapeHtml(g.elogiar || "")}</li>
+          <li><b>O que espera ouvir:</b> ${escapeHtml(g.espera || "")}</li>
+          <li><b>Evite:</b> ${escapeHtml(g.evitar || "")}</li>
+        </ul>
+        <div style="margin-top:10px;font-weight:900;">Ajustes por influência</div>
+        <div style="margin-top:6px;">
+          ${ajuste2 ? `<div style="margin:4px 0;">${ajuste2}</div>` : ""}
+          ${ajuste3 ? `<div style="margin:4px 0;">${ajuste3}</div>` : ""}
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================
+  // EMAIL: LISTAS (HTML)
+  // =========================
+  function toUlHtml(items){
+    return `<ul style="margin:0;padding-left:18px;line-height:1.6;">${
+      (items||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")
+    }</ul>`;
+  }
+
+  function buildComoFuncionaHtml(top3){
+    const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
+
+    const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
+    const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
+    const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
+
+    return `
+      <div style="color:#334155;line-height:1.55;">
+        Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. 
+        O seu tipo dominante é o <b>Tipo ${t1}</b> (${escapeHtml(n1)}). 
+        Na prática, isso aparece como: <b>${escapeHtml(TIPOS[t1]?.curta || "")}</b>.
+        <br><br>
+        A influência do <b>Tipo ${t2}</b> (${escapeHtml(n2)}) traz <b>${escapeHtml(INFLUENCIA[t2] || "")}</b>. 
+        A influência do <b>Tipo ${t3}</b> (${escapeHtml(n3)}) traz <b>${escapeHtml(INFLUENCIA[t3] || "")}</b>.
+        <br><br>
+        No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.
+      </div>
+    `;
+  }
+
+  // =========================
+  // WHATSAPP
+  // =========================
   function buildWhatsText(user, top3){
     const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
     const email = (user?.email || "—");
@@ -631,6 +841,7 @@
     linhas.push(`3) Tipo ${top3[2].t} — ${top3[2].v}`);
     linhas.push("");
     linhas.push(`Resumo: Tipo ${top3[0].t} dominante, com influência de ${top3[1].t} e ${top3[2].t}.`);
+
     return linhas.join("\n");
   }
 
@@ -647,35 +858,54 @@
     window.open(url, "_blank");
   });
 
+  // =========================
+  // EMAIL: ANTI DUPLICADO
+  // =========================
+  function getTestToken(user, respostas){
+    const base = (user?.createdAt || "") + "|" + (user?.email || "") + "|" + (respostas?.length || 0);
+    return btoa(unescape(encodeURIComponent(base))).slice(0, 40);
+  }
+
+  async function sendEmailOnce(payload, lockKey){
+    try{
+      if(sessionStorage.getItem(lockKey) === "1") return; // já enviou nesta sessão
+      sessionStorage.setItem(lockKey, "1");
+
+      if(window.emailjs && typeof window.emailjs.init === "function"){
+        window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      }
+
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, payload);
+      // sucesso silencioso
+    }catch(err){
+      console.error("Falha ao enviar e-mail:", err);
+    }
+  }
+
+  // =========================
+  // INIT
+  // =========================
   (async function init(){
     try{
-      // ✅ guard: se não veio de uma sessão de teste, volta pro início
-      const active = sessionStorage.getItem(SESSION_ACTIVE_KEY) === "1";
-      const currentTestId = localStorage.getItem(TEST_ID_KEY);
+      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
       const user = getLead();
 
-      if(!active || !currentTestId || !user){
-        // não dá loop: manda pro index
-        window.location.href = "index.html";
-        return;
-      }
-
-      // ✅ trava anti-dado antigo: lead precisa ser do testId atual (quando existir)
-      if(user.testId && currentTestId && String(user.testId) !== String(currentTestId)){
-        showError("Este resultado não pertence ao teste atual. Inicie um novo teste na página inicial.");
-        document.getElementById("quickResumo").textContent = "Sem dados.";
-        document.getElementById("comoFunciona").textContent = "Sem dados.";
-        return;
-      }
-
-      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
       __lastUser = user;
       document.getElementById("dadosUser").innerHTML = formatUserLine(user);
 
-      if(!Array.isArray(respostas) || respostas.length === 0){
-        showError("Não encontrei respostas salvas deste teste. Volte e finalize o teste novamente.");
+      if(!user){
+        showError("Não encontrei os dados iniciais (lead). Volte e inicie o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
+        document.getElementById("guiaComunicacao").textContent = "Sem dados.";
+        return;
+      }
+
+      if(!Array.isArray(respostas) || respostas.length === 0){
+        showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
+        document.getElementById("quickResumo").textContent = "Sem dados.";
+        document.getElementById("comoFunciona").textContent = "Sem dados.";
+        document.getElementById("guiaComunicacao").textContent = "Sem dados.";
         return;
       }
 
@@ -685,15 +915,78 @@
 
       __lastTop3 = top3;
 
+      // Render tela
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
+
+      // Render barras na tela
+      const barsHtml = buildBarsHtml(score);
+      document.getElementById("barsWrap").innerHTML = barsHtml;
+
+      // Render guia na tela
+      const guiaHtml = buildGuiaHtml(top3);
+      document.getElementById("guiaComunicacao").innerHTML = guiaHtml;
+
+      // =========================
+      // MONTAR PAYLOAD DO EMAIL
+      // =========================
+      const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
+
+      const nomeFull = (user.nome_completo || user.nomeCompleto || user.nome || "").trim();
+      const assunto = `Resultado eneagrama - ${nomeFull || "Participante"}`;
+
+      const fortesList = limit(uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]), 7);
+      const atencaoList = limit(uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]), 7);
+
+      const payload = {
+        // Subject do EmailJS deve ser: {{assunto}}
+        assunto,
+
+        // Dados
+        nome: nomeFull || "—",
+        email: user.email || "—",
+        telefone: user.telefone || "—",
+
+        // Top 3
+        top1_tipo: String(t1),
+        top1_nome: TIPOS[t1]?.nome || "",
+        top1_curta: TIPOS[t1]?.curta || "",
+        top1_score: String(top3[0].v),
+
+        top2_tipo: String(t2),
+        top2_nome: TIPOS[t2]?.nome || "",
+        top2_curta: TIPOS[t2]?.curta || "",
+        top2_score: String(top3[1].v),
+
+        top3_tipo: String(t3),
+        top3_nome: TIPOS[t3]?.nome || "",
+        top3_curta: TIPOS[t3]?.curta || "",
+        top3_score: String(top3[2].v),
+
+        // Resumo
+        resumo: `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`,
+
+        // HTMLs para o template do EmailJS
+        barras_html: barsHtml,
+        como_funciona_html: buildComoFuncionaHtml(top3),
+        guia_comunicacao_html: guiaHtml,
+        fortes_html: toUlHtml(fortesList),
+        atencao_html: toUlHtml(atencaoList)
+      };
+
+      // Lock por token para não mandar repetido
+      const token = getTestToken(user, respostas);
+      const lockKey = EMAIL_SENT_LOCK_PREFIX + token;
+
+      await sendEmailOnce(payload, lockKey);
 
     }catch(err){
       console.error(err);
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
+      document.getElementById("guiaComunicacao").textContent = "Erro ao carregar.";
     }
   })();
 </script>
