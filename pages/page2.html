@@ -1,171 +1,17 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Quem sou eu — Passo 2</title>
-
-  <style>
-    :root { --accent:#f07a00; --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666; --bd:#e7e7e7; }
-    body{font-family:Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);}
-    .wrap{max-width:980px;margin:0 auto;padding:16px;}
-    .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 6px 22px rgba(0,0,0,.06);}
-    h1{margin:0 0 8px;font-size:24px;}
-    .muted{color:var(--muted);font-size:14px;line-height:1.4;margin:6px 0;}
-    .step{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 6px;}
-    .step b{font-size:14px;}
-    .bar{height:10px;background:#e9e9e9;border-radius:999px;overflow:hidden;}
-    .fill{height:100%;width:50%;background:var(--accent);border-radius:999px;}
-    .q{border:1px solid var(--bd);border-radius:14px;padding:12px;margin:12px 0;}
-    .qtitle{margin:0 0 10px;font-weight:700;font-size:14px;}
-    .qtitle .n{display:inline-block;min-width:26px;color:#888;}
-    .opt{display:block;border:1px solid var(--bd);border-radius:12px;padding:12px;margin:8px 0;background:#fafafa;cursor:pointer;}
-    .opt input{margin-right:10px;transform:scale(1.1);}
-    .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
-    .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
-    .btn-outline{background:#fff;border:1px solid var(--bd);color:var(--text);}
-    .btn-primary{background:var(--accent);color:#fff;flex:1;min-width:220px;text-align:center;}
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Quem sou eu</h1>
-      <p class="muted">Agora foque no que te incomoda, te tenciona ou mexe com você por dentro.</p>
-
-      <div class="step">
-        <b>Passo 2 de 4 — Medos e tensões</b>
-        <span class="muted">15 perguntas • 3 alternativas</span>
-      </div>
-      <div class="bar"><div class="fill"></div></div>
-
-      <div class="muted" style="margin-top:10px;">
-        <b>Instruções:</b> Em cada pergunta, escolha <b>uma</b> alternativa — a que mais parece com sua reação real.
-        Se duas parecerem verdadeiras, escolha a que <b>mais se repete</b> em você.
-      </div>
-
-      <form id="formP2">
-
-        <div class="q">
-          <div class="qtitle"><span class="n">1.</span>Eu fico mais desconfortável quando:</div>
-          <label class="opt"><input type="radio" name="P2_01" value="A"> Algo está errado / injusto</label>
-          <label class="opt"><input type="radio" name="P2_01" value="B"> Não sou valorizado(a) / reconhecido(a)</label>
-          <label class="opt"><input type="radio" name="P2_01" value="C"> Me sinto sem liberdade / sufocado(a)</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">2.</span>O que mais me gera tensão é:</div>
-          <label class="opt"><input type="radio" name="P2_02" value="A"> Desorganização e falta de padrão</label>
-          <label class="opt"><input type="radio" name="P2_02" value="B"> Estagnação e falta de progresso</label>
-          <label class="opt"><input type="radio" name="P2_02" value="C"> Excesso de controle sobre mim</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">3.</span>Eu me frustro quando:</div>
-          <label class="opt"><input type="radio" name="P2_03" value="A"> Vejo descuido e erros repetidos</label>
-          <label class="opt"><input type="radio" name="P2_03" value="B"> Meu esforço passa despercebido</label>
-          <label class="opt"><input type="radio" name="P2_03" value="C"> Não respeitam meu espaço e limites</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">4.</span>Em situações difíceis, eu tendo a:</div>
-          <label class="opt"><input type="radio" name="P2_04" value="A"> Corrigir e “arrumar” o que está errado</label>
-          <label class="opt"><input type="radio" name="P2_04" value="B"> Mostrar valor e dar conta</label>
-          <label class="opt"><input type="radio" name="P2_04" value="C"> Me afastar para pensar com calma</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">5.</span>Eu me sinto mais inseguro(a) quando:</div>
-          <label class="opt"><input type="radio" name="P2_05" value="A"> Não há regras claras / justiça</label>
-          <label class="opt"><input type="radio" name="P2_05" value="B"> Não sei se estou indo bem</label>
-          <label class="opt"><input type="radio" name="P2_05" value="C"> Me sinto pressionado(a) demais</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">6.</span>O que mais me incomoda é:</div>
-          <label class="opt"><input type="radio" name="P2_06" value="A"> Improviso e descuido</label>
-          <label class="opt"><input type="radio" name="P2_06" value="B"> Falta de foco / ambição</label>
-          <label class="opt"><input type="radio" name="P2_06" value="C"> Falta de autonomia</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">7.</span>Eu fico irritado(a) quando:</div>
-          <label class="opt"><input type="radio" name="P2_07" value="A"> As coisas são feitas “de qualquer jeito”</label>
-          <label class="opt"><input type="radio" name="P2_07" value="B"> Não reconhecem minha entrega</label>
-          <label class="opt"><input type="radio" name="P2_07" value="C"> Me controlam demais</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">8.</span>O que mais pesa por dentro é:</div>
-          <label class="opt"><input type="radio" name="P2_08" value="A"> Errar e falhar com padrões</label>
-          <label class="opt"><input type="radio" name="P2_08" value="B"> Fracassar e não “dar certo”</label>
-          <label class="opt"><input type="radio" name="P2_08" value="C"> Perder liberdade / espaço</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">9.</span>Eu fico mais tenso(a) quando:</div>
-          <label class="opt"><input type="radio" name="P2_09" value="A"> Algo foge do correto e do justo</label>
-          <label class="opt"><input type="radio" name="P2_09" value="B"> Me sinto invisível</label>
-          <label class="opt"><input type="radio" name="P2_09" value="C"> Me sinto invadido(a) / sem espaço</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">10.</span>Em conflitos, eu costumo:</div>
-          <label class="opt"><input type="radio" name="P2_10" value="A"> Defender o que é certo</label>
-          <label class="opt"><input type="radio" name="P2_10" value="B"> Defender meu valor / posição</label>
-          <label class="opt"><input type="radio" name="P2_10" value="C"> Evitar e me afastar</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">11.</span>Eu me fecho quando:</div>
-          <label class="opt"><input type="radio" name="P2_11" value="A"> Vejo muita bagunça / desordem</label>
-          <label class="opt"><input type="radio" name="P2_11" value="B"> Me sinto desvalorizado(a)</label>
-          <label class="opt"><input type="radio" name="P2_11" value="C"> Me cobram demais</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">12.</span>Eu sinto desconforto quando:</div>
-          <label class="opt"><input type="radio" name="P2_12" value="A"> Não existe coerência / justiça</label>
-          <label class="opt"><input type="radio" name="P2_12" value="B"> Não existe reconhecimento</label>
-          <label class="opt"><input type="radio" name="P2_12" value="C"> Não existe liberdade</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">13.</span>O que mais me tira do sério é:</div>
-          <label class="opt"><input type="radio" name="P2_13" value="A"> Falta de cuidado e capricho</label>
-          <label class="opt"><input type="radio" name="P2_13" value="B"> Falta de resultado / foco</label>
-          <label class="opt"><input type="radio" name="P2_13" value="C"> Falta de autonomia</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">14.</span>Eu sinto ansiedade quando:</div>
-          <label class="opt"><input type="radio" name="P2_14" value="A"> As coisas saem do “certo”</label>
-          <label class="opt"><input type="radio" name="P2_14" value="B"> Não vejo progresso</label>
-          <label class="opt"><input type="radio" name="P2_14" value="C"> Me sinto controlado(a)</label>
-        </div>
-
-        <div class="q">
-          <div class="qtitle"><span class="n">15.</span>Eu fico mais sensível quando:</div>
-          <label class="opt"><input type="radio" name="P2_15" value="A"> Algo está errado</label>
-          <label class="opt"><input type="radio" name="P2_15" value="B"> Não sou visto(a)</label>
-          <label class="opt"><input type="radio" name="P2_15" value="C"> Me pressionam demais</label>
-        </div>
-
-        <div class="actions">
-          <a class="btn btn-outline" href="./page1.html">Voltar</a>
-          <button id="btnProximo" type="button" class="btn btn-primary">Continuar</button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-
 <script>
 const STORAGE_KEY="respostas";
 
-function getList(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
-function setList(l){ localStorage.setItem(STORAGE_KEY, JSON.stringify(l)); }
+/* ================= STORAGE ================= */
+function getList(){
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+function setList(l){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(l));
+}
 
 function upsert(pergunta, alternativa){
   const l = getList();
@@ -175,18 +21,26 @@ function upsert(pergunta, alternativa){
   setList(l);
 }
 
+/* ================= RESTORE ================= */
 function restore(){
   const l = getList();
   for (const r of l) {
-    const el = document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
+    const el = document.querySelector(
+      `input[name="${r.pergunta}"][value="${r.alternativa}"]`
+    );
     if (el) el.checked = true;
   }
 }
 
+/* ================= VALIDATION ================= */
 function validateAll(){
   const form = document.getElementById("formP2");
-  const names = [...new Set([...form.querySelectorAll('input[type="radio"]')].map(i => i.name))];
-  const missing = names.filter(n => !form.querySelector(`input[name="${n}"]:checked`));
+  const names = [...new Set(
+    [...form.querySelectorAll('input[type="radio"]')].map(i => i.name)
+  )];
+  const missing = names.filter(n =>
+    !form.querySelector(`input[name="${n}"]:checked`)
+  );
   if (missing.length){
     alert("Responda todas as questões desta página antes de continuar.");
     const first = form.querySelector(`input[name="${missing[0]}"]`);
@@ -196,17 +50,28 @@ function validateAll(){
   return true;
 }
 
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
+
+  // 🔒 PROTEÇÃO DE FLUXO
+  // Se alguém cair aqui sem iniciar o teste, volta para a index
+  const respostas = getList();
+  if (!respostas || respostas.length === 0){
+    window.location.href = "/"; // index
+    return;
+  }
+
   restore();
+
   document.querySelectorAll('#formP2 input[type="radio"]').forEach(inp=>{
-    inp.addEventListener("change",()=>upsert(inp.name, inp.value));
+    inp.addEventListener("change",()=>{
+      upsert(inp.name, inp.value);
+    });
   });
+
   document.getElementById("btnProximo").addEventListener("click",()=>{
     if(!validateAll()) return;
-    document.querySelectorAll('#formP2 input[type="radio"]:checked').forEach(inp=>upsert(inp.name, inp.value));
     window.location.href="./page3.html";
   });
 });
 </script>
-</body>
-</html>
