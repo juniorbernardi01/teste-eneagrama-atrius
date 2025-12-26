@@ -19,7 +19,7 @@
       --t2:#22c55e;
       --t3:#d4af37;
       --t4:#7c3aed;
-      --t5:#0f172a;
+      --t5:#0877ff;
       --t6:#8b6b4a;
       --t7:#f97316;
       --t8:#111827;
@@ -307,77 +307,6 @@
       line-height:1.35;
     }
 
-    /* Pontuação (barras) */
-    .scoreCard{
-      margin-top:16px;
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
-    .scoreHeader{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      margin-bottom:10px;
-    }
-    .scoreHeader h3{
-      margin:0;
-      font-size:22px;
-      letter-spacing:-.2px;
-    }
-    .scoreHeader p{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .rows{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:12px;
-    }
-    .rowScore{
-      display:grid;
-      grid-template-columns: 40px 1fr 52px;
-      gap:10px;
-      align-items:center;
-    }
-    .pill{
-      width:40px;
-      height:34px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:12px;
-      background:#f1f5f9;
-      color:#0b2a5b;
-      font-weight:900;
-      border:1px solid rgba(15,23,42,.08);
-    }
-    .track{
-      height:14px;
-      background:#eeeeee;
-      border-radius:999px;
-      overflow:hidden;
-      border:1px solid rgba(15,23,42,.06);
-    }
-    .fillBar{
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      background:var(--accent);
-      transition:width .4s ease;
-    }
-    .pct{
-      text-align:right;
-      font-weight:900;
-      color:#0f172a;
-      font-size:13px;
-    }
-
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .topArea{ grid-template-columns:1fr; }
@@ -389,8 +318,6 @@
       .topItem{ padding:12px; }
       .desc{ font-size:12.5px; }
       .gridBottom{ grid-template-columns:1fr; }
-      .rowScore{ grid-template-columns: 36px 1fr 46px; }
-      .pill{ width:36px; }
     }
   </style>
 </head>
@@ -457,15 +384,6 @@
       </div>
     </div>
 
-    <!-- Pontuação -->
-    <div class="scoreCard">
-      <div class="scoreHeader">
-        <h3>Pontuação</h3>
-        <p>Quanto maior a barra, maior a compatibilidade com aquele tipo.</p>
-      </div>
-      <div class="rows" id="scoreRows"></div>
-    </div>
-
   </div>
 
   <!-- EmailJS -->
@@ -487,7 +405,7 @@
   const LEAD_KEY_FALLBACK_2 = "atrius_lead";
   const LEAD_KEY_FALLBACK_3 = "lead_inicial";
 
-  // ✅ caminho relativo (evita problemas com domínio/subpasta)
+  // ✅ caminho relativo
   const MATRIZ_URL = "data/matriz.json";
 
   // WhatsApp destino: 55 51 9591-2176
@@ -728,9 +646,8 @@
     return linhas.join("\n");
   }
 
-  // ================= Pontuação (barras) =================
+  // ===== Pontuação (SÓ PARA E-MAIL) =====
   function normalizeToPercent(score){
-    // usa o maior valor como 100%
     const vals = Object.values(score).map(v=>Number(v)||0);
     const max = Math.max(...vals, 0) || 1;
     const pct = {};
@@ -740,26 +657,26 @@
     return pct;
   }
 
-  function renderScoreBars(score){
+  function buildScoreBarsHtmlForEmail(score){
     const pct = normalizeToPercent(score);
-    const rows = [];
+    let html = "";
     for(let t=1;t<=9;t++){
-      const color = TYPE_COLORS[t] || cssVar("--accent");
-      rows.push(`
-        <div class="rowScore">
-          <div class="pill">${t}</div>
-          <div class="track">
-            <div class="fillBar" style="width:${pct[t]}%;background:${color};"></div>
+      const color = (TYPE_COLORS[t] || "#f07a00");
+      html += `
+        <div style="display:grid;grid-template-columns:40px 1fr 52px;gap:10px;align-items:center;margin:10px 0;">
+          <div style="width:40px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#f1f5f9;color:#0b2a5b;font-weight:900;border:1px solid rgba(15,23,42,.08);">${t}</div>
+          <div style="height:14px;background:#eeeeee;border-radius:999px;overflow:hidden;border:1px solid rgba(15,23,42,.06);">
+            <div style="height:100%;width:${pct[t]}%;border-radius:999px;background:${color};"></div>
           </div>
-          <div class="pct">${pct[t]}%</div>
+          <div style="text-align:right;font-weight:900;color:#0f172a;font-size:13px;">${pct[t]}%</div>
         </div>
-      `);
+      `;
     }
-    document.getElementById("scoreRows").innerHTML = rows.join("");
+    return html;
   }
 
-  // ================= Email HTML (inline, Gmail-friendly) =================
-  function buildEmailHtml(user, top3){
+  // ================= Email HTML (inline) =================
+  function buildEmailHtml(user, top3, score){
     const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
     const email = (user?.email || "—");
     const tel = (user?.telefone || "—");
@@ -791,9 +708,7 @@
     const fortes = document.getElementById("listaFortes")?.innerHTML || "";
     const atencao = document.getElementById("listaAtencao")?.innerHTML || "";
     const quick = document.getElementById("quickResumo")?.textContent || "";
-
-    // Score bars
-    const scoreRowsHtml = document.getElementById("scoreRows")?.innerHTML || "";
+    const scoreBars = buildScoreBarsHtmlForEmail(score);
 
     return `
       <div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">
@@ -858,10 +773,11 @@
             </div>
           </div>
 
+          <!-- Pontuação (SÓ NO EMAIL) -->
           <div style="margin-top:14px;background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
             <div style="font-weight:900;font-size:22px;margin:0 0 6px;">Pontuação</div>
             <div style="color:#64748b;font-size:13px;margin:0 0 12px;">Quanto maior a barra, maior a compatibilidade com aquele tipo.</div>
-            <div>${scoreRowsHtml}</div>
+            <div>${scoreBars}</div>
           </div>
 
           <div style="margin-top:18px;color:#94a3b8;font-size:12px;">
@@ -872,19 +788,25 @@
     `;
   }
 
-  async function sendEmailOnce(user, top3){
+  async function sendEmailOnce(user, top3, score){
     try{
       if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
       sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
 
       const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
       const assunto = `Resultado eneagrama - ${nome}`;
-      const relatorio_html = buildEmailHtml(user, top3);
+      const relatorio_html = buildEmailHtml(user, top3, score);
 
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        // usados no template
         assunto,
-        relatorio_html
+        relatorio_html,
+
+        // pra bater com teu print (From Name / Reply To)
+        name: nome,
+        email: (user?.email || "")
       });
     }catch(err){
       console.error("Erro EmailJS:", err);
@@ -931,12 +853,9 @@
       renderPie(top3);
       renderTextos(top3);
 
-      // pontuação
-      renderScoreBars(score);
-
       // envia e-mail (uma vez por sessão)
       if(user && (user.email || user.nome || user.nome_completo)){
-        await sendEmailOnce(user, top3);
+        await sendEmailOnce(user, top3, score);
       }
 
     }catch(err){
