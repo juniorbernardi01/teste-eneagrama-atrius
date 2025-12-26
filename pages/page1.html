@@ -81,6 +81,7 @@ h1{margin:0 0 6px}
   display:flex;
   gap:10px;
   margin-top:16px;
+  flex-wrap:wrap;
 }
 .btn{
   padding:14px;
@@ -93,6 +94,7 @@ h1{margin:0 0 6px}
   background:var(--accent);
   color:#fff;
   flex:1;
+  min-width:220px;
 }
 </style>
 </head>
@@ -226,6 +228,77 @@ Não existe resposta certa ou errada.
   <label class="opt"><input type="radio" name="P1_14" value="C"> Existe espaço e flexibilidade</label>
 </div>
 
-<!-- 15 -->
+<!-- 15 (faltava) -->
 <div class="q">
-  <div class="qtitle"><span>15.</span>Eu me de
+  <div class="qtitle"><span>15.</span>Eu me desmotivo mais quando:</div>
+  <label class="opt"><input type="radio" name="P1_15" value="A"> Vejo descuido</label>
+  <label class="opt"><input type="radio" name="P1_15" value="B"> Não vejo progresso</label>
+  <label class="opt"><input type="radio" name="P1_15" value="C"> Me sinto controlado(a)</label>
+</div>
+
+<div class="actions">
+  <button type="button" id="btnNext" class="btn btn-primary">Continuar</button>
+</div>
+
+</form>
+</div>
+</div>
+
+<script>
+const KEY="respostas";
+
+function getList(){
+  try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
+  catch{ return []; }
+}
+function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
+
+function save(p,a){
+  const l=getList();
+  const i=l.findIndex(x=>x.pergunta===p);
+  if(i>=0) l[i].alternativa=a;
+  else l.push({pergunta:p,alternativa:a});
+  setList(l);
+}
+
+function restore(){
+  getList().forEach(r=>{
+    const el=document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
+    if(el) el.checked=true;
+  });
+}
+
+function validate(){
+  const names=[...new Set([...document.querySelectorAll('input[type=radio]')].map(i=>i.name))];
+  const ok=names.every(n=>document.querySelector(`input[name="${n}"]:checked`));
+  if(!ok){
+    alert("Responda todas as questões para continuar.");
+    const firstMissing = names.find(n=>!document.querySelector(`input[name="${n}"]:checked`));
+    const firstEl = document.querySelector(`input[name="${firstMissing}"]`);
+    if(firstEl) firstEl.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  return ok;
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  // 🔒 proteção de fluxo (se cair direto aqui sem iniciar)
+  if(getList().length === 0){
+    window.location.href = "/";
+    return;
+  }
+
+  restore();
+
+  document.querySelectorAll("input[type=radio]").forEach(i=>{
+    i.addEventListener("change",()=>save(i.name,i.value));
+  });
+
+  document.getElementById("btnNext").onclick=()=>{
+    if(!validate()) return;
+    location.href="page2.html";
+  };
+});
+</script>
+
+</body>
+</html>
