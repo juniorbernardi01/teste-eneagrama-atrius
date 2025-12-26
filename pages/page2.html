@@ -81,6 +81,7 @@ h1{margin:0 0 6px}
   display:flex;
   gap:10px;
   margin-top:16px;
+  flex-wrap:wrap;
 }
 .btn{
   padding:14px;
@@ -97,6 +98,7 @@ h1{margin:0 0 6px}
   background:var(--accent);
   color:#fff;
   flex:1;
+  min-width:220px;
 }
 </style>
 </head>
@@ -115,55 +117,136 @@ Agora foque no que te incomoda, te tensiona ou mexe com você por dentro.
 <div class="bar"><div class="fill"></div></div>
 </div>
 
+<div class="muted" style="margin-top:10px;">
+  <b>Instruções:</b> Em cada pergunta, escolha <b>uma</b> alternativa — a que mais parece com sua reação real.
+  Se duas parecerem verdadeiras, escolha a que <b>mais se repete</b> em você.
+</div>
+
 <form id="formP2">
 
 <!-- 1 -->
 <div class="q">
   <div class="qtitle"><span>1.</span>Eu fico mais desconfortável quando:</div>
-  <label class="opt"><input type="radio" name="P2_01" value="A"> Algo está errado ou injusto</label>
-  <label class="opt"><input type="radio" name="P2_01" value="B"> Não sou valorizado(a)</label>
-  <label class="opt"><input type="radio" name="P2_01" value="C"> Me sinto sem liberdade</label>
+  <label class="opt"><input type="radio" name="P2_01" value="A"> Algo está errado / injusto</label>
+  <label class="opt"><input type="radio" name="P2_01" value="B"> Não sou valorizado(a) / reconhecido(a)</label>
+  <label class="opt"><input type="radio" name="P2_01" value="C"> Me sinto sem liberdade / sufocado(a)</label>
 </div>
 
 <!-- 2 -->
 <div class="q">
   <div class="qtitle"><span>2.</span>O que mais me gera tensão é:</div>
-  <label class="opt"><input type="radio" name="P2_02" value="A"> Falta de padrão e organização</label>
-  <label class="opt"><input type="radio" name="P2_02" value="B"> Falta de progresso</label>
-  <label class="opt"><input type="radio" name="P2_02" value="C"> Excesso de controle</label>
+  <label class="opt"><input type="radio" name="P2_02" value="A"> Desorganização e falta de padrão</label>
+  <label class="opt"><input type="radio" name="P2_02" value="B"> Estagnação e falta de progresso</label>
+  <label class="opt"><input type="radio" name="P2_02" value="C"> Excesso de controle sobre mim</label>
 </div>
 
 <!-- 3 -->
 <div class="q">
   <div class="qtitle"><span>3.</span>Eu me frustro quando:</div>
-  <label class="opt"><input type="radio" name="P2_03" value="A"> Vejo descuido</label>
-  <label class="opt"><input type="radio" name="P2_03" value="B"> Meu esforço não é visto</label>
-  <label class="opt"><input type="radio" name="P2_03" value="C"> Invadem meu espaço</label>
+  <label class="opt"><input type="radio" name="P2_03" value="A"> Vejo descuido e erros repetidos</label>
+  <label class="opt"><input type="radio" name="P2_03" value="B"> Meu esforço passa despercebido</label>
+  <label class="opt"><input type="radio" name="P2_03" value="C"> Não respeitam meu espaço e limites</label>
 </div>
 
 <!-- 4 -->
 <div class="q">
-  <div class="qtitle"><span>4.</span>Em situações difíceis, eu costumo:</div>
-  <label class="opt"><input type="radio" name="P2_04" value="A"> Corrigir o que está errado</label>
-  <label class="opt"><input type="radio" name="P2_04" value="B"> Provar meu valor</label>
-  <label class="opt"><input type="radio" name="P2_04" value="C"> Me afastar</label>
+  <div class="qtitle"><span>4.</span>Em situações difíceis, eu tendo a:</div>
+  <label class="opt"><input type="radio" name="P2_04" value="A"> Corrigir e “arrumar” o que está errado</label>
+  <label class="opt"><input type="radio" name="P2_04" value="B"> Mostrar valor e dar conta</label>
+  <label class="opt"><input type="radio" name="P2_04" value="C"> Me afastar para pensar com calma</label>
 </div>
 
 <!-- 5 -->
 <div class="q">
-  <div class="qtitle"><span>5.</span>Eu me sinto inseguro(a) quando:</div>
-  <label class="opt"><input type="radio" name="P2_05" value="A"> Não há justiça</label>
+  <div class="qtitle"><span>5.</span>Eu me sinto mais inseguro(a) quando:</div>
+  <label class="opt"><input type="radio" name="P2_05" value="A"> Não há regras claras / justiça</label>
   <label class="opt"><input type="radio" name="P2_05" value="B"> Não sei se estou indo bem</label>
-  <label class="opt"><input type="radio" name="P2_05" value="C"> Me pressionam demais</label>
+  <label class="opt"><input type="radio" name="P2_05" value="C"> Me sinto pressionado(a) demais</label>
+</div>
+
+<!-- 6 -->
+<div class="q">
+  <div class="qtitle"><span>6.</span>O que mais me incomoda é:</div>
+  <label class="opt"><input type="radio" name="P2_06" value="A"> Improviso e descuido</label>
+  <label class="opt"><input type="radio" name="P2_06" value="B"> Falta de foco / ambição</label>
+  <label class="opt"><input type="radio" name="P2_06" value="C"> Falta de autonomia</label>
+</div>
+
+<!-- 7 -->
+<div class="q">
+  <div class="qtitle"><span>7.</span>Eu fico irritado(a) quando:</div>
+  <label class="opt"><input type="radio" name="P2_07" value="A"> As coisas são feitas “de qualquer jeito”</label>
+  <label class="opt"><input type="radio" name="P2_07" value="B"> Não reconhecem minha entrega</label>
+  <label class="opt"><input type="radio" name="P2_07" value="C"> Me controlam demais</label>
+</div>
+
+<!-- 8 -->
+<div class="q">
+  <div class="qtitle"><span>8.</span>O que mais pesa por dentro é:</div>
+  <label class="opt"><input type="radio" name="P2_08" value="A"> Errar e falhar com padrões</label>
+  <label class="opt"><input type="radio" name="P2_08" value="B"> Fracassar e não “dar certo”</label>
+  <label class="opt"><input type="radio" name="P2_08" value="C"> Perder liberdade / espaço</label>
+</div>
+
+<!-- 9 -->
+<div class="q">
+  <div class="qtitle"><span>9.</span>Eu fico mais tenso(a) quando:</div>
+  <label class="opt"><input type="radio" name="P2_09" value="A"> Algo foge do correto e do justo</label>
+  <label class="opt"><input type="radio" name="P2_09" value="B"> Me sinto invisível</label>
+  <label class="opt"><input type="radio" name="P2_09" value="C"> Me sinto invadido(a) / sem espaço</label>
+</div>
+
+<!-- 10 -->
+<div class="q">
+  <div class="qtitle"><span>10.</span>Em conflitos, eu costumo:</div>
+  <label class="opt"><input type="radio" name="P2_10" value="A"> Defender o que é certo</label>
+  <label class="opt"><input type="radio" name="P2_10" value="B"> Defender meu valor / posição</label>
+  <label class="opt"><input type="radio" name="P2_10" value="C"> Evitar e me afastar</label>
+</div>
+
+<!-- 11 -->
+<div class="q">
+  <div class="qtitle"><span>11.</span>Eu me fecho quando:</div>
+  <label class="opt"><input type="radio" name="P2_11" value="A"> Vejo muita bagunça / desordem</label>
+  <label class="opt"><input type="radio" name="P2_11" value="B"> Me sinto desvalorizado(a)</label>
+  <label class="opt"><input type="radio" name="P2_11" value="C"> Me cobram demais</label>
+</div>
+
+<!-- 12 -->
+<div class="q">
+  <div class="qtitle"><span>12.</span>Eu sinto desconforto quando:</div>
+  <label class="opt"><input type="radio" name="P2_12" value="A"> Não existe coerência / justiça</label>
+  <label class="opt"><input type="radio" name="P2_12" value="B"> Não existe reconhecimento</label>
+  <label class="opt"><input type="radio" name="P2_12" value="C"> Não existe liberdade</label>
+</div>
+
+<!-- 13 -->
+<div class="q">
+  <div class="qtitle"><span>13.</span>O que mais me tira do sério é:</div>
+  <label class="opt"><input type="radio" name="P2_13" value="A"> Falta de cuidado e capricho</label>
+  <label class="opt"><input type="radio" name="P2_13" value="B"> Falta de resultado / foco</label>
+  <label class="opt"><input type="radio" name="P2_13" value="C"> Falta de autonomia</label>
+</div>
+
+<!-- 14 -->
+<div class="q">
+  <div class="qtitle"><span>14.</span>Eu sinto ansiedade quando:</div>
+  <label class="opt"><input type="radio" name="P2_14" value="A"> As coisas saem do “certo”</label>
+  <label class="opt"><input type="radio" name="P2_14" value="B"> Não vejo progresso</label>
+  <label class="opt"><input type="radio" name="P2_14" value="C"> Me sinto controlado(a)</label>
+</div>
+
+<!-- 15 -->
+<div class="q">
+  <div class="qtitle"><span>15.</span>Eu fico mais sensível quando:</div>
+  <label class="opt"><input type="radio" name="P2_15" value="A"> Algo está errado</label>
+  <label class="opt"><input type="radio" name="P2_15" value="B"> Não sou visto(a)</label>
+  <label class="opt"><input type="radio" name="P2_15" value="C"> Me pressionam demais</label>
 </div>
 
 <div class="actions">
-  <button type="button" class="btn btn-outline" onclick="location.href='page1.html'">
-    Voltar
-  </button>
-  <button type="button" id="btnNext" class="btn btn-primary">
-    Continuar
-  </button>
+  <button type="button" class="btn btn-outline" onclick="location.href='page1.html'">Voltar</button>
+  <button type="button" id="btnNext" class="btn btn-primary">Continuar</button>
 </div>
 
 </form>
@@ -173,18 +256,13 @@ Agora foque no que te incomoda, te tensiona ou mexe com você por dentro.
 <script>
 const KEY="respostas";
 
-/* 🔒 Proteção de fluxo */
+/* ================= STORAGE ================= */
 function getList(){
   try{ return JSON.parse(localStorage.getItem(KEY)) || []; }
   catch{ return []; }
 }
 function setList(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
 
-if(getList().length === 0){
-  window.location.href = "/";
-}
-
-/* Save */
 function save(p,a){
   const l=getList();
   const i=l.findIndex(x=>x.pergunta===p);
@@ -193,27 +271,33 @@ function save(p,a){
   setList(l);
 }
 
-/* Restore */
 function restore(){
   getList().forEach(r=>{
-    const el=document.querySelector(
-      `input[name="${r.pergunta}"][value="${r.alternativa}"]`
-    );
+    const el=document.querySelector(`input[name="${r.pergunta}"][value="${r.alternativa}"]`);
     if(el) el.checked=true;
   });
 }
 
-/* Validate */
 function validate(){
-  const names=[...new Set(
-    [...document.querySelectorAll('input[type=radio]')].map(i=>i.name)
-  )];
+  const names=[...new Set([...document.querySelectorAll('input[type=radio]')].map(i=>i.name))];
   const ok=names.every(n=>document.querySelector(`input[name="${n}"]:checked`));
-  if(!ok) alert("Responda todas as questões para continuar.");
+  if(!ok){
+    alert("Responda todas as questões para continuar.");
+    const firstMissing = names.find(n=>!document.querySelector(`input[name="${n}"]:checked`));
+    const firstEl = document.querySelector(`input[name="${firstMissing}"]`);
+    if(firstEl) firstEl.scrollIntoView({behavior:"smooth", block:"center"});
+  }
   return ok;
 }
 
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
+  // 🔒 proteção de fluxo (se cair direto aqui sem ter iniciado)
+  if(getList().length === 0){
+    window.location.href = "/";
+    return;
+  }
+
   restore();
 
   document.querySelectorAll("input[type=radio]").forEach(i=>{
