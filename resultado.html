@@ -161,6 +161,7 @@
       gap:10px;
       min-height: 220px;
     }
+    .pieHint{ display:none; }
 
     .summaryCard{
       margin-top:14px;
@@ -306,28 +307,6 @@
       line-height:1.35;
     }
 
-    /* Aviso topo */
-    .mailBanner{
-      display:none;
-      position:sticky;
-      top:0;
-      z-index:999;
-      padding:10px 12px;
-      border-radius:14px;
-      margin:0 0 12px;
-      background:#fff6ee;
-      border:1px solid rgba(240,122,0,.35);
-      color:#0f172a;
-      font-weight:900;
-      box-shadow: var(--shadow);
-    }
-    .mailBanner small{
-      display:block;
-      font-weight:700;
-      color:#475569;
-      margin-top:2px;
-    }
-
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .topArea{ grid-template-columns:1fr; }
@@ -345,17 +324,16 @@
 
 <body>
   <div class="wrap">
-
-    <div class="mailBanner" id="mailBanner">
-      Enviando relatório por e-mail...
-      <small>Isso pode levar alguns segundos.</small>
-    </div>
-
     <div class="header">
       <div class="title">
         <h1>Quem sou eu</h1>
         <p>Abaixo está o seu resultado com base nas respostas do formulário.</p>
       </div>
+    </div>
+
+    <!-- ✅ AVISO ANTES DO RESULTADO -->
+    <div id="emailStatus" style="display:none;margin:0 0 12px;background:#fff6ee;border:1px solid rgba(240,122,0,.35);border-radius:14px;padding:12px;font-weight:900;color:#0f172a;">
+      Enviando e-mail com seu resultado...
     </div>
 
     <div class="card">
@@ -439,14 +417,6 @@
   const WHATS_NUMBER = "555195912176";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-  function escapeHtml(s){
-    return String(s ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
 
   const TYPE_COLORS = {
     1: cssVar("--t1"), 2: cssVar("--t2"), 3: cssVar("--t3"),
@@ -534,6 +504,14 @@
     el.textContent = msg;
   }
 
+  // ✅ STATUS DO EMAIL
+  function setEmailStatus(msg, show=true){
+    const el = document.getElementById("emailStatus");
+    if(!el) return;
+    el.style.display = show ? "block" : "none";
+    el.textContent = msg;
+  }
+
   async function loadMatriz(){
     const res = await fetch(MATRIZ_URL, { cache: "no-store" });
     if(!res.ok) throw new Error("Não consegui carregar data/matriz.json. Verifique se o arquivo existe na pasta /data.");
@@ -591,7 +569,7 @@
     const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
     return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
   }
-  function buildPieSvg(top3){
+  function renderPie(top3){
     const total = top3.reduce((s,x)=>s+x.v,0) || 1;
     let start = 0;
     const cx = 110, cy = 110, r = 92;
@@ -602,10 +580,10 @@
       const end = start + angle;
       const path = arcPath(cx, cy, r, start, end);
       start = end;
-      return { t: it.t, path };
+      return { t: it.t, v: it.v, path };
     });
 
-    return `
+    const svg = `
       <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
         ${slices.map(s=>{
           const color = TYPE_COLORS[s.t] || "#111827";
@@ -614,9 +592,7 @@
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
       </svg>
     `;
-  }
-  function renderPie(top3){
-    document.getElementById("pieWrap").innerHTML = buildPieSvg(top3);
+    document.getElementById("pieWrap").innerHTML = svg;
   }
 
   function renderTextos(top3){
@@ -635,14 +611,20 @@
       `Na prática, isso aparece como: <b>${TIPOS[t1]?.curta || ""}</b>.` +
       `<br><br>` +
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
-      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>. ` +
+      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
       `<br><br>` +
       `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
-    const fortes = limit(uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]), 7);
-    const atencao = limit(uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]), 7);
+    const fortes = limit(
+      uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
+      7
+    );
+    const atencao = limit(
+      uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]),
+      7
+    );
 
     document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
     document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
@@ -706,7 +688,13 @@
     return html;
   }
 
-  function buildTop3Html(top3){
+  // ✅ gera o HTML completo do e-mail (layout igual)
+  function buildEmailHtml(user, top3, score){
+    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
+    const email = (user?.email || "—");
+    const tel = (user?.telefone || "—");
+    const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+
     const itemTop = (idx, it) => {
       const color = (TYPE_COLORS[it.t] || "#111827");
       const tipoNome = (TIPOS[it.t]?.nome || `Tipo ${it.t}`);
@@ -719,35 +707,25 @@
                 <span style="width:10px;height:10px;border-radius:999px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.18);"></span>
                 ${idx}º — Tipo ${it.t}
               </div>
-              <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${escapeHtml(tipoNome)}</div>
-              <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${escapeHtml(tipoCurta)}</div>
+              <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${tipoNome}</div>
+              <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${tipoCurta}</div>
             </div>
             <div style="font-weight:900;font-size:22px;color:#0f172a;min-width:56px;text-align:right;">${it.v}</div>
           </div>
         </div>
       `;
     };
-    return itemTop(1, top3[0]) + itemTop(2, top3[1]) + itemTop(3, top3[2]);
-  }
 
-  function buildEmailHtml(user, top3, score){
-    const nome = escapeHtml(user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
-    const email = escapeHtml(user?.email || "—");
-    const tel = escapeHtml(user?.telefone || "—");
-    const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
-    const quick = escapeHtml(`Seu tipo mais forte é o Tipo ${top3[0].t}, com influência dos Tipos ${top3[1].t} e ${top3[2].t}.`);
-
-    const pieSvg = buildPieSvg(top3);
-    const top3Html = buildTop3Html(top3);
-    const funcionamentoHtml = document.getElementById("comoFunciona")?.innerHTML || "";
-    const fortesHtml = document.getElementById("listaFortes")?.innerHTML || "";
-    const atencaoHtml = document.getElementById("listaAtencao")?.innerHTML || "";
+    const pieSvg = document.getElementById("pieWrap")?.innerHTML || "";
+    const funcionamento = document.getElementById("comoFunciona")?.innerHTML || "";
+    const fortes = document.getElementById("listaFortes")?.innerHTML || "";
+    const atencao = document.getElementById("listaAtencao")?.innerHTML || "";
+    const quick = document.getElementById("quickResumo")?.textContent || "";
     const scoreBars = buildScoreBarsHtmlForEmail(score);
 
     return `
       <div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">
         <div style="max-width:980px;margin:0 auto;">
-
           <div style="font-size:40px;font-weight:900;margin:0 0 6px;">Quem sou eu</div>
           <div style="color:#64748b;font-size:14px;margin:0 0 14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>
 
@@ -757,7 +735,9 @@
 
             <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
               <div style="flex:1;min-width:320px;">
-                ${top3Html}
+                ${itemTop(1, top3[0])}
+                ${itemTop(2, top3[1])}
+                ${itemTop(3, top3[2])}
               </div>
 
               <div style="width:320px;min-width:280px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:12px;text-align:center;">
@@ -790,19 +770,19 @@
           <div style="margin-top:16px;">
             <div style="font-weight:900;font-size:20px;margin:0 0 10px;">Como você tende a funcionar</div>
             <div style="background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-              <div style="font-size:14px;line-height:1.55;color:#334155;">${funcionamentoHtml}</div>
+              <div style="font-size:14px;line-height:1.55;color:#334155;">${funcionamento}</div>
             </div>
           </div>
 
           <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;">
             <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
               <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos fortes</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortesHtml}</ul>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortes}</ul>
             </div>
 
             <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
               <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos de atenção</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencaoHtml}</ul>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencao}</ul>
             </div>
           </div>
 
@@ -820,45 +800,28 @@
     `;
   }
 
-  function setBanner(text, sub){
-    const b = document.getElementById("mailBanner");
-    b.style.display = "block";
-    b.innerHTML = `${text}<small>${sub || ""}</small>`;
-  }
-
   async function sendEmailOnce(user, top3, score){
-    if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
+    try{
+      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
+      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
 
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
-    const email = (user?.email || "").trim();
-    const assunto = `Resultado eneagrama - ${nome}`;
+      const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
+      const relatorio_html = buildEmailHtml(user, top3, score);
 
-    // Mostra aviso antes de abrir/continuar
-    setBanner("Enviando relatório por e-mail...", "Isso pode levar alguns segundos.");
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-    const relatorio_html = buildEmailHtml(user, top3, score);
+      // ✅ IMPORTANTE: nomes EXATOS que o template usa
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        nome: nome,                 // Subject usa {{nome}}
+        name: nome,                 // From Name usa {{name}}
+        email: (user?.email || ""), // Reply To usa {{email}}
+        relatorio_html: relatorio_html
+      });
 
-    // trava sessão
-    sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
-
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-    // >>> AQUI é o ponto-chave: enviar EXATAMENTE o que o template usa <<<
-    const payload = {
-      assunto: assunto,
-      relatorio_html: relatorio_html,
-      name: nome,
-      email: email
-    };
-
-    // Debug rápido
-    console.log("EMAIL PAYLOAD >>>", payload);
-
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, payload);
-
-    // Banner de sucesso
-    setBanner("Relatório enviado ✅", "Você já pode visualizar seu resultado abaixo.");
-    setTimeout(()=>{ document.getElementById("mailBanner").style.display="none"; }, 4500);
+    }catch(err){
+      console.error("Erro EmailJS:", err);
+      setEmailStatus("⚠️ Falha ao enviar e-mail. Abaixo está seu resultado:", true);
+    }
   }
 
   // ================= WhatsApp =================
@@ -888,6 +851,7 @@
         showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
+        setEmailStatus("⚠️ Sem respostas encontradas.", true);
         return;
       }
 
@@ -897,24 +861,26 @@
 
       __lastTop3 = top3;
 
+      // ✅ 1) AVISO, 2) ENVIA EMAIL, 3) RENDERIZA
+      setEmailStatus("Enviando e-mail com seu resultado...", true);
+
+      if(user && (user.email || user.nome || user.nome_completo)){
+        await sendEmailOnce(user, top3, score);
+        setEmailStatus("✅ E-mail enviado com sucesso! Abaixo está seu resultado:", true);
+      } else {
+        setEmailStatus("⚠️ Não encontrei seus dados (nome/e-mail). Abaixo está seu resultado:", true);
+      }
+
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
-
-      // envia e-mail (uma vez por sessão)
-      if(user && (user.email || user.nome || user.nome_completo)){
-        await sendEmailOnce(user, top3, score);
-      } else {
-        setBanner("Atenção", "Não encontrei Nome/E-mail no cadastro inicial. O e-mail não foi enviado.");
-        setTimeout(()=>{ document.getElementById("mailBanner").style.display="none"; }, 6000);
-      }
 
     }catch(err){
       console.error(err);
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
-      setBanner("Erro ao enviar e-mail", String(err?.message || err));
+      setEmailStatus("⚠️ Erro ao carregar o resultado.", true);
     }
   })();
 </script>
