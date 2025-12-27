@@ -803,16 +803,16 @@
       if(user && (user.email || user.nome || user.nome_completo)){
         setNotice("warn", "📨 Enviando e-mail com o resultado…");
 
-        const textoEmail = buildEmailText(user, score, top3);
+        const textoEmail = "TESTE 123 - se isso não aparecer, o problema é o TEMPLATE";
 
         // debug pra você ver se o texto está OK
         console.log("EMAIL TEXTO =>\n" + textoEmail);
 
-        await sendEmailOnce(user, textoEmail);
-        setNotice("ok", "✅ E-mail enviado com sucesso! Abaixo está seu resultado:");
-      } else {
-        setNotice("err", "⚠️ Lead não encontrado (nome/email). Não enviei e-mail.");
-      }
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+  assunto: assunto,
+  texto: textoEmail,
+  to_email: TO_EMAIL_FIXO
+});
 
     }catch(err){
       console.error("ERRO init:", err);
