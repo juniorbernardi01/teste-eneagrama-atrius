@@ -63,6 +63,35 @@
       font-size:14px;
     }
 
+    .notice{
+      display:none;
+      border-radius:14px;
+      padding:12px 14px;
+      margin:12px 0 14px;
+      border:1px solid rgba(15,23,42,.12);
+      background:#fff;
+      box-shadow:var(--shadow);
+      font-weight:900;
+      color:#0f172a;
+      font-size:14px;
+    }
+    .notice.sending{
+      display:block;
+      border-color:rgba(59,130,246,.25);
+      background:rgba(59,130,246,.08);
+    }
+    .notice.ok{
+      display:block;
+      border-color:rgba(34,197,94,.25);
+      background:rgba(34,197,94,.10);
+    }
+    .notice.err{
+      display:block;
+      border-color:rgba(220,38,38,.25);
+      background:rgba(220,38,38,.08);
+      color:#991b1b;
+    }
+
     .card{
       background:var(--card);
       border:1px solid var(--border);
@@ -306,30 +335,6 @@
       line-height:1.35;
     }
 
-    /* aviso de email */
-    .emailNotice{
-      display:none;
-      background:#fff6ee;
-      border:1px solid rgba(240,122,0,.35);
-      border-radius:14px;
-      padding:12px;
-      margin:12px 0 14px;
-      font-size:14px;
-      font-weight:800;
-      color:#0b2a5b;
-      box-shadow:var(--shadow);
-    }
-    .emailNotice.ok{
-      background:#ecfdf5;
-      border-color:rgba(34,197,94,.35);
-      color:#065f46;
-    }
-    .emailNotice.err{
-      background:#fff7f7;
-      border-color:rgba(220,38,38,.25);
-      color:#b91c1c;
-    }
-
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .topArea{ grid-template-columns:1fr; }
@@ -355,7 +360,7 @@
     </div>
 
     <!-- AVISO EMAIL -->
-    <div id="emailNotice" class="emailNotice">📩 Enviando e-mail com o resultado…</div>
+    <div id="emailNotice" class="notice sending">⏳ Enviando e-mail…</div>
 
     <div class="card">
       <h2>Sua tríade principal (Top 3)</h2>
@@ -423,9 +428,6 @@
   const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
   const EMAILJS_PUBLIC_KEY  = "dMy7jYWSeALMDD7TI";
   const EMAIL_SENT_LOCK = "atrius_eneagrama_email_sent_this_session";
-
-  // ✅ DESTINO FIXO (igual teu template está usando)
-  const TO_EMAIL_FIXO = "juniorbernardi@atrius.ind.br";
 
   // ===== Keys do projeto =====
   const RESPOSTAS_KEY = "respostas";
@@ -528,13 +530,10 @@
     el.textContent = msg;
   }
 
-  function setEmailNotice(state, msg){
-    const el = document.getElementById("emailNotice");
-    el.classList.remove("ok","err");
-    el.style.display = "block";
-    if(state === "ok") el.classList.add("ok");
-    if(state === "err") el.classList.add("err");
-    el.textContent = msg;
+  function setNotice(state, text){
+    const n = document.getElementById("emailNotice");
+    n.className = "notice " + state;   // sending | ok | err
+    n.textContent = text;
   }
 
   async function loadMatriz(){
@@ -684,7 +683,7 @@
     return linhas.join("\n");
   }
 
-  // ===== Email Texto (simples e confiável) =====
+  // ===== Percentual (email texto) =====
   function normalizeToPercent(score){
     const vals = Object.values(score).map(v=>Number(v)||0);
     const max = Math.max(...vals, 0) || 1;
@@ -695,67 +694,60 @@
     return pct;
   }
 
-  function buildEmailText(user, score, top3){
+  function buildEmailTexto(user, top3, score){
     const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
     const email = (user?.email || "—");
     const tel = (user?.telefone || "—");
-
     const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
     const pct = normalizeToPercent(score);
 
-    const lines = [];
-    lines.push("RESULTADO ENEAGRAMA — ATRIUS");
-    lines.push("");
-    lines.push("DADOS:");
-    lines.push(`Nome completo: ${nome}`);
-    lines.push(`Telefone: ${tel}`);
-    lines.push(`Email: ${email}`);
-    lines.push("");
-    lines.push(`TRÍADE PRINCIPAL (Top 3): ${triade}`);
-    lines.push(`1) Tipo ${top3[0].t} — ${top3[0].v}`);
-    lines.push(`2) Tipo ${top3[1].t} — ${top3[1].v}`);
-    lines.push(`3) Tipo ${top3[2].t} — ${top3[2].v}`);
-    lines.push("");
-    lines.push("PERCENTUAL POR TIPO (0–100%):");
+    const linhas = [];
+    linhas.push("RESULTADO DO TESTE - ENEAGRAMA");
+    linhas.push("");
+    linhas.push(`Nome completo: ${nome}`);
+    linhas.push(`Email: ${email}`);
+    linhas.push(`Telefone: ${tel}`);
+    linhas.push("");
+    linhas.push(`Tríade principal (Top 3): ${triade}`);
+    linhas.push(`1º Tipo ${top3[0].t} — ${top3[0].v}`);
+    linhas.push(`2º Tipo ${top3[1].t} — ${top3[1].v}`);
+    linhas.push(`3º Tipo ${top3[2].t} — ${top3[2].v}`);
+    linhas.push("");
+    linhas.push("Percentual por tipo (referência interna):");
     for(let t=1;t<=9;t++){
-      const nm = TIPOS[t]?.nome ? ` (${TIPOS[t].nome})` : "";
-      lines.push(`Tipo ${t}${nm}: ${pct[t]}%`);
+      linhas.push(`Tipo ${t}: ${pct[t]}%`);
     }
-    lines.push("");
-    lines.push("—");
-    lines.push("Atrius • Resultado gerado automaticamente");
-    return lines.join("\n");
+    linhas.push("");
+    linhas.push("Atrius • Resultado gerado automaticamente");
+    return linhas.join("\n");
   }
 
-  async function sendEmailOnce(user, score, top3){
+  async function sendEmailOnce(user, top3, score){
+    // retorna true/false pra gente atualizar o aviso
     try{
-      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
+      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return true;
       sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
-
-      setEmailNotice("info", "📩 Enviando e-mail com o resultado…");
 
       const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
       const assunto = `Resultado eneagrama - ${nome}`;
-      const texto = buildEmailText(user, score, top3);
+      const texto = buildEmailTexto(user, top3, score);
 
-      // INIT
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-      // ENVIA: nomes EXACTOS do template (print)
+      // IMPORTANTE: chaves tem que bater com o TEMPLATE (assunto/texto/name/email)
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         assunto: assunto,
         texto: texto,
-        to_email: TO_EMAIL_FIXO,
-
-        // extras (não atrapalham)
         name: nome,
         email: (user?.email || "")
       });
 
-      setEmailNotice("ok", "✅ E-mail enviado com sucesso! Abaixo está seu resultado:");
+      return true;
     }catch(err){
       console.error("Erro EmailJS:", err);
-      setEmailNotice("err", "⚠️ Falha ao enviar o e-mail. Mas seu resultado está abaixo.");
+      // libera lock se falhar (pra tentar de novo se recarregar)
+      sessionStorage.removeItem(EMAIL_SENT_LOCK);
+      return false;
     }
   }
 
@@ -783,6 +775,7 @@
       document.getElementById("dadosUser").innerHTML = formatUserLine(user);
 
       if(!Array.isArray(respostas) || respostas.length === 0){
+        setNotice("err", "❌ Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
@@ -792,26 +785,34 @@
       const matriz = await loadMatriz();
       const score = computeScore(respostas, matriz);
       const top3 = top3FromScore(score);
-
       __lastTop3 = top3;
 
+      // 1) Envia e-mail antes de “finalizar” a tela (como você pediu)
+      setNotice("sending", "⏳ Enviando e-mail…");
+      let okEmail = false;
+      if(user && (user.email || user.nome || user.nome_completo)){
+        okEmail = await sendEmailOnce(user, top3, score);
+      } else {
+        okEmail = false;
+      }
+
+      if(okEmail){
+        setNotice("ok", "✅ E-mail enviado com sucesso! Abaixo está seu resultado:");
+      } else {
+        setNotice("err", "⚠️ Não foi possível enviar o e-mail agora. O resultado está abaixo normalmente.");
+      }
+
+      // 2) Renderiza resultado
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
 
-      // envia e-mail (uma vez por sessão)
-      if(user && (user.email || user.nome || user.nome_completo)){
-        await sendEmailOnce(user, score, top3);
-      }else{
-        setEmailNotice("err", "⚠️ Não encontrei os dados do participante para enviar e-mail.");
-      }
-
     }catch(err){
       console.error(err);
+      setNotice("err", "❌ Erro ao carregar o resultado.");
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
-      setEmailNotice("err", "⚠️ Erro ao processar o resultado.");
     }
   })();
 </script>
