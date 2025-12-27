@@ -39,40 +39,6 @@
       color:var(--text);
     }
 
-    /* ===== overlay envio email ===== */
-    .emailOverlay{
-      position:fixed; inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(15,23,42,.55);
-      z-index:9999;
-      padding:20px;
-    }
-    .emailBox{
-      width:min(520px, 92vw);
-      background:#fff;
-      border:1px solid rgba(15,23,42,.12);
-      border-radius:18px;
-      box-shadow:0 12px 34px rgba(15,23,42,.18);
-      padding:18px;
-    }
-    .emailBox h2{ margin:0 0 8px; font-size:18px; }
-    .emailBox p{ margin:0; color:#334155; font-size:14px; line-height:1.45; }
-    .emailStatus{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      font-size:13px;
-      font-weight:800;
-      display:inline-block;
-      border:1px solid rgba(15,23,42,.10);
-      background:#f8fafc;
-      color:#0f172a;
-    }
-    .emailStatus.ok{ background:#ecfdf5; border-color:rgba(34,197,94,.25); color:#065f46; }
-    .emailStatus.bad{ background:#fff7ed; border-color:rgba(249,115,22,.30); color:#9a3412; }
-
     .wrap{
       max-width:1150px;
       margin:0 auto;
@@ -195,7 +161,6 @@
       gap:10px;
       min-height: 220px;
     }
-    .pieHint{ display:none; }
 
     .summaryCard{
       margin-top:14px;
@@ -341,6 +306,28 @@
       line-height:1.35;
     }
 
+    /* Aviso topo */
+    .mailBanner{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:999;
+      padding:10px 12px;
+      border-radius:14px;
+      margin:0 0 12px;
+      background:#fff6ee;
+      border:1px solid rgba(240,122,0,.35);
+      color:#0f172a;
+      font-weight:900;
+      box-shadow: var(--shadow);
+    }
+    .mailBanner small{
+      display:block;
+      font-weight:700;
+      color:#475569;
+      margin-top:2px;
+    }
+
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .topArea{ grid-template-columns:1fr; }
@@ -357,16 +344,13 @@
 </head>
 
 <body>
-  <!-- Overlay: aparece antes do resultado -->
-  <div id="emailOverlay" class="emailOverlay" style="display:none;">
-    <div class="emailBox">
-      <h2>Enviando seu resultado por e-mail…</h2>
-      <p>Estamos gerando o relatório e enviando automaticamente para você.</p>
-      <div id="emailStatus" class="emailStatus">Aguarde…</div>
-    </div>
-  </div>
+  <div class="wrap">
 
-  <div class="wrap" id="pageWrap" style="display:none;">
+    <div class="mailBanner" id="mailBanner">
+      Enviando relatório por e-mail...
+      <small>Isso pode levar alguns segundos.</small>
+    </div>
+
     <div class="header">
       <div class="title">
         <h1>Quem sou eu</h1>
@@ -426,6 +410,7 @@
         <ul id="listaAtencao"></ul>
       </div>
     </div>
+
   </div>
 
   <!-- EmailJS -->
@@ -454,6 +439,14 @@
   const WHATS_NUMBER = "555195912176";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
 
   const TYPE_COLORS = {
     1: cssVar("--t1"), 2: cssVar("--t2"), 3: cssVar("--t3"),
@@ -609,7 +602,7 @@
       const end = start + angle;
       const path = arcPath(cx, cy, r, start, end);
       start = end;
-      return { t: it.t, v: it.v, path };
+      return { t: it.t, path };
     });
 
     return `
@@ -642,20 +635,14 @@
       `Na prática, isso aparece como: <b>${TIPOS[t1]?.curta || ""}</b>.` +
       `<br><br>` +
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
-      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
+      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>. ` +
       `<br><br>` +
-      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.`;
+      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
-    const fortes = limit(
-      uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
-      7
-    );
-    const atencao = limit(
-      uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]),
-      7
-    );
+    const fortes = limit(uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]), 7);
+    const atencao = limit(uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]), 7);
 
     document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
     document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
@@ -719,7 +706,7 @@
     return html;
   }
 
-  function buildTop3HtmlForEmail(top3){
+  function buildTop3Html(top3){
     const itemTop = (idx, it) => {
       const color = (TYPE_COLORS[it.t] || "#111827");
       const tipoNome = (TIPOS[it.t]?.nome || `Tipo ${it.t}`);
@@ -732,100 +719,146 @@
                 <span style="width:10px;height:10px;border-radius:999px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.18);"></span>
                 ${idx}º — Tipo ${it.t}
               </div>
-              <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${tipoNome}</div>
-              <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${tipoCurta}</div>
+              <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${escapeHtml(tipoNome)}</div>
+              <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${escapeHtml(tipoCurta)}</div>
             </div>
             <div style="font-weight:900;font-size:22px;color:#0f172a;min-width:56px;text-align:right;">${it.v}</div>
           </div>
         </div>
       `;
     };
-    return `${itemTop(1, top3[0])}${itemTop(2, top3[1])}${itemTop(3, top3[2])}`;
+    return itemTop(1, top3[0]) + itemTop(2, top3[1]) + itemTop(3, top3[2]);
   }
 
-  // ===== EmailJS: envia variáveis separadas (template monta o layout) =====
-  async function sendEmailPiecesOnce(user, top3, score){
-    const overlay = document.getElementById("emailOverlay");
-    const statusEl = document.getElementById("emailStatus");
-    overlay.style.display = "flex";
-    statusEl.className = "emailStatus";
-    statusEl.textContent = "Aguarde…";
+  function buildEmailHtml(user, top3, score){
+    const nome = escapeHtml(user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
+    const email = escapeHtml(user?.email || "—");
+    const tel = escapeHtml(user?.telefone || "—");
+    const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+    const quick = escapeHtml(`Seu tipo mais forte é o Tipo ${top3[0].t}, com influência dos Tipos ${top3[1].t} e ${top3[2].t}.`);
 
-    try{
-      // trava por sessão (pra não enviar 2x)
-      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1"){
-        statusEl.className = "emailStatus ok";
-        statusEl.textContent = "E-mail já enviado nesta sessão ✅";
-        return { ok:true, skipped:true };
-      }
+    const pieSvg = buildPieSvg(top3);
+    const top3Html = buildTop3Html(top3);
+    const funcionamentoHtml = document.getElementById("comoFunciona")?.innerHTML || "";
+    const fortesHtml = document.getElementById("listaFortes")?.innerHTML || "";
+    const atencaoHtml = document.getElementById("listaAtencao")?.innerHTML || "";
+    const scoreBars = buildScoreBarsHtmlForEmail(score);
 
-      const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
-      const assunto = `Resultado eneagrama - ${nome}`;
+    return `
+      <div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">
+        <div style="max-width:980px;margin:0 auto;">
 
-      const telefone = (user?.telefone || "—");
-      const email = (user?.email || "—");
-      const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+          <div style="font-size:40px;font-weight:900;margin:0 0 6px;">Quem sou eu</div>
+          <div style="color:#64748b;font-size:14px;margin:0 0 14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>
 
-      const top3_html = buildTop3HtmlForEmail(top3);
-      const pie_svg = buildPieSvg(top3);
-      const quick_resumo = document.getElementById("quickResumo")?.textContent || "";
-      const como_funciona_html = document.getElementById("comoFunciona")?.innerHTML || "";
-      const fortes_html = document.getElementById("listaFortes")?.innerHTML || "";
-      const atencao_html = document.getElementById("listaAtencao")?.innerHTML || "";
-      const score_bars_html = buildScoreBarsHtmlForEmail(score);
+          <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
+            <div style="font-weight:900;font-size:18px;margin-bottom:6px;">Sua tríade principal (Top 3)</div>
+            <div style="color:#64748b;font-size:13px;margin-bottom:12px;">Os 3 tipos mais altos (ordem decrescente).</div>
 
-      // ✅ validações mínimas (evita e-mail vazio)
-      if(!top3_html || !pie_svg || !como_funciona_html){
-        throw new Error("Alguma parte do relatório ficou vazia (top3/pie/como funciona).");
-      }
+            <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+              <div style="flex:1;min-width:320px;">
+                ${top3Html}
+              </div>
 
-      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+              <div style="width:320px;min-width:280px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:12px;text-align:center;">
+                ${pieSvg}
+              </div>
+            </div>
 
-      const payload = {
-        assunto,
+            <div style="margin-top:14px;background:#fff6ee;border:1px solid rgba(240,122,0,.35);border-radius:18px;padding:16px;">
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:260px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;">
+                  <div style="font-size:12px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Dados</div>
+                  <div style="font-size:14px;font-weight:800;line-height:1.4;">
+                    Nome: ${nome}<br>
+                    Email: ${email}<br>
+                    Telefone: ${tel}
+                  </div>
+                </div>
 
-        // campos do template:
-        nome,
-        email,
-        telefone,
-        triade,
-        quick_resumo,
+                <div style="flex:1.2;min-width:280px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;">
+                  <div style="font-weight:900;font-size:14px;margin-bottom:6px;">Resumo do resultado</div>
+                  <div style="font-size:13px;color:#334155;line-height:1.4;">${quick}</div>
+                  <div style="margin-top:10px;font-size:13px;color:#334155;">
+                    <b>Tríade:</b> ${triade}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        top3_html,
-        pie_svg,
-        como_funciona_html,
-        fortes_html,
-        atencao_html,
-        score_bars_html,
+          <div style="margin-top:16px;">
+            <div style="font-weight:900;font-size:20px;margin:0 0 10px;">Como você tende a funcionar</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
+              <div style="font-size:14px;line-height:1.55;color:#334155;">${funcionamentoHtml}</div>
+            </div>
+          </div>
 
-        // para From/ReplyTo (se você usa no template settings)
-        name: nome
-      };
+          <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
+              <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos fortes</div>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortesHtml}</ul>
+            </div>
 
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, payload);
+            <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
+              <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos de atenção</div>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencaoHtml}</ul>
+            </div>
+          </div>
 
-      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
+          <div style="margin-top:14px;background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
+            <div style="font-weight:900;font-size:22px;margin:0 0 6px;">Pontuação</div>
+            <div style="color:#64748b;font-size:13px;margin:0 0 12px;">Quanto maior a barra, maior a compatibilidade com aquele tipo.</div>
+            <div>${scoreBars}</div>
+          </div>
 
-      statusEl.className = "emailStatus ok";
-      statusEl.textContent = "E-mail enviado ✅";
+          <div style="margin-top:18px;color:#94a3b8;font-size:12px;">
+            Atrius • Resultado gerado automaticamente
+          </div>
+        </div>
+      </div>
+    `;
+  }
 
-      return { ok:true };
+  function setBanner(text, sub){
+    const b = document.getElementById("mailBanner");
+    b.style.display = "block";
+    b.innerHTML = `${text}<small>${sub || ""}</small>`;
+  }
 
-    }catch(err){
-      console.error("Erro EmailJS:", err);
+  async function sendEmailOnce(user, top3, score){
+    if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
 
-      statusEl.className = "emailStatus bad";
-      statusEl.textContent = "Falha ao enviar o e-mail ⚠️ (abrindo resultado mesmo assim)";
+    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
+    const email = (user?.email || "").trim();
+    const assunto = `Resultado eneagrama - ${nome}`;
 
-      return { ok:false, err };
+    // Mostra aviso antes de abrir/continuar
+    setBanner("Enviando relatório por e-mail...", "Isso pode levar alguns segundos.");
 
-    }finally{
-      // mostra resultado mesmo que falhe
-      setTimeout(()=>{
-        document.getElementById("emailOverlay").style.display = "none";
-        document.getElementById("pageWrap").style.display = "block";
-      }, 900);
-    }
+    const relatorio_html = buildEmailHtml(user, top3, score);
+
+    // trava sessão
+    sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
+
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    // >>> AQUI é o ponto-chave: enviar EXATAMENTE o que o template usa <<<
+    const payload = {
+      assunto: assunto,
+      relatorio_html: relatorio_html,
+      name: nome,
+      email: email
+    };
+
+    // Debug rápido
+    console.log("EMAIL PAYLOAD >>>", payload);
+
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, payload);
+
+    // Banner de sucesso
+    setBanner("Relatório enviado ✅", "Você já pode visualizar seu resultado abaixo.");
+    setTimeout(()=>{ document.getElementById("mailBanner").style.display="none"; }, 4500);
   }
 
   // ================= WhatsApp =================
@@ -849,10 +882,9 @@
       const user = getLead();
 
       __lastUser = user;
+      document.getElementById("dadosUser").innerHTML = formatUserLine(user);
 
       if(!Array.isArray(respostas) || respostas.length === 0){
-        // mostra página direto (sem overlay) e erro
-        document.getElementById("pageWrap").style.display = "block";
         showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
@@ -862,28 +894,27 @@
       const matriz = await loadMatriz();
       const score = computeScore(respostas, matriz);
       const top3 = top3FromScore(score);
+
       __lastTop3 = top3;
 
-      // monta DOM (para o layout e para puxar HTML pro e-mail)
-      document.getElementById("dadosUser").innerHTML = formatUserLine(user);
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
 
-      // ✅ envia e-mail primeiro, depois abre resultado
+      // envia e-mail (uma vez por sessão)
       if(user && (user.email || user.nome || user.nome_completo)){
-        await sendEmailPiecesOnce(user, top3, score);
-      }else{
-        // sem lead, abre direto
-        document.getElementById("pageWrap").style.display = "block";
+        await sendEmailOnce(user, top3, score);
+      } else {
+        setBanner("Atenção", "Não encontrei Nome/E-mail no cadastro inicial. O e-mail não foi enviado.");
+        setTimeout(()=>{ document.getElementById("mailBanner").style.display="none"; }, 6000);
       }
 
     }catch(err){
       console.error(err);
-      document.getElementById("pageWrap").style.display = "block";
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
+      setBanner("Erro ao enviar e-mail", String(err?.message || err));
     }
   })();
 </script>
