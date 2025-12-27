@@ -161,7 +161,6 @@
       gap:10px;
       min-height: 220px;
     }
-    .pieHint{ display:none; }
 
     .summaryCard{
       margin-top:14px;
@@ -410,10 +409,7 @@
   const LEAD_KEY_FALLBACK_2 = "atrius_lead";
   const LEAD_KEY_FALLBACK_3 = "lead_inicial";
 
-  // ✅ caminho relativo
   const MATRIZ_URL = "data/matriz.json";
-
-  // WhatsApp destino: 55 51 9591-2176
   const WHATS_NUMBER = "555195912176";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
@@ -504,7 +500,6 @@
     el.textContent = msg;
   }
 
-  // ✅ STATUS DO EMAIL
   function setEmailStatus(msg, show=true){
     const el = document.getElementById("emailStatus");
     if(!el) return;
@@ -558,7 +553,7 @@
     }).join("");
   }
 
-  // PIE (SVG)
+  // --------- PIE (string para página + email) ----------
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -569,7 +564,7 @@
     const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
     return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
   }
-  function renderPie(top3){
+  function buildPieSvg(top3){
     const total = top3.reduce((s,x)=>s+x.v,0) || 1;
     let start = 0;
     const cx = 110, cy = 110, r = 92;
@@ -583,7 +578,7 @@
       return { t: it.t, v: it.v, path };
     });
 
-    const svg = `
+    return `
       <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
         ${slices.map(s=>{
           const color = TYPE_COLORS[s.t] || "#111827";
@@ -592,7 +587,9 @@
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
       </svg>
     `;
-    document.getElementById("pieWrap").innerHTML = svg;
+  }
+  function renderPie(top3){
+    document.getElementById("pieWrap").innerHTML = buildPieSvg(top3);
   }
 
   function renderTextos(top3){
@@ -613,7 +610,7 @@
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
       `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
       `<br><br>` +
-      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
+      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.`;
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
@@ -688,14 +685,40 @@
     return html;
   }
 
-  // ✅ gera o HTML completo do e-mail (layout igual)
+  // ✅ HTML DO EMAIL 100% por DADOS (sem DOM)
   function buildEmailHtml(user, top3, score){
     const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
     const email = (user?.email || "—");
     const tel = (user?.telefone || "—");
     const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
 
-    const itemTop = (idx, it) => {
+    const quick = `Seu tipo mais forte é o Tipo ${top3[0].t}, com influência dos Tipos ${top3[1].t} e ${top3[2].t}.`;
+
+    const n1 = TIPOS[top3[0].t]?.nome || `Tipo ${top3[0].t}`;
+    const n2 = TIPOS[top3[1].t]?.nome || `Tipo ${top3[1].t}`;
+    const n3 = TIPOS[top3[2].t]?.nome || `Tipo ${top3[2].t}`;
+
+    const comoFuncionaHtml =
+      `Sua tríade principal é <b>${triade}</b>. ` +
+      `O seu tipo dominante é o <b>Tipo ${top3[0].t}</b> (${n1}). ` +
+      `Na prática, isso aparece como: <b>${TIPOS[top3[0].t]?.curta || ""}</b>.` +
+      `<br><br>` +
+      `A influência do <b>Tipo ${top3[1].t}</b> (${n2}) traz <b>${INFLUENCIA[top3[1].t]}</b>. ` +
+      `A influência do <b>Tipo ${top3[2].t}</b> (${n3}) traz <b>${INFLUENCIA[top3[2].t]}</b>.`;
+
+    const fortesArr = limit(
+      uniq([...(TYPE_FORTES[top3[0].t]||[]), ...(TYPE_FORTES[top3[1].t]||[]), ...(TYPE_FORTES[top3[2].t]||[])]),
+      7
+    );
+    const atencaoArr = limit(
+      uniq([...(TYPE_ATENCAO[top3[0].t]||[]), ...(TYPE_ATENCAO[top3[1].t]||[]), ...(TYPE_ATENCAO[top3[2].t]||[])]),
+      7
+    );
+
+    const fortesHtml = fortesArr.map(x=>`<li>${x}</li>`).join("");
+    const atencaoHtml = atencaoArr.map(x=>`<li>${x}</li>`).join("");
+
+    const top3Html = top3.map((it, idx)=>{
       const color = (TYPE_COLORS[it.t] || "#111827");
       const tipoNome = (TIPOS[it.t]?.nome || `Tipo ${it.t}`);
       const tipoCurta = (TIPOS[it.t]?.curta || "");
@@ -705,7 +728,7 @@
             <div>
               <div style="font-weight:900;font-size:16px;color:#0b2a5b;display:flex;gap:10px;align-items:center;">
                 <span style="width:10px;height:10px;border-radius:999px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.18);"></span>
-                ${idx}º — Tipo ${it.t}
+                ${(idx+1)}º — Tipo ${it.t}
               </div>
               <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${tipoNome}</div>
               <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${tipoCurta}</div>
@@ -714,18 +737,15 @@
           </div>
         </div>
       `;
-    };
+    }).join("");
 
-    const pieSvg = document.getElementById("pieWrap")?.innerHTML || "";
-    const funcionamento = document.getElementById("comoFunciona")?.innerHTML || "";
-    const fortes = document.getElementById("listaFortes")?.innerHTML || "";
-    const atencao = document.getElementById("listaAtencao")?.innerHTML || "";
-    const quick = document.getElementById("quickResumo")?.textContent || "";
+    const pieSvg = buildPieSvg(top3);
     const scoreBars = buildScoreBarsHtmlForEmail(score);
 
     return `
       <div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">
         <div style="max-width:980px;margin:0 auto;">
+
           <div style="font-size:40px;font-weight:900;margin:0 0 6px;">Quem sou eu</div>
           <div style="color:#64748b;font-size:14px;margin:0 0 14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>
 
@@ -735,9 +755,7 @@
 
             <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
               <div style="flex:1;min-width:320px;">
-                ${itemTop(1, top3[0])}
-                ${itemTop(2, top3[1])}
-                ${itemTop(3, top3[2])}
+                ${top3Html}
               </div>
 
               <div style="width:320px;min-width:280px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:12px;text-align:center;">
@@ -770,19 +788,19 @@
           <div style="margin-top:16px;">
             <div style="font-weight:900;font-size:20px;margin:0 0 10px;">Como você tende a funcionar</div>
             <div style="background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-              <div style="font-size:14px;line-height:1.55;color:#334155;">${funcionamento}</div>
+              <div style="font-size:14px;line-height:1.55;color:#334155;">${comoFuncionaHtml}</div>
             </div>
           </div>
 
           <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;">
             <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
               <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos fortes</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortes}</ul>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortesHtml}</ul>
             </div>
 
             <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
               <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos de atenção</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencao}</ul>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencaoHtml}</ul>
             </div>
           </div>
 
@@ -808,13 +826,20 @@
       const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
       const relatorio_html = buildEmailHtml(user, top3, score);
 
+      // ✅ DEBUG: se aqui aparecer vazio, o problema é o lead no localStorage
+      console.log("[EMAIL DEBUG] user:", user);
+      console.log("[EMAIL DEBUG] nome:", nome);
+      console.log("[EMAIL DEBUG] email:", (user?.email || ""));
+      console.log("[EMAIL DEBUG] telefone:", (user?.telefone || ""));
+      console.log("[EMAIL DEBUG] relatorio_html len:", relatorio_html.length);
+
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-      // ✅ IMPORTANTE: nomes EXATOS que o template usa
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        nome: nome,                 // Subject usa {{nome}}
-        name: nome,                 // From Name usa {{name}}
-        email: (user?.email || ""), // Reply To usa {{email}}
+        // ✅ nomes para o template
+        nome: nome,                 // Subject: {{nome}}
+        name: nome,                 // From Name: {{name}}
+        email: (user?.email || ""), // Reply To: {{email}}
         relatorio_html: relatorio_html
       });
 
@@ -861,7 +886,12 @@
 
       __lastTop3 = top3;
 
-      // ✅ 1) AVISO, 2) ENVIA EMAIL, 3) RENDERIZA
+      // Renderiza página (normal)
+      renderTop3(top3);
+      renderPie(top3);
+      renderTextos(top3);
+
+      // ✅ Envia e-mail com o HTML COMPLETO (dados preenchidos)
       setEmailStatus("Enviando e-mail com seu resultado...", true);
 
       if(user && (user.email || user.nome || user.nome_completo)){
@@ -870,10 +900,6 @@
       } else {
         setEmailStatus("⚠️ Não encontrei seus dados (nome/e-mail). Abaixo está seu resultado:", true);
       }
-
-      renderTop3(top3);
-      renderPie(top3);
-      renderTextos(top3);
 
     }catch(err){
       console.error(err);
