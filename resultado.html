@@ -29,6 +29,18 @@
       --softBorder:rgba(240,122,0,.35);
       --wa:#25D366;
       --waHover:#1fb857;
+
+      --okBg:#ecfdf5;
+      --okBorder:rgba(16,185,129,.35);
+      --okText:#065f46;
+
+      --warnBg:#fff7ed;
+      --warnBorder:rgba(240,122,0,.35);
+      --warnText:#7c2d12;
+
+      --errBg:#fff7f7;
+      --errBorder:rgba(220,38,38,.25);
+      --errText:#b91c1c;
     }
 
     *{ box-sizing:border-box }
@@ -61,6 +73,36 @@
       margin:6px 0 0;
       color:var(--muted);
       font-size:14px;
+    }
+
+    .statusBar{
+      display:none;
+      margin:14px 0 14px;
+      border-radius:14px;
+      padding:12px 14px;
+      border:1px solid var(--warnBorder);
+      background:var(--warnBg);
+      color:var(--warnText);
+      font-weight:800;
+      line-height:1.35;
+      box-shadow:var(--shadow);
+    }
+    .statusBar.ok{
+      border-color:var(--okBorder);
+      background:var(--okBg);
+      color:var(--okText);
+    }
+    .statusBar.err{
+      border-color:var(--errBorder);
+      background:var(--errBg);
+      color:var(--errText);
+    }
+    .statusSmall{
+      display:block;
+      font-weight:700;
+      opacity:.9;
+      margin-top:4px;
+      font-size:12px;
     }
 
     .card{
@@ -306,6 +348,21 @@
       line-height:1.35;
     }
 
+    .debugBox{
+      display:none;
+      margin-top:14px;
+      background:#0b1220;
+      color:#dbeafe;
+      border:1px solid rgba(148,163,184,.25);
+      border-radius:14px;
+      padding:12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      box-shadow:var(--shadow);
+    }
+
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .topArea{ grid-template-columns:1fr; }
@@ -330,10 +387,8 @@
       </div>
     </div>
 
-    <!-- ✅ AVISO ANTES DO RESULTADO -->
-    <div id="emailStatus" style="display:none;margin:0 0 12px;background:#fff6ee;border:1px solid rgba(240,122,0,.35);border-radius:14px;padding:12px;font-weight:900;color:#0f172a;">
-      Enviando e-mail com seu resultado...
-    </div>
+    <!-- ✅ AVISO (email status) -->
+    <div id="emailStatus" class="statusBar">Carregando…</div>
 
     <div class="card">
       <h2>Sua tríade principal (Top 3)</h2>
@@ -388,6 +443,8 @@
       </div>
     </div>
 
+    <!-- Debug opcional: abre com ?debug=1 -->
+    <div id="debugBox" class="debugBox"></div>
   </div>
 
   <!-- EmailJS -->
@@ -409,8 +466,42 @@
   const LEAD_KEY_FALLBACK_2 = "atrius_lead";
   const LEAD_KEY_FALLBACK_3 = "lead_inicial";
 
+  // ✅ caminho relativo
   const MATRIZ_URL = "data/matriz.json";
+
+  // WhatsApp destino: 55 51 9591-2176
   const WHATS_NUMBER = "555195912176";
+
+  // ================= Debug helpers =================
+  const DEBUG = new URLSearchParams(location.search).get("debug") === "1";
+  const debugBox = document.getElementById("debugBox");
+
+  function dlog(...args){
+    // Mesmo que o console esteja “filtrado”, isso ajuda quando você habilitar.
+    try{ console.log("[ENEAGRAMA]", ...args); }catch{}
+    if(DEBUG){
+      debugBox.style.display = "block";
+      const txt = args.map(a=>{
+        try{ return typeof a === "string" ? a : JSON.stringify(a, null, 2); }
+        catch{ return String(a); }
+      }).join(" ");
+      debugBox.textContent += txt + "\n";
+    }
+  }
+
+  function setEmailStatus(type, title, subtitle){
+    const el = document.getElementById("emailStatus");
+    el.style.display = "block";
+    el.classList.remove("ok","err");
+
+    if(type === "ok") el.classList.add("ok");
+    if(type === "err") el.classList.add("err");
+
+    el.innerHTML = `
+      ${title}
+      ${subtitle ? `<span class="statusSmall">${subtitle}</span>` : ""}
+    `;
+  }
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
@@ -485,11 +576,37 @@
     catch{ return null; }
   }
 
+  // ✅ normaliza qualquer lead que venha com chaves diferentes
+  function normalizeLead(obj){
+    if(!obj || typeof obj !== "object") return null;
+
+    const nome =
+      obj.nome_completo || obj.nomeCompleto || obj.nome || obj.name || obj.fullname || obj.full_name || "";
+
+    const email =
+      obj.email || obj.mail || obj.email_address || obj.emailAddress || "";
+
+    const telefone =
+      obj.telefone || obj.celular || obj.fone || obj.phone || obj.whatsapp || obj.telefone_whats || "";
+
+    const out = {
+      ...obj,
+      nome_completo: String(nome || "").trim(),
+      email: String(email || "").trim(),
+      telefone: String(telefone || "").trim(),
+    };
+
+    // se não tem nada útil, devolve null
+    if(!out.nome_completo && !out.email && !out.telefone) return null;
+    return out;
+  }
+
   function getLead(){
     const keys = [LEAD_KEY_MAIN, LEAD_KEY_FALLBACK_1, LEAD_KEY_FALLBACK_2, LEAD_KEY_FALLBACK_3];
     for(const k of keys){
-      const obj = getLocalJSON(k);
-      if(obj && (obj.email || obj.nome || obj.nome_completo)) return obj;
+      const raw = getLocalJSON(k);
+      const lead = normalizeLead(raw);
+      if(lead) return lead;
     }
     return null;
   }
@@ -497,13 +614,6 @@
   function showError(msg){
     const el = document.getElementById("errBox");
     el.style.display = "block";
-    el.textContent = msg;
-  }
-
-  function setEmailStatus(msg, show=true){
-    const el = document.getElementById("emailStatus");
-    if(!el) return;
-    el.style.display = show ? "block" : "none";
     el.textContent = msg;
   }
 
@@ -553,7 +663,7 @@
     }).join("");
   }
 
-  // --------- PIE (string para página + email) ----------
+  // PIE (SVG)
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -564,7 +674,7 @@
     const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
     return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
   }
-  function buildPieSvg(top3){
+  function renderPie(top3){
     const total = top3.reduce((s,x)=>s+x.v,0) || 1;
     let start = 0;
     const cx = 110, cy = 110, r = 92;
@@ -578,7 +688,7 @@
       return { t: it.t, v: it.v, path };
     });
 
-    return `
+    const svg = `
       <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
         ${slices.map(s=>{
           const color = TYPE_COLORS[s.t] || "#111827";
@@ -587,9 +697,7 @@
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
       </svg>
     `;
-  }
-  function renderPie(top3){
-    document.getElementById("pieWrap").innerHTML = buildPieSvg(top3);
+    document.getElementById("pieWrap").innerHTML = svg;
   }
 
   function renderTextos(top3){
@@ -610,7 +718,7 @@
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
       `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
       `<br><br>` +
-      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.`;
+      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
@@ -629,14 +737,14 @@
 
   function formatUserLine(user){
     if(!user) return "Nome: —<br>Email: —<br>Telefone: —";
-    const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
+    const nome = user.nome_completo || "—";
     const email = user.email || "—";
     const tel = user.telefone || "—";
     return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
   }
 
   function buildWhatsText(user, top3){
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
+    const nome = (user?.nome_completo || "—");
     const email = (user?.email || "—");
     const telefone = (user?.telefone || "—");
 
@@ -685,40 +793,15 @@
     return html;
   }
 
-  // ✅ HTML DO EMAIL 100% por DADOS (sem DOM)
+  // ================= Email HTML (inline) =================
   function buildEmailHtml(user, top3, score){
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
+    // ✅ Aqui os dados já estão normalizados
+    const nome = (user?.nome_completo || "—");
     const email = (user?.email || "—");
     const tel = (user?.telefone || "—");
     const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
 
-    const quick = `Seu tipo mais forte é o Tipo ${top3[0].t}, com influência dos Tipos ${top3[1].t} e ${top3[2].t}.`;
-
-    const n1 = TIPOS[top3[0].t]?.nome || `Tipo ${top3[0].t}`;
-    const n2 = TIPOS[top3[1].t]?.nome || `Tipo ${top3[1].t}`;
-    const n3 = TIPOS[top3[2].t]?.nome || `Tipo ${top3[2].t}`;
-
-    const comoFuncionaHtml =
-      `Sua tríade principal é <b>${triade}</b>. ` +
-      `O seu tipo dominante é o <b>Tipo ${top3[0].t}</b> (${n1}). ` +
-      `Na prática, isso aparece como: <b>${TIPOS[top3[0].t]?.curta || ""}</b>.` +
-      `<br><br>` +
-      `A influência do <b>Tipo ${top3[1].t}</b> (${n2}) traz <b>${INFLUENCIA[top3[1].t]}</b>. ` +
-      `A influência do <b>Tipo ${top3[2].t}</b> (${n3}) traz <b>${INFLUENCIA[top3[2].t]}</b>.`;
-
-    const fortesArr = limit(
-      uniq([...(TYPE_FORTES[top3[0].t]||[]), ...(TYPE_FORTES[top3[1].t]||[]), ...(TYPE_FORTES[top3[2].t]||[])]),
-      7
-    );
-    const atencaoArr = limit(
-      uniq([...(TYPE_ATENCAO[top3[0].t]||[]), ...(TYPE_ATENCAO[top3[1].t]||[]), ...(TYPE_ATENCAO[top3[2].t]||[])]),
-      7
-    );
-
-    const fortesHtml = fortesArr.map(x=>`<li>${x}</li>`).join("");
-    const atencaoHtml = atencaoArr.map(x=>`<li>${x}</li>`).join("");
-
-    const top3Html = top3.map((it, idx)=>{
+    const itemTop = (idx, it) => {
       const color = (TYPE_COLORS[it.t] || "#111827");
       const tipoNome = (TIPOS[it.t]?.nome || `Tipo ${it.t}`);
       const tipoCurta = (TIPOS[it.t]?.curta || "");
@@ -728,7 +811,7 @@
             <div>
               <div style="font-weight:900;font-size:16px;color:#0b2a5b;display:flex;gap:10px;align-items:center;">
                 <span style="width:10px;height:10px;border-radius:999px;background:${color};display:inline-block;border:1px solid rgba(0,0,0,.18);"></span>
-                ${(idx+1)}º — Tipo ${it.t}
+                ${idx}º — Tipo ${it.t}
               </div>
               <div style="font-weight:800;font-size:13px;color:#0f172a;margin-top:4px;">${tipoNome}</div>
               <div style="font-size:13px;color:#475569;line-height:1.35;margin-top:4px;">${tipoCurta}</div>
@@ -737,15 +820,18 @@
           </div>
         </div>
       `;
-    }).join("");
+    };
 
-    const pieSvg = buildPieSvg(top3);
+    const pieSvg = document.getElementById("pieWrap")?.innerHTML || "";
+    const funcionamento = document.getElementById("comoFunciona")?.innerHTML || "";
+    const fortes = document.getElementById("listaFortes")?.innerHTML || "";
+    const atencao = document.getElementById("listaAtencao")?.innerHTML || "";
+    const quick = document.getElementById("quickResumo")?.textContent || "";
     const scoreBars = buildScoreBarsHtmlForEmail(score);
 
     return `
       <div style="font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;padding:18px;color:#0f172a;">
         <div style="max-width:980px;margin:0 auto;">
-
           <div style="font-size:40px;font-weight:900;margin:0 0 6px;">Quem sou eu</div>
           <div style="color:#64748b;font-size:14px;margin:0 0 14px;">Abaixo está o seu resultado com base nas respostas do formulário.</div>
 
@@ -755,7 +841,9 @@
 
             <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
               <div style="flex:1;min-width:320px;">
-                ${top3Html}
+                ${itemTop(1, top3[0])}
+                ${itemTop(2, top3[1])}
+                ${itemTop(3, top3[2])}
               </div>
 
               <div style="width:320px;min-width:280px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:12px;text-align:center;">
@@ -788,19 +876,19 @@
           <div style="margin-top:16px;">
             <div style="font-weight:900;font-size:20px;margin:0 0 10px;">Como você tende a funcionar</div>
             <div style="background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
-              <div style="font-size:14px;line-height:1.55;color:#334155;">${comoFuncionaHtml}</div>
+              <div style="font-size:14px;line-height:1.55;color:#334155;">${funcionamento}</div>
             </div>
           </div>
 
           <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;">
             <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
               <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos fortes</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortesHtml}</ul>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${fortes}</ul>
             </div>
 
             <div style="flex:1;min-width:320px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(15,23,42,.10);">
               <div style="font-weight:900;font-size:16px;margin-bottom:10px;">Pontos de atenção</div>
-              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencaoHtml}</ul>
+              <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;">${atencao}</ul>
             </div>
           </div>
 
@@ -820,32 +908,40 @@
 
   async function sendEmailOnce(user, top3, score){
     try{
-      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
-      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
+      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1"){
+        setEmailStatus("ok","✅ E-mail já enviado nesta sessão.","Abaixo está seu resultado:");
+        return;
+      }
 
-      const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
+      setEmailStatus("", "📨 Enviando e-mail com seu resultado…", "Se não chegar, confira spam/abas do Gmail.");
+
+      const nome = (user?.nome_completo || "Participante").trim();
+      const assunto = `Resultado eneagrama - ${nome}`;
       const relatorio_html = buildEmailHtml(user, top3, score);
 
-      // ✅ DEBUG: se aqui aparecer vazio, o problema é o lead no localStorage
-      console.log("[EMAIL DEBUG] user:", user);
-      console.log("[EMAIL DEBUG] nome:", nome);
-      console.log("[EMAIL DEBUG] email:", (user?.email || ""));
-      console.log("[EMAIL DEBUG] telefone:", (user?.telefone || ""));
-      console.log("[EMAIL DEBUG] relatorio_html len:", relatorio_html.length);
+      dlog("Lead normalizado:", user);
+      dlog("Assunto:", assunto);
+      dlog("Tamanho HTML:", (relatorio_html || "").length);
 
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        // ✅ nomes para o template
-        nome: nome,                 // Subject: {{nome}}
-        name: nome,                 // From Name: {{name}}
-        email: (user?.email || ""), // Reply To: {{email}}
-        relatorio_html: relatorio_html
+        // template usa {{{relatorio_html}}}
+        relatorio_html,
+        assunto,
+
+        // para From Name / Reply-To no EmailJS
+        name: nome,
+        email: (user?.email || "")
       });
 
+      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
+      setEmailStatus("ok","✅ E-mail enviado com sucesso! Abaixo está seu resultado:","");
+      dlog("EmailJS: enviado com sucesso.");
     }catch(err){
       console.error("Erro EmailJS:", err);
-      setEmailStatus("⚠️ Falha ao enviar e-mail. Abaixo está seu resultado:", true);
+      setEmailStatus("err","❌ Não consegui enviar o e-mail agora.","Veja o console (F12) ou tente recarregar a página.");
+      dlog("EmailJS erro:", err?.text || err?.message || err);
     }
   }
 
@@ -866,17 +962,23 @@
   // ================= init =================
   (async function init(){
     try{
+      // ✅ se console estiver filtrado, você pode abrir com ?debug=1 para ver na tela
+      dlog("Init resultado.html");
+
       const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
       const user = getLead();
 
       __lastUser = user;
       document.getElementById("dadosUser").innerHTML = formatUserLine(user);
 
+      dlog("Respostas length:", Array.isArray(respostas) ? respostas.length : "não-array");
+      dlog("Lead (raw->normalized):", user);
+
       if(!Array.isArray(respostas) || respostas.length === 0){
         showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
-        setEmailStatus("⚠️ Sem respostas encontradas.", true);
+        setEmailStatus("err","❌ Não encontrei respostas salvas.","Volte e finalize o teste novamente.");
         return;
       }
 
@@ -886,19 +988,16 @@
 
       __lastTop3 = top3;
 
-      // Renderiza página (normal)
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
 
-      // ✅ Envia e-mail com o HTML COMPLETO (dados preenchidos)
-      setEmailStatus("Enviando e-mail com seu resultado...", true);
-
-      if(user && (user.email || user.nome || user.nome_completo)){
+      // ✅ envia e-mail (uma vez por sessão)
+      if(user && user.email){
         await sendEmailOnce(user, top3, score);
-        setEmailStatus("✅ E-mail enviado com sucesso! Abaixo está seu resultado:", true);
-      } else {
-        setEmailStatus("⚠️ Não encontrei seus dados (nome/e-mail). Abaixo está seu resultado:", true);
+      }else{
+        setEmailStatus("err","⚠️ Não encontrei o e-mail do participante.","Revise a página inicial: o lead precisa ser salvo no localStorage com email.");
+        dlog("Sem user.email — não enviou email.");
       }
 
     }catch(err){
@@ -906,7 +1005,8 @@
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
-      setEmailStatus("⚠️ Erro ao carregar o resultado.", true);
+      setEmailStatus("err","❌ Erro ao carregar o resultado.", err?.message || String(err));
+      dlog("Erro init:", err?.message || err);
     }
   })();
 </script>
