@@ -29,18 +29,6 @@
       --softBorder:rgba(240,122,0,.35);
       --wa:#25D366;
       --waHover:#1fb857;
-
-      --okBg:#f0fdf4;
-      --okBd:rgba(34,197,94,.35);
-      --okTx:#166534;
-
-      --warnBg:#fff7ed;
-      --warnBd:rgba(240,122,0,.35);
-      --warnTx:#7c2d12;
-
-      --errBg:#fff7f7;
-      --errBd:rgba(220,38,38,.25);
-      --errTx:#b91c1c;
     }
 
     *{ box-sizing:border-box }
@@ -73,28 +61,6 @@
       margin:6px 0 0;
       color:var(--muted);
       font-size:14px;
-    }
-
-    .notice{
-      display:none;
-      margin:12px 0 14px;
-      border-radius:14px;
-      padding:12px 14px;
-      border:1px solid var(--warnBd);
-      background:var(--warnBg);
-      color:var(--warnTx);
-      font-weight:900;
-    }
-    .notice.ok{
-      border-color:var(--okBd);
-      background:var(--okBg);
-      color:var(--okTx);
-    }
-    .notice.err{
-      border-color:var(--errBd);
-      background:var(--errBg);
-      color:var(--errTx);
-      font-weight:900;
     }
 
     .card{
@@ -340,6 +306,30 @@
       line-height:1.35;
     }
 
+    /* aviso de email */
+    .emailNotice{
+      display:none;
+      background:#fff6ee;
+      border:1px solid rgba(240,122,0,.35);
+      border-radius:14px;
+      padding:12px;
+      margin:12px 0 14px;
+      font-size:14px;
+      font-weight:800;
+      color:#0b2a5b;
+      box-shadow:var(--shadow);
+    }
+    .emailNotice.ok{
+      background:#ecfdf5;
+      border-color:rgba(34,197,94,.35);
+      color:#065f46;
+    }
+    .emailNotice.err{
+      background:#fff7f7;
+      border-color:rgba(220,38,38,.25);
+      color:#b91c1c;
+    }
+
     @media (max-width: 980px){
       .title h1{ font-size:36px; }
       .topArea{ grid-template-columns:1fr; }
@@ -364,8 +354,8 @@
       </div>
     </div>
 
-    <!-- AVISO (antes do resultado) -->
-    <div id="emailNotice" class="notice">📨 Enviando e-mail com o resultado…</div>
+    <!-- AVISO EMAIL -->
+    <div id="emailNotice" class="emailNotice">📩 Enviando e-mail com o resultado…</div>
 
     <div class="card">
       <h2>Sua tríade principal (Top 3)</h2>
@@ -434,7 +424,7 @@
   const EMAILJS_PUBLIC_KEY  = "dMy7jYWSeALMDD7TI";
   const EMAIL_SENT_LOCK = "atrius_eneagrama_email_sent_this_session";
 
-  // ✅ manda sempre pro teu Gmail (se o template usa {{to_email}})
+  // ✅ DESTINO FIXO (igual teu template está usando)
   const TO_EMAIL_FIXO = "juniorbernardi@atrius.ind.br";
 
   // ===== Keys do projeto =====
@@ -535,6 +525,15 @@
   function showError(msg){
     const el = document.getElementById("errBox");
     el.style.display = "block";
+    el.textContent = msg;
+  }
+
+  function setEmailNotice(state, msg){
+    const el = document.getElementById("emailNotice");
+    el.classList.remove("ok","err");
+    el.style.display = "block";
+    if(state === "ok") el.classList.add("ok");
+    if(state === "err") el.classList.add("err");
     el.textContent = msg;
   }
 
@@ -639,7 +638,7 @@
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
       `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
       `<br><br>` +
-      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.`;
+      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
@@ -660,7 +659,7 @@
     if(!user) return "Nome: —<br>Email: —<br>Telefone: —";
     const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
     const email = user.email || "—";
-    const tel = user.telefone || user.telefone_digits || "—";
+    const tel = user.telefone || "—";
     return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
   }
 
@@ -681,72 +680,83 @@
     linhas.push(`2) Tipo ${top3[1].t} — ${top3[1].v}`);
     linhas.push(`3) Tipo ${top3[2].t} — ${top3[2].v}`);
     linhas.push("");
+    linhas.push(`Resumo: Tipo ${top3[0].t} dominante, com influência de ${top3[1].t} e ${top3[2].t}.`);
     return linhas.join("\n");
   }
 
-  // ===== % (normalizado pelo maior tipo = 100%) =====
+  // ===== Email Texto (simples e confiável) =====
   function normalizeToPercent(score){
     const vals = Object.values(score).map(v=>Number(v)||0);
     const max = Math.max(...vals, 0) || 1;
     const pct = {};
     for(let t=1;t<=9;t++){
-      pct[t] = Math.round((Number(score[t]||0) / max) * 100);
+      pct[t] = Math.round((score[t] / max) * 100);
     }
     return pct;
   }
 
-  // ===== TEXTO DO EMAIL (simples e garantido) =====
   function buildEmailText(user, score, top3){
-    const nome = (user?.nome_completo || user?.nomeCompleto || (user?.nome && user?.sobrenome ? (user.nome + " " + user.sobrenome) : user?.nome) || "—").trim();
-    const email = (user?.email || "—").trim();
-    const tel = (user?.telefone || user?.telefone_digits || "—").toString().trim();
+    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
+    const email = (user?.email || "—");
+    const tel = (user?.telefone || "—");
 
     const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
     const pct = normalizeToPercent(score);
 
     const lines = [];
-    lines.push("RESULTADO ENEAGRAMA");
-    lines.push("----------------------------------------");
+    lines.push("RESULTADO ENEAGRAMA — ATRIUS");
+    lines.push("");
+    lines.push("DADOS:");
     lines.push(`Nome completo: ${nome}`);
     lines.push(`Telefone: ${tel}`);
     lines.push(`Email: ${email}`);
     lines.push("");
-    lines.push(`Tríade principal (Top 3): ${triade}`);
-    lines.push(`1) Tipo ${top3[0].t}: ${top3[0].v}`);
-    lines.push(`2) Tipo ${top3[1].t}: ${top3[1].v}`);
-    lines.push(`3) Tipo ${top3[2].t}: ${top3[2].v}`);
+    lines.push(`TRÍADE PRINCIPAL (Top 3): ${triade}`);
+    lines.push(`1) Tipo ${top3[0].t} — ${top3[0].v}`);
+    lines.push(`2) Tipo ${top3[1].t} — ${top3[1].v}`);
+    lines.push(`3) Tipo ${top3[2].t} — ${top3[2].v}`);
     lines.push("");
-    lines.push("Percentual por tipo (normalizado):");
+    lines.push("PERCENTUAL POR TIPO (0–100%):");
     for(let t=1;t<=9;t++){
-      lines.push(`Tipo ${t}: ${pct[t]}%`);
+      const nm = TIPOS[t]?.nome ? ` (${TIPOS[t].nome})` : "";
+      lines.push(`Tipo ${t}${nm}: ${pct[t]}%`);
     }
-    lines.push("----------------------------------------");
+    lines.push("");
+    lines.push("—");
     lines.push("Atrius • Resultado gerado automaticamente");
     return lines.join("\n");
   }
 
-  async function sendEmailOnce(user, texto){
-    // trava por sessão
-    if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
-    sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
+  async function sendEmailOnce(user, score, top3){
+    try{
+      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
+      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
 
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
-    const assunto = `Resultado eneagrama - ${nome}`;
+      setEmailNotice("info", "📩 Enviando e-mail com o resultado…");
 
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
+      const assunto = `Resultado eneagrama - ${nome}`;
+      const texto = buildEmailText(user, score, top3);
 
-    // ✅ IMPORTANTÍSSIMO: os nomes aqui têm que bater com o TEMPLATE:
-    // Subject: {{assunto}}
-    // Content: {{texto}}
-    // To Email: {{to_email}}  (se você estiver usando isso no template)
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      assunto: assunto,
-      texto: texto,
-      to_email: TO_EMAIL_FIXO,
-      name: nome,
-      email: (user?.email || ""),
-      telefone: (user?.telefone || user?.telefone_digits || "")
-    });
+      // INIT
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+      // ENVIA: nomes EXACTOS do template (print)
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        assunto: assunto,
+        texto: texto,
+        to_email: TO_EMAIL_FIXO,
+
+        // extras (não atrapalham)
+        name: nome,
+        email: (user?.email || "")
+      });
+
+      setEmailNotice("ok", "✅ E-mail enviado com sucesso! Abaixo está seu resultado:");
+    }catch(err){
+      console.error("Erro EmailJS:", err);
+      setEmailNotice("err", "⚠️ Falha ao enviar o e-mail. Mas seu resultado está abaixo.");
+    }
   }
 
   // ================= WhatsApp =================
@@ -762,15 +772,6 @@
     const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank");
   });
-
-  function setNotice(type, text){
-    const el = document.getElementById("emailNotice");
-    el.style.display = "block";
-    el.classList.remove("ok","err");
-    if(type === "ok") el.classList.add("ok");
-    if(type === "err") el.classList.add("err");
-    el.textContent = text;
-  }
 
   // ================= init =================
   (async function init(){
@@ -794,32 +795,23 @@
 
       __lastTop3 = top3;
 
-      // render normal da página
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
 
-      // envia e-mail (antes do usuário rolar/ver tudo)
+      // envia e-mail (uma vez por sessão)
       if(user && (user.email || user.nome || user.nome_completo)){
-        setNotice("warn", "📨 Enviando e-mail com o resultado…");
-
-        const textoEmail = "TESTE 123 - se isso não aparecer, o problema é o TEMPLATE";
-
-        // debug pra você ver se o texto está OK
-        console.log("EMAIL TEXTO =>\n" + textoEmail);
-
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-  assunto: assunto,
-  texto: textoEmail,
-  to_email: TO_EMAIL_FIXO
-});
+        await sendEmailOnce(user, score, top3);
+      }else{
+        setEmailNotice("err", "⚠️ Não encontrei os dados do participante para enviar e-mail.");
+      }
 
     }catch(err){
-      console.error("ERRO init:", err);
-      setNotice("err", "⚠️ Erro ao enviar e-mail. Veja o console.");
+      console.error(err);
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
+      setEmailNotice("err", "⚠️ Erro ao processar o resultado.");
     }
   })();
 </script>
