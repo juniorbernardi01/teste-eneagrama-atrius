@@ -670,12 +670,12 @@
     const max = Math.max(...vals, 0) || 1;
     const pct = {};
     for(let t=1;t<=9;t++){
-      pct[t] = Math.round((score[t] / max) * 100);
+      pct[t] = Math.round(((Number(score[t])||0) / max) * 100);
     }
     return pct;
   }
 
-  // ✅ Email: envia SOMENTE variáveis simples (igual DISC)
+  // ✅ Email: envia variáveis simples (BLINDADO)
   async function sendEmailOncePlain(user, top3, score){
     try{
       if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
@@ -683,34 +683,43 @@
 
       const banner = document.getElementById("mailBanner");
       banner.style.display = "block";
+      banner.textContent = "📩 Enviando e-mail do resultado…";
 
-      const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
-      const telefone = (user?.telefone || "");
-      const email = (user?.email || "");
+      const nome = String((user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante")).trim();
+      const telefone = String(user?.telefone || "—");
+      const email = String(user?.email || "—");
 
-      const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+      const triade = `${top3?.[0]?.t ?? "?"}-${top3?.[1]?.t ?? "?"}-${top3?.[2]?.t ?? "?"}`;
+
       const pct = normalizeToPercent(score);
 
-      const assunto = `Resultado eneagrama - ${nome}`;
+      const templateParams = {
+        assunto: `Resultado eneagrama - ${nome}`,
+
+        nome_completo: nome,
+        telefone: telefone,
+        email: email,
+        triade: triade,
+
+        t1: String(pct[1] ?? 0),
+        t2: String(pct[2] ?? 0),
+        t3: String(pct[3] ?? 0),
+        t4: String(pct[4] ?? 0),
+        t5: String(pct[5] ?? 0),
+        t6: String(pct[6] ?? 0),
+        t7: String(pct[7] ?? 0),
+        t8: String(pct[8] ?? 0),
+        t9: String(pct[9] ?? 0),
+      };
+
+      console.log("EmailJS templateParams =>", templateParams);
 
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        // Subject do template
-        assunto,
-
-        // Variáveis do corpo (conteúdo)
-        nome_completo: nome,
-        telefone,
-        email,
-        triade,
-
-        t1: pct[1], t2: pct[2], t3: pct[3],
-        t4: pct[4], t5: pct[5], t6: pct[6],
-        t7: pct[7], t8: pct[8], t9: pct[9],
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, {
+        publicKey: EMAILJS_PUBLIC_KEY
       });
 
-      // troca o banner pra "enviado"
       banner.textContent = "✅ E-mail enviado com sucesso!";
       setTimeout(()=> banner.style.display = "none", 1800);
 
@@ -769,7 +778,7 @@
       renderPie(top3);
       renderTextos(top3);
 
-      // ✅ envia e-mail (uma vez por sessão) — AGORA TEXTO SIMPLES COM DADOS
+      // ✅ envia e-mail (uma vez por sessão)
       if(user && (user.email || user.nome || user.nome_completo)){
         await sendEmailOncePlain(user, top3, score);
       }
