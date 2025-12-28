@@ -45,6 +45,20 @@
       padding:18px 16px 40px;
     }
 
+    /* ✅ Aviso de envio de email */
+    .mailBanner{
+      display:none;
+      margin:0 0 12px;
+      background:#E8F0FF;
+      border:1px solid rgba(27,75,140,.25);
+      color:#1B4B8C;
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.35;
+      font-weight:800;
+    }
+
     .header{
       display:flex;
       align-items:flex-start;
@@ -61,35 +75,6 @@
       margin:6px 0 0;
       color:var(--muted);
       font-size:14px;
-    }
-
-    .notice{
-      display:none;
-      border-radius:14px;
-      padding:12px 14px;
-      margin:12px 0 14px;
-      border:1px solid rgba(15,23,42,.12);
-      background:#fff;
-      box-shadow:var(--shadow);
-      font-weight:900;
-      color:#0f172a;
-      font-size:14px;
-    }
-    .notice.sending{
-      display:block;
-      border-color:rgba(59,130,246,.25);
-      background:rgba(59,130,246,.08);
-    }
-    .notice.ok{
-      display:block;
-      border-color:rgba(34,197,94,.25);
-      background:rgba(34,197,94,.10);
-    }
-    .notice.err{
-      display:block;
-      border-color:rgba(220,38,38,.25);
-      background:rgba(220,38,38,.08);
-      color:#991b1b;
     }
 
     .card{
@@ -190,6 +175,7 @@
       gap:10px;
       min-height: 220px;
     }
+    .pieHint{ display:none; }
 
     .summaryCard{
       margin-top:14px;
@@ -352,15 +338,16 @@
 
 <body>
   <div class="wrap">
+
+    <!-- ✅ Banner -->
+    <div id="mailBanner" class="mailBanner">📩 Enviando e-mail do resultado…</div>
+
     <div class="header">
       <div class="title">
         <h1>Quem sou eu</h1>
         <p>Abaixo está o seu resultado com base nas respostas do formulário.</p>
       </div>
     </div>
-
-    <!-- AVISO EMAIL -->
-    <div id="emailNotice" class="notice sending">⏳ Enviando e-mail…</div>
 
     <div class="card">
       <h2>Sua tríade principal (Top 3)</h2>
@@ -530,12 +517,6 @@
     el.textContent = msg;
   }
 
-  function setNotice(state, text){
-    const n = document.getElementById("emailNotice");
-    n.className = "notice " + state;   // sending | ok | err
-    n.textContent = text;
-  }
-
   async function loadMatriz(){
     const res = await fetch(MATRIZ_URL, { cache: "no-store" });
     if(!res.ok) throw new Error("Não consegui carregar data/matriz.json. Verifique se o arquivo existe na pasta /data.");
@@ -655,7 +636,7 @@
   }
 
   function formatUserLine(user){
-    if(!user) return "Nome: —<br>Email: —<br>Telefone: —";
+    if(!user) return "Nome: — | Email: — | Telefone: —";
     const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
     const email = user.email || "—";
     const tel = user.telefone || "—";
@@ -683,7 +664,7 @@
     return linhas.join("\n");
   }
 
-  // ===== Percentual (email texto) =====
+  // ✅ Percentual simples (0–100) por tipo, baseado no maior score (igual teu método)
   function normalizeToPercent(score){
     const vals = Object.values(score).map(v=>Number(v)||0);
     const max = Math.max(...vals, 0) || 1;
@@ -694,60 +675,53 @@
     return pct;
   }
 
-  function buildEmailTexto(user, top3, score){
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
-    const email = (user?.email || "—");
-    const tel = (user?.telefone || "—");
-    const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
-    const pct = normalizeToPercent(score);
-
-    const linhas = [];
-    linhas.push("RESULTADO DO TESTE - ENEAGRAMA");
-    linhas.push("");
-    linhas.push(`Nome completo: ${nome}`);
-    linhas.push(`Email: ${email}`);
-    linhas.push(`Telefone: ${tel}`);
-    linhas.push("");
-    linhas.push(`Tríade principal (Top 3): ${triade}`);
-    linhas.push(`1º Tipo ${top3[0].t} — ${top3[0].v}`);
-    linhas.push(`2º Tipo ${top3[1].t} — ${top3[1].v}`);
-    linhas.push(`3º Tipo ${top3[2].t} — ${top3[2].v}`);
-    linhas.push("");
-    linhas.push("Percentual por tipo (referência interna):");
-    for(let t=1;t<=9;t++){
-      linhas.push(`Tipo ${t}: ${pct[t]}%`);
-    }
-    linhas.push("");
-    linhas.push("Atrius • Resultado gerado automaticamente");
-    return linhas.join("\n");
-  }
-
-  async function sendEmailOnce(user, top3, score){
-    // retorna true/false pra gente atualizar o aviso
+  // ✅ Email: envia SOMENTE variáveis simples (igual DISC)
+  async function sendEmailOncePlain(user, top3, score){
     try{
-      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return true;
+      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
       sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
 
+      const banner = document.getElementById("mailBanner");
+      banner.style.display = "block";
+
       const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante").trim();
+      const telefone = (user?.telefone || "");
+      const email = (user?.email || "");
+
+      const triade = `${top3[0].t}-${top3[1].t}-${top3[2].t}`;
+      const pct = normalizeToPercent(score);
+
       const assunto = `Resultado eneagrama - ${nome}`;
-      const texto = buildEmailTexto(user, top3, score);
 
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-      // IMPORTANTE: chaves tem que bater com o TEMPLATE (assunto/texto/name/email)
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        assunto: assunto,
-        texto: texto,
-        name: nome,
-        email: (user?.email || "")
+        // Subject do template
+        assunto,
+
+        // Variáveis do corpo (conteúdo)
+        nome_completo: nome,
+        telefone,
+        email,
+        triade,
+
+        t1: pct[1], t2: pct[2], t3: pct[3],
+        t4: pct[4], t5: pct[5], t6: pct[6],
+        t7: pct[7], t8: pct[8], t9: pct[9],
       });
 
-      return true;
+      // troca o banner pra "enviado"
+      banner.textContent = "✅ E-mail enviado com sucesso!";
+      setTimeout(()=> banner.style.display = "none", 1800);
+
     }catch(err){
       console.error("Erro EmailJS:", err);
-      // libera lock se falhar (pra tentar de novo se recarregar)
-      sessionStorage.removeItem(EMAIL_SENT_LOCK);
-      return false;
+      const banner = document.getElementById("mailBanner");
+      banner.style.display = "block";
+      banner.style.background = "#fff7f7";
+      banner.style.borderColor = "rgba(220,38,38,.25)";
+      banner.style.color = "#b91c1c";
+      banner.textContent = "❌ Não foi possível enviar o e-mail. Veja o console.";
     }
   }
 
@@ -768,14 +742,17 @@
   // ================= init =================
   (async function init(){
     try{
+      console.log("Init resultado.html");
       const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
       const user = getLead();
+
+      console.log("Respostas length:", Array.isArray(respostas) ? respostas.length : "N/A");
+      console.log("Lead:", user);
 
       __lastUser = user;
       document.getElementById("dadosUser").innerHTML = formatUserLine(user);
 
       if(!Array.isArray(respostas) || respostas.length === 0){
-        setNotice("err", "❌ Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
         document.getElementById("quickResumo").textContent = "Sem dados.";
         document.getElementById("comoFunciona").textContent = "Sem dados.";
@@ -785,31 +762,20 @@
       const matriz = await loadMatriz();
       const score = computeScore(respostas, matriz);
       const top3 = top3FromScore(score);
+
       __lastTop3 = top3;
 
-      // 1) Envia e-mail antes de “finalizar” a tela (como você pediu)
-      setNotice("sending", "⏳ Enviando e-mail…");
-      let okEmail = false;
-      if(user && (user.email || user.nome || user.nome_completo)){
-        okEmail = await sendEmailOnce(user, top3, score);
-      } else {
-        okEmail = false;
-      }
-
-      if(okEmail){
-        setNotice("ok", "✅ E-mail enviado com sucesso! Abaixo está seu resultado:");
-      } else {
-        setNotice("err", "⚠️ Não foi possível enviar o e-mail agora. O resultado está abaixo normalmente.");
-      }
-
-      // 2) Renderiza resultado
       renderTop3(top3);
       renderPie(top3);
       renderTextos(top3);
 
+      // ✅ envia e-mail (uma vez por sessão) — AGORA TEXTO SIMPLES COM DADOS
+      if(user && (user.email || user.nome || user.nome_completo)){
+        await sendEmailOncePlain(user, top3, score);
+      }
+
     }catch(err){
       console.error(err);
-      setNotice("err", "❌ Erro ao carregar o resultado.");
       showError(err?.message || String(err));
       document.getElementById("quickResumo").textContent = "Erro ao carregar.";
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
