@@ -45,7 +45,6 @@
       padding:18px 16px 40px;
     }
 
-    /* ✅ Aviso de envio de email */
     .mailBanner{
       display:none;
       margin:0 0 12px;
@@ -175,7 +174,6 @@
       gap:10px;
       min-height: 220px;
     }
-    .pieHint{ display:none; }
 
     .summaryCard{
       margin-top:14px;
@@ -339,7 +337,6 @@
 <body>
   <div class="wrap">
 
-    <!-- ✅ Banner -->
     <div id="mailBanner" class="mailBanner">📩 Enviando e-mail do resultado…</div>
 
     <div class="header">
@@ -414,7 +411,10 @@
   const EMAILJS_SERVICE_ID = "service_676gehg";
   const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
   const EMAILJS_PUBLIC_KEY  = "dMy7jYWSeALMDD7TI";
-  const EMAIL_SENT_LOCK = "atrius_eneagrama_email_sent_this_session";
+
+  // ⚠️ Pra NÃO te travar testes, eu removi o lock por sessão.
+  // Se quiser voltar depois, eu recoloco.
+  // const EMAIL_SENT_LOCK = "atrius_eneagrama_email_sent_this_session";
 
   // ===== Keys do projeto =====
   const RESPOSTAS_KEY = "respostas";
@@ -423,10 +423,7 @@
   const LEAD_KEY_FALLBACK_2 = "atrius_lead";
   const LEAD_KEY_FALLBACK_3 = "lead_inicial";
 
-  // ✅ caminho relativo
   const MATRIZ_URL = "data/matriz.json";
-
-  // WhatsApp destino: 55 51 9591-2176
   const WHATS_NUMBER = "555195912176";
 
   function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
@@ -618,7 +615,7 @@
       `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
       `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
       `<br><br>` +
-      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação: às vezes mais focado(a) em resultado, às vezes mais cauteloso(a), às vezes mais exigente — tudo depende do momento.`;
+      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.`;
 
     document.getElementById("comoFunciona").innerHTML = funcionamento;
 
@@ -636,7 +633,7 @@
   }
 
   function formatUserLine(user){
-    if(!user) return "Nome: — | Email: — | Telefone: —";
+    if(!user) return "Nome: —<br>Email: —<br>Telefone: —";
     const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
     const email = user.email || "—";
     const tel = user.telefone || "—";
@@ -664,7 +661,6 @@
     return linhas.join("\n");
   }
 
-  // ✅ Percentual simples (0–100) por tipo, baseado no maior score (igual teu método)
   function normalizeToPercent(score){
     const vals = Object.values(score).map(v=>Number(v)||0);
     const max = Math.max(...vals, 0) || 1;
@@ -675,17 +671,14 @@
     return pct;
   }
 
-  // ✅ Email: envia variáveis simples (BLINDADO)
-  async function sendEmailOncePlain(user, top3, score){
+  // ✅ ENVIO EMAILJS (compatível + params garantidos)
+  async function sendEmailPlain(user, top3, score){
+    const banner = document.getElementById("mailBanner");
     try{
-      if(sessionStorage.getItem(EMAIL_SENT_LOCK) === "1") return;
-      sessionStorage.setItem(EMAIL_SENT_LOCK, "1");
-
-      const banner = document.getElementById("mailBanner");
       banner.style.display = "block";
       banner.textContent = "📩 Enviando e-mail do resultado…";
 
-      const nome = String((user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante")).trim();
+      const nome = String((user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante")).trim() || "Participante";
       const telefone = String(user?.telefone || "—");
       const email = String(user?.email || "—");
 
@@ -695,12 +688,10 @@
 
       const templateParams = {
         assunto: `Resultado eneagrama - ${nome}`,
-
         nome_completo: nome,
         telefone: telefone,
         email: email,
         triade: triade,
-
         t1: String(pct[1] ?? 0),
         t2: String(pct[2] ?? 0),
         t3: String(pct[3] ?? 0),
@@ -712,20 +703,26 @@
         t9: String(pct[9] ?? 0),
       };
 
-      console.log("EmailJS templateParams =>", templateParams);
+      console.log("✅ EmailJS templateParams (o que vai pro e-mail):", templateParams);
 
-      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      // ✅ init no formato mais compatível
+      emailjs.init(EMAILJS_PUBLIC_KEY);
 
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, {
-        publicKey: EMAILJS_PUBLIC_KEY
-      });
+      // ✅ send no formato mais compatível (4º parâmetro = publicKey)
+      const resp = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log("✅ EmailJS send response:", resp);
 
       banner.textContent = "✅ E-mail enviado com sucesso!";
-      setTimeout(()=> banner.style.display = "none", 1800);
+      setTimeout(()=> banner.style.display = "none", 1600);
 
     }catch(err){
-      console.error("Erro EmailJS:", err);
-      const banner = document.getElementById("mailBanner");
+      console.error("❌ Erro EmailJS:", err);
       banner.style.display = "block";
       banner.style.background = "#fff7f7";
       banner.style.borderColor = "rgba(220,38,38,.25)";
@@ -778,10 +775,8 @@
       renderPie(top3);
       renderTextos(top3);
 
-      // ✅ envia e-mail (uma vez por sessão)
-      if(user && (user.email || user.nome || user.nome_completo)){
-        await sendEmailOncePlain(user, top3, score);
-      }
+      // ✅ AGORA envia SEM DEPENDER do lead (vai com "—" se faltar algo)
+      await sendEmailPlain(user || {}, top3, score);
 
     }catch(err){
       console.error(err);
@@ -790,6 +785,33 @@
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
     }
   })();
+
+  // PIE render (mantido)
+  function renderPie(top3){
+    const total = top3.reduce((s,x)=>s+x.v,0) || 1;
+    let start = 0;
+    const cx = 110, cy = 110, r = 92;
+
+    const slices = top3.map((it)=>{
+      const frac = it.v / total;
+      const angle = frac * 360;
+      const end = start + angle;
+      const path = arcPath(cx, cy, r, start, end);
+      start = end;
+      return { t: it.t, v: it.v, path };
+    });
+
+    const svg = `
+      <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
+        ${slices.map(s=>{
+          const color = TYPE_COLORS[s.t] || "#111827";
+          return `<path d="${s.path}" fill="${color}" stroke="white" stroke-width="3"></path>`;
+        }).join("")}
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
+      </svg>
+    `;
+    document.getElementById("pieWrap").innerHTML = svg;
+  }
 </script>
 </body>
 </html>
