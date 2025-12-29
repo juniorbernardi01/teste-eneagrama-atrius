@@ -412,10 +412,6 @@
   const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
   const EMAILJS_PUBLIC_KEY  = "dMy7jYWSeALMDD7TI";
 
-  // ⚠️ Pra NÃO te travar testes, eu removi o lock por sessão.
-  // Se quiser voltar depois, eu recoloco.
-  // const EMAIL_SENT_LOCK = "atrius_eneagrama_email_sent_this_session";
-
   // ===== Keys do projeto =====
   const RESPOSTAS_KEY = "respostas";
   const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
@@ -482,7 +478,6 @@
     9:["Pode adiar decisões (procrastinar)","Pode evitar conflito e engolir incômodo","Pode dizer “tanto faz” e perder prioridade","Pode aceitar demais para manter paz","Pode demorar para reagir","Pode acumular stress em silêncio","Pode se acomodar quando precisa agir"]
   };
 
-  // ================= Helpers =================
   function uniq(arr){
     const out=[]; const seen=new Set();
     for(const x of arr){
@@ -560,7 +555,6 @@
     }).join("");
   }
 
-  // PIE (SVG)
   function polarToCartesian(cx, cy, r, angleDeg){
     const rad = (angleDeg - 90) * Math.PI / 180.0;
     return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
@@ -571,6 +565,7 @@
     const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
     return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
   }
+
   function renderPie(top3){
     const total = top3.reduce((s,x)=>s+x.v,0) || 1;
     let start = 0;
@@ -671,7 +666,6 @@
     return pct;
   }
 
-  // ✅ ENVIO EMAILJS (compatível + params garantidos)
   async function sendEmailPlain(user, top3, score){
     const banner = document.getElementById("mailBanner");
     try{
@@ -683,7 +677,6 @@
       const email = String(user?.email || "—");
 
       const triade = `${top3?.[0]?.t ?? "?"}-${top3?.[1]?.t ?? "?"}-${top3?.[2]?.t ?? "?"}`;
-
       const pct = normalizeToPercent(score);
 
       const templateParams = {
@@ -705,10 +698,8 @@
 
       console.log("✅ EmailJS templateParams (o que vai pro e-mail):", templateParams);
 
-      // ✅ init no formato mais compatível
       emailjs.init(EMAILJS_PUBLIC_KEY);
 
-      // ✅ send no formato mais compatível (4º parâmetro = publicKey)
       const resp = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
@@ -731,7 +722,6 @@
     }
   }
 
-  // ================= WhatsApp =================
   let __lastTop3 = null;
   let __lastUser = null;
 
@@ -745,7 +735,6 @@
     window.open(url, "_blank");
   });
 
-  // ================= init =================
   (async function init(){
     try{
       console.log("Init resultado.html");
@@ -775,7 +764,6 @@
       renderPie(top3);
       renderTextos(top3);
 
-      // ✅ AGORA envia SEM DEPENDER do lead (vai com "—" se faltar algo)
       await sendEmailPlain(user || {}, top3, score);
 
     }catch(err){
@@ -785,33 +773,6 @@
       document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
     }
   })();
-
-  // PIE render (mantido)
-  function renderPie(top3){
-    const total = top3.reduce((s,x)=>s+x.v,0) || 1;
-    let start = 0;
-    const cx = 110, cy = 110, r = 92;
-
-    const slices = top3.map((it)=>{
-      const frac = it.v / total;
-      const angle = frac * 360;
-      const end = start + angle;
-      const path = arcPath(cx, cy, r, start, end);
-      start = end;
-      return { t: it.t, v: it.v, path };
-    });
-
-    const svg = `
-      <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
-        ${slices.map(s=>{
-          const color = TYPE_COLORS[s.t] || "#111827";
-          return `<path d="${s.path}" fill="${color}" stroke="white" stroke-width="3"></path>`;
-        }).join("")}
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
-      </svg>
-    `;
-    document.getElementById("pieWrap").innerHTML = svg;
-  }
 </script>
 </body>
 </html>
