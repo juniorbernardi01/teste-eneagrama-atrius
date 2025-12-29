@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quem sou eu — Passo 4</title>
 
-<!-- EmailJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 <style>
 :root{
   --accent:#f07a00;
@@ -111,13 +108,8 @@ h1{margin:0 0 6px;font-size:32px;}
 </div>
 
 <script>
-/* ================= EMAILJS ================= */
-emailjs.init("dMy7jYWSeALMDD7TI");
-
 /* ================= CONFIG ================= */
-const STORAGE_KEY = "respostas";              // respostas do teste (todas as páginas)
-const USERDATA_KEY = "userData";             // dados do lead (nome/email/telefone)
-const LEAD_OLD_KEY = "atrius_eneagrama_lead_v1"; // caso ainda exista do index antigo
+const STORAGE_KEY = "respostas";
 const MIN = 6;
 
 /* ================= PALAVRAS ================= */
@@ -144,17 +136,6 @@ function upsertCheckbox(name, checked){
 
 function countSelected(){
   return document.querySelectorAll('#formP4 input[type="checkbox"]:checked').length;
-}
-
-/* ✅ LIMPEZA COMPLETA DO TESTE (pra próxima pessoa) */
-function clearTestStorage(){
-  // apaga respostas + lead
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(USERDATA_KEY);
-  localStorage.removeItem(LEAD_OLD_KEY);
-
-  // se você tiver outras chaves antigas, pode colocar aqui também:
-  // localStorage.removeItem("respostas_v2");
 }
 
 /* ================= BUILD ================= */
@@ -195,74 +176,20 @@ function restore(){
   });
 }
 
-/* ================= EMAIL ================= */
-async function sendEmailReport(){
-  const respostas = getList();
-
-  const res = await fetch("../data/matriz.json",{cache:"no-store"});
-  const matriz = await res.json();
-
-  const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-  respostas.forEach(r=>{
-    const key = `${r.pergunta}_${r.alternativa}`;
-    const w = matriz[key];
-    if(!w) return;
-    for(const t in w) score[t] += w[t];
-  });
-
-  const top = Object.entries(score)
-    .map(([t,v])=>({t, v}))
-    .sort((a,b)=>b.v-a.v)
-    .slice(0,3);
-
-  const html = `
-    <h2>Resultado Eneagrama</h2>
-    <p><b>Top 3:</b></p>
-    <ul>
-      <li>Tipo ${top[0].t} — ${top[0].v}</li>
-      <li>Tipo ${top[1].t} — ${top[1].v}</li>
-      <li>Tipo ${top[2].t} — ${top[2].v}</li>
-    </ul>
-    <p><b>Pontuação completa:</b></p>
-    <pre>${JSON.stringify(score,null,2)}</pre>
-  `;
-
-  await emailjs.send(
-    "service_676gehg",
-    "template_jkxxqz5",
-    {
-      subject: "Resultado Eneagrama — Novo teste concluído",
-      message_html: html
-    }
-  );
-}
-
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
   build();
   restore();
 
-  document.getElementById("btnFinish").addEventListener("click", async ()=>{
+  document.getElementById("btnFinish").addEventListener("click", ()=>{
     if(countSelected() < MIN){
       alert("Selecione pelo menos " + MIN + " opções.");
       return;
     }
 
-    // 1) Envia e-mail
-    try{
-      await sendEmailReport();
-    }catch(err){
-      console.error("Erro ao enviar email:", err);
-      // mesmo se falhar, pode continuar para o resultado se você quiser:
-      // (se preferir bloquear, é só dar return aqui)
-    }
-
-    // 2) Vai para a página de resultado (ainda com dados no localStorage)
+    // ✅ IMPORTANTE: não enviar email aqui para não duplicar.
+    // ✅ O email é enviado pelo resultado.html com as variáveis corretas.
     window.location.href = "../resultado.html";
-
-    // 3) ✅ Limpa TUDO para a próxima pessoa (depois que navegar)
-    //    (esse setTimeout garante que o resultado carregue antes de limpar)
-    setTimeout(clearTestStorage, 800);
   });
 });
 </script>
