@@ -112,64 +112,13 @@ h1{margin:0 0 6px;font-size:32px;}
 const STORAGE_KEY = "respostas";
 const MIN = 6;
 
-const LEAD_KEY_MAIN="atrius_eneagrama_lead_v1";
-const LEAD_KEY_FALLBACK="lead";
-
-/* ================= PALAVRAS (36 = 4 por tipo) ================= */
+/* ================= PALAVRAS ================= */
 const palavras = [
-  // Tipo 1
-  { label:"Organizado(a)",    type:"1" },
-  { label:"Disciplinado(a)",  type:"1" },
-  { label:"Detalhista",       type:"1" },
-  { label:"Exigente",         type:"1" },
-
-  // Tipo 2
-  { label:"Atencioso(a)",     type:"2" },
-  { label:"Prestativo(a)",    type:"2" },
-  { label:"Acolhedor(a)",     type:"2" },
-  { label:"Generoso(a)",      type:"2" },
-
-  // Tipo 3
-  { label:"Determinado(a)",   type:"3" },
-  { label:"Competitivo(a)",   type:"3" },
-  { label:"Focado(a)",        type:"3" },
-  { label:"Produtivo(a)",     type:"3" },
-
-  // Tipo 4
-  { label:"Autêntico(a)",     type:"4" },
-  { label:"Sensível",         type:"4" },
-  { label:"Criativo(a)",      type:"4" },
-  { label:"Profundo(a)",      type:"4" },
-
-  // Tipo 5
-  { label:"Analítico(a)",     type:"5" },
-  { label:"Observador(a)",    type:"5" },
-  { label:"Reservado(a)",     type:"5" },
-  { label:"Investigativo(a)", type:"5" },
-
-  // Tipo 6
-  { label:"Leal",             type:"6" },
-  { label:"Cauteloso(a)",     type:"6" },
-  { label:"Responsável",      type:"6" },
-  { label:"Prevenido(a)",     type:"6" },
-
-  // Tipo 7
-  { label:"Curioso(a)",       type:"7" },
-  { label:"Entusiasmado(a)",  type:"7" },
-  { label:"Versátil",         type:"7" },
-  { label:"Aventureiro(a)",   type:"7" },
-
-  // Tipo 8
-  { label:"Mandão / Mandona", type:"8" },
-  { label:"Impositivo(a)",    type:"8" },
-  { label:"Dominante",        type:"8" },
-  { label:"Protetor(a)",      type:"8" },
-
-  // Tipo 9
-  { label:"Tranquilo(a)",     type:"9" },
-  { label:"Harmonioso(a)",    type:"9" },
-  { label:"Paciente",         type:"9" },
-  { label:"Conciliador(a)",   type:"9" },
+  "Comprometido(a)","Cuidadoso(a)","Determinado(a)","Competitivo(a)","Analítico(a)","Reservado(a)",
+  "Organizado(a)","Prático(a)","Independente","Leal","Intenso(a)","Flexível",
+  "Persistente","Disciplinado(a)","Observador(a)","Responsável","Focado(a)","Autêntico(a)",
+  "Sensível","Protetor(a)","Questionador(a)","Cauteloso(a)","Otimista","Entusiasmado(a)",
+  "Firme","Mandão","Tranquilo(a)","Harmonioso(a)","Criativo(a)","Curioso(a)","Possibilidades","Aventureiro(a)"
 ];
 
 /* ================= HELPERS ================= */
@@ -179,23 +128,13 @@ function getList(){
 }
 function setList(l){ localStorage.setItem(STORAGE_KEY, JSON.stringify(l)); }
 
-function getLead(){
-  try{
-    const a = localStorage.getItem(LEAD_KEY_MAIN);
-    if(a) return JSON.parse(a);
-  }catch(_){}
-  try{
-    const b = localStorage.getItem(LEAD_KEY_FALLBACK);
-    if(b) return JSON.parse(b);
-  }catch(_){}
-  return null;
-}
-
-function upsertCheckbox(name, checked, type){
+/**
+ * Salva no formato certo para a matriz:
+ * { pergunta: "P4_02", alternativa: "S" }
+ */
+function upsertCheckbox(name, checked){
   let l = getList().filter(x => x.pergunta !== name);
-  if(checked){
-    l.push({ pergunta:name, alternativa:type });
-  }
+  if(checked) l.push({ pergunta:name, alternativa:"S" });
   setList(l);
 }
 
@@ -206,39 +145,35 @@ function countSelected(){
 /* ================= BUILD ================= */
 function build(){
   const grid = document.getElementById("gridWords");
-  grid.innerHTML = palavras.map((obj,i)=>{
+  grid.innerHTML = palavras.map((p,i)=>{
     const n = String(i+1).padStart(2,"0");
     return `
-      <div class="word" data-type="${obj.type}">
-        <span><small>${i+1}.</small> ${obj.label}</span>
-        <input type="checkbox" name="P4_${n}">
+      <div class="word" data-name="P4_${n}">
+        <span><small>${i+1}.</small> ${p}</span>
+        <input type="checkbox" name="P4_${n}" />
       </div>
     `;
   }).join("");
 
   grid.querySelectorAll(".word").forEach(card=>{
     const cb = card.querySelector("input");
-    const type = card.getAttribute("data-type");
-
     card.addEventListener("click", e=>{
-      if(e.target === cb) return;
-      cb.checked = !cb.checked;
+      if(e.target !== cb) cb.checked = !cb.checked;
       card.classList.toggle("selected", cb.checked);
-      upsertCheckbox(cb.name, cb.checked, type);
+      upsertCheckbox(cb.name, cb.checked);
     });
-
     cb.addEventListener("change",()=>{
       card.classList.toggle("selected", cb.checked);
-      upsertCheckbox(cb.name, cb.checked, type);
+      upsertCheckbox(cb.name, cb.checked);
     });
   });
 }
 
 function restore(){
   getList().forEach(r=>{
-    if(!r.pergunta.startsWith("P4_")) return;
+    if(!String(r.pergunta||"").startsWith("P4_")) return;
     const cb = document.querySelector(`input[name="${r.pergunta}"]`);
-    if(cb){
+    if(cb && r.alternativa === "S"){
       cb.checked = true;
       cb.closest(".word").classList.add("selected");
     }
@@ -247,11 +182,6 @@ function restore(){
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
-  if(!getLead()){
-    window.location.href = "../index.html";
-    return;
-  }
-
   build();
   restore();
 
