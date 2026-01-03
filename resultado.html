@@ -515,21 +515,92 @@
     return res.json();
   }
 
-  function computeScore(respostas, matriz){
-    const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-    respostas.forEach(r=>{
-      const key = `${r.pergunta}_${r.alternativa}`;
-      const w = matriz[key];
-      if(!w) return;
-      for(const t in w) score[t] += w[t];
-    });
-    return score;
+  // =============================
+  // SCORE (agora inclui P4)
+  // + desempate por página
+  // =============================
+  function makeScoreObj(){
+    return {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
   }
 
-  function top3FromScore(score){
+  function pageOf(pergunta){
+    if(!pergunta) return "X";
+    if(pergunta.startsWith("P1_")) return "P1";
+    if(pergunta.startsWith("P2_")) return "P2";
+    if(pergunta.startsWith("P3_")) return "P3";
+    if(pergunta.startsWith("P4_")) return "P4";
+    return "X";
+  }
+
+  function computeScore(respostas, matriz){
+    const score = makeScoreObj();
+
+    // buckets para desempate (prioridade: P3 > P2 > P1 > P4)
+    const bucket = {
+      P1: makeScoreObj(),
+      P2: makeScoreObj(),
+      P3: makeScoreObj(),
+      P4: makeScoreObj()
+    };
+
+    respostas.forEach(r=>{
+      const p = String(r.pergunta || "");
+      const a = String(r.alternativa || "");
+
+      // ✅ Page 4: alternativa já é o próprio tipo ("1".."9")
+      if(p.startsWith("P4_")){
+        const t = Number(a);
+        if(t>=1 && t<=9){
+          score[t] += 1;
+          bucket.P4[t] += 1;
+        }
+        return;
+      }
+
+      // ✅ Pages 1-3: usa matriz.json
+      const key = `${p}_${a}`;
+      const w = matriz[key];
+      if(!w) return;
+
+      const pg = pageOf(p);
+      for(const t in w){
+        const tv = Number(w[t]) || 0;
+        score[t] += tv;
+        if(bucket[pg]) bucket[pg][t] += tv;
+      }
+    });
+
+    return { score, bucket };
+  }
+
+  function top3FromScore(scoreObj){
+    const { score, bucket } = scoreObj;
+
+    function cmp(a,b){
+      // 1) score total
+      if(b.v !== a.v) return b.v - a.v;
+
+      // 2) desempate por páginas (P3 > P2 > P1 > P4)
+      const tA = a.t, tB = b.t;
+      const p3 = (bucket.P3[tB]||0) - (bucket.P3[tA]||0);
+      if(p3) return p3;
+
+      const p2 = (bucket.P2[tB]||0) - (bucket.P2[tA]||0);
+      if(p2) return p2;
+
+      const p1 = (bucket.P1[tB]||0) - (bucket.P1[tA]||0);
+      if(p1) return p1;
+
+      const p4 = (bucket.P4[tB]||0) - (bucket.P4[tA]||0);
+      if(p4) return p4;
+
+      // 3) determinístico: menor tipo primeiro
+      return a.t - b.t;
+    }
+
     return Object.entries(score)
       .map(([t,v])=>({ t:Number(t), v:Number(v) }))
-      .sort((a,b)=>b.v-a.v)
+      .sort(cmp)
       .slice(0,3);
   }
 
@@ -755,8 +826,10 @@
       }
 
       const matriz = await loadMatriz();
-      const score = computeScore(respostas, matriz);
-      const top3 = top3FromScore(score);
+
+      // ✅ agora retorna { score, bucket }
+      const scoreObj = computeScore(respostas, matriz);
+      const top3 = top3FromScore(scoreObj);
 
       __lastTop3 = top3;
 
@@ -764,7 +837,8 @@
       renderPie(top3);
       renderTextos(top3);
 
-      await sendEmailPlain(user || {}, top3, score);
+      // ✅ email usa score total (com P4 junto)
+      await sendEmailPlain(user || {}, top3, scoreObj.score);
 
     }catch(err){
       console.error(err);
