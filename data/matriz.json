@@ -1,808 +1,289 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quem sou eu — Resultado</title>
-
-  <style>
-    :root{
-      --bg:#f3f5f8;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e5e7eb;
-      --shadow:0 12px 34px rgba(15,23,42,.10);
-      --accent:#f07a00;
-
-      --t1:#9ca3af;
-      --t2:#22c55e;
-      --t3:#d4af37;
-      --t4:#7c3aed;
-      --t5:#0877ff;
-      --t6:#8b6b4a;
-      --t7:#f97316;
-      --t8:#111827;
-      --t9:#38bdf8;
-
-      --soft:#fff6ee;
-      --softBorder:rgba(240,122,0,.35);
-      --wa:#25D366;
-      --waHover:#1fb857;
-    }
-
-    *{ box-sizing:border-box }
-    body{
-      margin:0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
-
-    .wrap{
-      max-width:1150px;
-      margin:0 auto;
-      padding:18px 16px 40px;
-    }
-
-    .mailBanner{
-      display:none;
-      margin:0 0 12px;
-      background:#E8F0FF;
-      border:1px solid rgba(27,75,140,.25);
-      color:#1B4B8C;
-      border-radius:14px;
-      padding:12px 14px;
-      font-size:13px;
-      line-height:1.35;
-      font-weight:800;
-    }
-
-    .header{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:14px;
-    }
-    .title h1{
-      margin:0;
-      font-size:44px;
-      letter-spacing:-.5px;
-    }
-    .title p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-
-    .card h2{
-      margin:0 0 8px;
-      font-size:18px;
-    }
-
-    .topArea{
-      display:grid;
-      grid-template-columns: 1fr 320px;
-      gap:14px;
-      align-items:stretch;
-      margin-top:12px;
-    }
-
-    .topList{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-
-    .topItem{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      background:#fff;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .topItem .left{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      z-index:1;
-    }
-
-    .rankLine{
-      font-weight:900;
-      font-size:16px;
-      color:#0b2a5b;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .badge{
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      display:inline-block;
-      border:1px solid rgba(0,0,0,.18);
-    }
-
-    .typeName{
-      font-weight:800;
-      font-size:13px;
-      color:#0f172a;
-    }
-
-    .desc{
-      font-size:13px;
-      color:#475569;
-      line-height:1.35;
-      max-width:520px;
-    }
-
-    .score{
-      font-weight:900;
-      font-size:22px;
-      color:#0f172a;
-      min-width:56px;
-      text-align:right;
-      z-index:1;
-    }
-
-    .pieCard{
-      border:1px solid var(--border);
-      border-radius:14px;
-      background:#fff;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      gap:10px;
-      min-height: 220px;
-    }
-
-    .summaryCard{
-      margin-top:14px;
-      background:var(--soft);
-      border:1px solid var(--softBorder);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:var(--shadow);
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .summaryRow{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:flex-start;
-      justify-content:space-between;
-    }
-
-    .miniInfo{
-      flex:1;
-      min-width:240px;
-      background:#fff;
-      border:1px solid rgba(15,23,42,.10);
-      border-radius:14px;
-      padding:12px;
-    }
-    .miniInfo .k{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:4px;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.3px;
-    }
-    .miniInfo .v{
-      font-size:14px;
-      color:#0f172a;
-      font-weight:800;
-      line-height:1.35;
-      word-break:break-word;
-    }
-
-    .quickBox{
-      flex:1.2;
-      min-width:260px;
-      background:#fff;
-      border:1px solid rgba(15,23,42,.10);
-      border-radius:14px;
-      padding:12px;
-    }
-    .quickTitle{
-      font-weight:900;
-      margin:0 0 6px;
-      color:#0f172a;
-      font-size:14px;
-    }
-    .quick{
-      font-size:13px;
-      color:#334155;
-      line-height:1.35;
-    }
-
-    .btnRow{ display:flex; justify-content:flex-end; }
-
-    .btnWA{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding:12px 14px;
-      border-radius:14px;
-      font-weight:900;
-      border:0;
-      cursor:pointer;
-      font-size:14px;
-      background:var(--wa);
-      color:#fff;
-      min-width:240px;
-    }
-    .btnWA:hover{ background:var(--waHover); }
-
-    .section{ margin-top:16px; }
-    .section h3{
-      margin:0 0 10px;
-      font-size:20px;
-      letter-spacing:-.2px;
-    }
-    .funcCard{
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
-    .funcText{
-      margin:0;
-      color:#334155;
-      font-size:14px;
-      line-height:1.55;
-    }
-
-    .gridBottom{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-top:14px;
-    }
-
-    .listBox{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
-    .listBox h4{
-      margin:0 0 10px;
-      font-size:16px;
-      font-weight:900;
-      color:#0f172a;
-    }
-    ul{
-      margin:0;
-      padding-left:18px;
-      color:#0f172a;
-      font-size:14px;
-      line-height:1.6;
-    }
-    li{ margin:4px 0; }
-
-    .error{
-      display:none;
-      background:#fff7f7;
-      border:1px solid rgba(220,38,38,.25);
-      color:#b91c1c;
-      border-radius:14px;
-      padding:12px;
-      margin-top:12px;
-      font-size:13px;
-      line-height:1.35;
-    }
-
-    @media (max-width: 980px){
-      .title h1{ font-size:36px; }
-      .topArea{ grid-template-columns:1fr; }
-      .btnRow{ justify-content:stretch; }
-      .btnWA{ width:100%; }
-    }
-    @media (max-width: 520px){
-      .title h1{ font-size:30px; }
-      .topItem{ padding:12px; }
-      .desc{ font-size:12.5px; }
-      .gridBottom{ grid-template-columns:1fr; }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-
-    <div id="mailBanner" class="mailBanner">📩 Enviando e-mail do resultado…</div>
-
-    <div class="header">
-      <div class="title">
-        <h1>Quem sou eu</h1>
-        <p>Abaixo está o seu resultado com base nas respostas do formulário.</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Sua tríade principal (Top 3)</h2>
-      <div style="color:var(--muted); font-size:13px;">Os 3 tipos mais altos (ordem decrescente).</div>
-
-      <div class="topArea">
-        <div>
-          <div id="topList" class="topList"></div>
-          <div id="errBox" class="error"></div>
-        </div>
-
-        <div class="pieCard">
-          <div id="pieWrap" style="display:flex;justify-content:center;align-items:center;"></div>
-        </div>
-      </div>
-
-      <div class="summaryCard">
-        <div class="summaryRow">
-          <div class="miniInfo">
-            <div class="k">Dados</div>
-            <div class="v" id="dadosUser">Carregando…</div>
-          </div>
-
-          <div class="quickBox">
-            <div class="quickTitle">Resumo do resultado</div>
-            <div class="quick" id="quickResumo">Carregando…</div>
-          </div>
-        </div>
-
-        <div class="btnRow">
-          <button class="btnWA" id="btnWhats">Enviar no WhatsApp</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Como você tende a funcionar</h3>
-      <div class="funcCard">
-        <p class="funcText" id="comoFunciona">Carregando…</p>
-      </div>
-    </div>
-
-    <div class="gridBottom">
-      <div class="listBox">
-        <h4>Pontos fortes</h4>
-        <ul id="listaFortes"></ul>
-      </div>
-
-      <div class="listBox">
-        <h4>Pontos de atenção</h4>
-        <ul id="listaAtencao"></ul>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-<script>
-  // ===========================
-  // EmailJS (suas credenciais)
-  // ===========================
-  const EMAILJS_SERVICE_ID = "service_676gehg";
-  const EMAILJS_TEMPLATE_ID = "template_jkxxqz5";
-  const EMAILJS_PUBLIC_KEY  = "dMy7jYWSeALMDD7TI";
-
-  // ===== Keys do projeto =====
-  const RESPOSTAS_KEY = "respostas";
-  const LEAD_KEY_MAIN = "atrius_eneagrama_lead_v1";
-  const LEAD_KEY_FALLBACK_1 = "lead";
-  const LEAD_KEY_FALLBACK_2 = "atrius_lead";
-  const LEAD_KEY_FALLBACK_3 = "lead_inicial";
-
-  const MATRIZ_URL = "data/matriz.json";
-  const WHATS_NUMBER = "555195912176";
-
-  function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-
-  const TYPE_COLORS = {
-    1: cssVar("--t1"), 2: cssVar("--t2"), 3: cssVar("--t3"),
-    4: cssVar("--t4"), 5: cssVar("--t5"), 6: cssVar("--t6"),
-    7: cssVar("--t7"), 8: cssVar("--t8"), 9: cssVar("--t9")
-  };
-
-  const TIPOS = {
-    1:{ nome:"Perfeccionista / Reformador", curta:"Gosta de fazer certo, com padrão e qualidade." },
-    2:{ nome:"Prestativo / Cuidador", curta:"Gosta de ajudar, cuidar e manter as pessoas bem." },
-    3:{ nome:"Realizador", curta:"Gosta de resultado, metas e reconhecimento." },
-    4:{ nome:"Individualista", curta:"Gosta de ser único, profundo e verdadeiro." },
-    5:{ nome:"Investigador", curta:"Gosta de entender, pensar e agir com estratégia." },
-    6:{ nome:"Leal", curta:"Gosta de segurança, confiança e previsibilidade." },
-    7:{ nome:"Entusiasta", curta:"Gosta de novidades, energia e possibilidades." },
-    8:{ nome:"Desafiador", curta:"Gosta de força, autonomia e fala direto." },
-    9:{ nome:"Pacificador", curta:"Gosta de paz, harmonia e evitar conflito." }
-  };
-
-  const INFLUENCIA = {
-    1:"mais cobrança e vontade de fazer certo",
-    2:"mais cuidado com pessoas e vontade de ajudar",
-    3:"mais foco em resultado e em ser reconhecido",
-    4:"mais emoção, sensibilidade e profundidade",
-    5:"mais análise, estratégia e reserva",
-    6:"mais cautela, antecipação e busca de segurança",
-    7:"mais energia e vontade de fazer algo novo",
-    8:"mais firmeza e decisão rápida",
-    9:"mais calma e evitar briga"
-  };
-
-  const TYPE_FORTES = {
-    1:["Cuida da qualidade e do capricho","Organiza e coloca ordem no que está bagunçado","É responsável e confiável","Percebe erros e evita retrabalho","Gosta de melhorar as coisas aos poucos","Cumpre regras e combinações","Mantém padrão mesmo com pressão"],
-    2:["Ajuda as pessoas de verdade","Percebe quando alguém não está bem","Cria um clima bom no time","É prestativo(a) e acolhedor(a)","Tem facilidade para cooperar","Faz o outro se sentir importante","Resolve coisas com gentileza"],
-    3:["Entrega resultado e faz acontecer","Foca em metas e não se perde","Tem energia e ritmo de trabalho","Se adapta para dar certo","Motiva o time pelo exemplo","Aprende rápido o que precisa para vencer","Gosta de crescer e evoluir"],
-    4:["Tem criatividade e ideias diferentes","Percebe sentimentos com facilidade","Busca ser verdadeiro(a) e autêntico(a)","Tem profundidade e visão humana","Gosta de fazer com personalidade","Enxerga detalhes que outros não veem","Valoriza sentido e propósito"],
-    5:["Pensa com lógica e clareza","Aprende rápido e gosta de entender","Analisa antes de agir","É estratégico(a) e cuidadoso(a)","Faz perguntas inteligentes","Se concentra bem quando precisa","Trabalha bem sozinho(a)"],
-    6:["É leal e comprometido(a)","Vê riscos antes de acontecer","Planeja e evita surpresas","Cumpre o que promete","Protege o time e a empresa","Tem senso de responsabilidade","Gosta de trabalhar com segurança"],
-    7:["Traz energia e bom humor","Vê possibilidades e soluções","É criativo(a) para resolver problemas","Se adapta fácil a mudanças","Gosta de aprender coisas novas","Tem iniciativa e movimento","Anima o ambiente"],
-    8:["É firme e decidido(a)","Protege o que é importante","Não foge de problema","Tem coragem para falar o que precisa","Toma atitude rápido","Segura pressão e aguenta pancada","Defende limites com força"],
-    9:["É calmo(a) e equilibrado(a)","Evita brigas e acalma o ambiente","Escuta bem as pessoas","Ajuda o time a se entender","Tem paciência e constância","Gosta de harmonia e paz","Trabalha bem em grupo"]
-  };
-
-  const TYPE_ATENCAO = {
-    1:["Pode se cobrar demais","Pode ficar rígido(a) e inflexível","Pode criticar muito (a si e aos outros)","Pode ter dificuldade de relaxar","Pode ficar impaciente com erros","Pode querer tudo do seu jeito","Pode ter dificuldade em delegar"],
-    2:["Pode dizer “sim” demais e se sobrecarregar","Pode ter medo de desagradar","Pode esperar reconhecimento e se frustrar","Pode se envolver demais com problemas dos outros","Pode guardar mágoa sem falar","Pode se esquecer de si","Pode evitar conversas difíceis"],
-    3:["Pode ficar ansioso(a) por resultado","Pode querer fazer tudo rápido demais","Pode se comparar com os outros","Pode confundir valor pessoal com desempenho","Pode colocar imagem acima do descanso","Pode ter dificuldade de parar e respirar","Pode ficar irritado(a) com lentidão"],
-    4:["Pode oscilar no humor","Pode levar as coisas para o lado pessoal","Pode se sentir incompreendido(a)","Pode desanimar com rotina","Pode focar mais no sentimento do que na ação","Pode comparar e se frustrar","Pode se isolar quando dói"],
-    5:["Pode pensar demais e agir de menos","Pode se fechar e falar pouco","Pode parecer frio(a) sem querer","Pode evitar pedir ajuda","Pode guardar tudo para si","Pode se desligar das emoções","Pode ter dificuldade com mudanças rápidas"],
-    6:["Pode ter ansiedade e preocupação","Pode duvidar muito antes de decidir","Pode imaginar o pior cenário","Pode precisar de garantia o tempo todo","Pode desconfiar com facilidade","Pode travar com medo de errar","Pode buscar validação demais"],
-    7:["Pode se dispersar e perder foco","Pode começar e não terminar","Pode evitar assuntos difíceis","Pode agir por impulso","Pode exagerar no ritmo e cansar","Pode ter dificuldade com rotina","Pode prometer mais do que dá conta"],
-    8:["Pode falar duro e assustar","Pode querer controlar demais","Pode perder a paciência rápido","Pode bater de frente sem necessidade","Pode ter dificuldade de mostrar fragilidade","Pode ser “8 ou 80” em decisões","Pode insistir quando seria melhor ouvir"],
-    9:["Pode adiar decisões (procrastinar)","Pode evitar conflito e engolir incômodo","Pode dizer “tanto faz” e perder prioridade","Pode aceitar demais para manter paz","Pode demorar para reagir","Pode acumular stress em silêncio","Pode se acomodar quando precisa agir"]
-  };
-
-  function uniq(arr){
-    const out=[]; const seen=new Set();
-    for(const x of arr){
-      const k=(x||"").toLowerCase().trim();
-      if(!k || seen.has(k)) continue;
-      seen.add(k); out.push(x);
-    }
-    return out;
-  }
-  function limit(arr, n){ return arr.slice(0,n); }
-
-  function getLocalJSON(key){
-    try{ return JSON.parse(localStorage.getItem(key) || "null"); }
-    catch{ return null; }
-  }
-
-  function getLead(){
-    const keys = [LEAD_KEY_MAIN, LEAD_KEY_FALLBACK_1, LEAD_KEY_FALLBACK_2, LEAD_KEY_FALLBACK_3];
-    for(const k of keys){
-      const obj = getLocalJSON(k);
-      if(obj && (obj.email || obj.nome || obj.nome_completo || obj.nomeCompleto)) return obj;
-    }
-    return null;
-  }
-
-  function showError(msg){
-    const el = document.getElementById("errBox");
-    el.style.display = "block";
-    el.textContent = msg;
-  }
-
-  async function loadMatriz(){
-    const res = await fetch(MATRIZ_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("Não consegui carregar data/matriz.json. Verifique se o arquivo existe na pasta /data.");
-    return res.json();
-  }
-
-  // ============================================================
-  // ✅ CORREÇÃO 1: pesos por página (reduz distorção P3 e P4)
-  // ✅ CORREÇÃO 2: tolerância para P4 salvo antigo ("1") vs "S"
-  // ============================================================
-  const PAGE_WEIGHT = { P1: 1.0, P2: 1.0, P3: 0.6, P4: 0.25 };
-
-  function weightForPergunta(pergunta){
-    const prefix = String(pergunta || "").slice(0,2); // "P1", "P2", "P3", "P4"
-    return PAGE_WEIGHT[prefix] ?? 1.0;
-  }
-
-  function normalizeAlternativa(pergunta, alternativa){
-    // Page 4 deve virar "S" (matriz usa P4_XX_S)
-    if(String(pergunta||"").startsWith("P4_")){
-      // algumas versões antigas salvavam "1" ou "true"
-      if(alternativa === "S") return "S";
-      if(alternativa === "1" || alternativa === 1) return "S";
-      if(alternativa === true || alternativa === "true") return "S";
-      // se vier qualquer coisa diferente, ainda tratamos como marcado
-      return "S";
-    }
-    return String(alternativa ?? "").trim();
-  }
-
-  function computeScore(respostas, matriz){
-    const score = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-
-    respostas.forEach(r=>{
-      const pergunta = r?.pergunta;
-      const altNorm = normalizeAlternativa(pergunta, r?.alternativa);
-      const key = `${pergunta}_${altNorm}`;
-
-      const w = matriz[key];
-      if(!w) return;
-
-      const mult = weightForPergunta(pergunta);
-      for(const t in w){
-        score[t] += (Number(w[t]) || 0) * mult;
-      }
-    });
-
-    return score;
-  }
-
-  function top3FromScore(score){
-    return Object.entries(score)
-      .map(([t,v])=>({ t:Number(t), v:Number(v) }))
-      .sort((a,b)=>b.v-a.v)
-      .slice(0,3);
-  }
-
-  function renderTop3(top3){
-    const list = document.getElementById("topList");
-    list.innerHTML = top3.map((it, idx)=>{
-      const tipo = TIPOS[it.t];
-      const rank = (idx+1) + "º — Tipo " + it.t;
-      const color = TYPE_COLORS[it.t] || "#111827";
-      return `
-        <div class="topItem">
-          <div class="left">
-            <div class="rankLine">
-              <span class="badge" style="background:${color}"></span>
-              ${rank}
-            </div>
-            <div class="typeName">${tipo?.nome || ""}</div>
-            <div class="desc">${tipo?.curta || ""}</div>
-          </div>
-          <div class="score">${Number(it.v).toFixed(1).replace(".0","")}</div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function polarToCartesian(cx, cy, r, angleDeg){
-    const rad = (angleDeg - 90) * Math.PI / 180.0;
-    return { x: cx + (r * Math.cos(rad)), y: cy + (r * Math.sin(rad)) };
-  }
-  function arcPath(cx, cy, r, startAngle, endAngle){
-    const start = polarToCartesian(cx, cy, r, endAngle);
-    const end = polarToCartesian(cx, cy, r, startAngle);
-    const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
-    return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
-  }
-
-  function renderPie(top3){
-    const total = top3.reduce((s,x)=>s+x.v,0) || 1;
-    let start = 0;
-    const cx = 110, cy = 110, r = 92;
-
-    const slices = top3.map((it)=>{
-      const frac = it.v / total;
-      const angle = frac * 360;
-      const end = start + angle;
-      const path = arcPath(cx, cy, r, start, end);
-      start = end;
-      return { t: it.t, v: it.v, path };
-    });
-
-    const svg = `
-      <svg width="220" height="220" viewBox="0 0 220 220" aria-label="Gráfico de pizza">
-        ${slices.map(s=>{
-          const color = TYPE_COLORS[s.t] || "#111827";
-          return `<path d="${s.path}" fill="${color}" stroke="white" stroke-width="3"></path>`;
-        }).join("")}
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(15,23,42,.10)" stroke-width="1"/>
-      </svg>
-    `;
-    document.getElementById("pieWrap").innerHTML = svg;
-  }
-
-  function renderTextos(top3){
-    const t1 = top3[0].t, t2 = top3[1].t, t3 = top3[2].t;
-
-    document.getElementById("quickResumo").textContent =
-      `Seu tipo mais forte é o Tipo ${t1}, com influência dos Tipos ${t2} e ${t3}.`;
-
-    const n1 = TIPOS[t1]?.nome || `Tipo ${t1}`;
-    const n2 = TIPOS[t2]?.nome || `Tipo ${t2}`;
-    const n3 = TIPOS[t3]?.nome || `Tipo ${t3}`;
-
-    const funcionamento =
-      `Sua tríade principal é <b>${t1}-${t2}-${t3}</b>. ` +
-      `O seu tipo dominante é o <b>Tipo ${t1}</b> (${n1}). ` +
-      `Na prática, isso aparece como: <b>${TIPOS[t1]?.curta || ""}</b>.` +
-      `<br><br>` +
-      `A influência do <b>Tipo ${t2}</b> (${n2}) traz <b>${INFLUENCIA[t2]}</b>. ` +
-      `A influência do <b>Tipo ${t3}</b> (${n3}) traz <b>${INFLUENCIA[t3]}</b>.` +
-      `<br><br>` +
-      `No dia a dia, essa mistura faz você alternar o jeito de agir conforme a situação.`;
-
-    document.getElementById("comoFunciona").innerHTML = funcionamento;
-
-    const fortes = limit(
-      uniq([...(TYPE_FORTES[t1]||[]), ...(TYPE_FORTES[t2]||[]), ...(TYPE_FORTES[t3]||[])]),
-      7
-    );
-    const atencao = limit(
-      uniq([...(TYPE_ATENCAO[t1]||[]), ...(TYPE_ATENCAO[t2]||[]), ...(TYPE_ATENCAO[t3]||[])]),
-      7
-    );
-
-    document.getElementById("listaFortes").innerHTML = fortes.map(x=>`<li>${x}</li>`).join("");
-    document.getElementById("listaAtencao").innerHTML = atencao.map(x=>`<li>${x}</li>`).join("");
-  }
-
-  function formatUserLine(user){
-    if(!user) return "Nome: —<br>Email: —<br>Telefone: —";
-    const nome = user.nome_completo || user.nomeCompleto || user.nome || "—";
-    const email = user.email || "—";
-    const tel = user.telefone || "—";
-    return `Nome: ${nome}<br>Email: ${email}<br>Telefone: ${tel}`;
-  }
-
-  function buildWhatsText(user, top3){
-    const nome = (user?.nome_completo || user?.nomeCompleto || user?.nome || "—");
-    const email = (user?.email || "—");
-    const telefone = (user?.telefone || "—");
-
-    const linhas = [];
-    linhas.push("✅ *Resultado do Teste (Eneagrama)*");
-    linhas.push("");
-    linhas.push(`*Nome:* ${nome}`);
-    linhas.push(`*Email:* ${email}`);
-    linhas.push(`*Telefone:* ${telefone}`);
-    linhas.push("");
-    linhas.push("*Top 3 (Tríade):*");
-    linhas.push(`1) Tipo ${top3[0].t} — ${Number(top3[0].v).toFixed(1).replace(".0","")}`);
-    linhas.push(`2) Tipo ${top3[1].t} — ${Number(top3[1].v).toFixed(1).replace(".0","")}`);
-    linhas.push(`3) Tipo ${top3[2].t} — ${Number(top3[2].v).toFixed(1).replace(".0","")}`);
-    linhas.push("");
-    linhas.push(`Resumo: Tipo ${top3[0].t} dominante, com influência de ${top3[1].t} e ${top3[2].t}.`);
-    return linhas.join("\n");
-  }
-
-  function normalizeToPercent(score){
-    const vals = Object.values(score).map(v=>Number(v)||0);
-    const max = Math.max(...vals, 0) || 1;
-    const pct = {};
-    for(let t=1;t<=9;t++){
-      pct[t] = Math.round(((Number(score[t])||0) / max) * 100);
-    }
-    return pct;
-  }
-
-  async function sendEmailPlain(user, top3, score){
-    const banner = document.getElementById("mailBanner");
-    try{
-      banner.style.display = "block";
-      banner.textContent = "📩 Enviando e-mail do resultado…";
-
-      const nome = String((user?.nome_completo || user?.nomeCompleto || user?.nome || "Participante")).trim() || "Participante";
-      const telefone = String(user?.telefone || "—");
-      const email = String(user?.email || "—");
-
-      const triade = `${top3?.[0]?.t ?? "?"}-${top3?.[1]?.t ?? "?"}-${top3?.[2]?.t ?? "?"}`;
-      const pct = normalizeToPercent(score);
-
-      const templateParams = {
-        assunto: `Resultado eneagrama - ${nome}`,
-        nome_completo: nome,
-        telefone: telefone,
-        email: email,
-        triade: triade,
-        t1: String(pct[1] ?? 0),
-        t2: String(pct[2] ?? 0),
-        t3: String(pct[3] ?? 0),
-        t4: String(pct[4] ?? 0),
-        t5: String(pct[5] ?? 0),
-        t6: String(pct[6] ?? 0),
-        t7: String(pct[7] ?? 0),
-        t8: String(pct[8] ?? 0),
-        t9: String(pct[9] ?? 0),
-      };
-
-      console.log("✅ EmailJS templateParams:", templateParams);
-
-      emailjs.init(EMAILJS_PUBLIC_KEY);
-
-      const resp = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
-
-      console.log("✅ EmailJS send response:", resp);
-
-      banner.textContent = "✅ E-mail enviado com sucesso!";
-      setTimeout(()=> banner.style.display = "none", 1600);
-
-    }catch(err){
-      console.error("❌ Erro EmailJS:", err);
-      banner.style.display = "block";
-      banner.style.background = "#fff7f7";
-      banner.style.borderColor = "rgba(220,38,38,.25)";
-      banner.style.color = "#b91c1c";
-      banner.textContent = "❌ Não foi possível enviar o e-mail. Veja o console.";
-    }
-  }
-
-  let __lastTop3 = null;
-  let __lastUser = null;
-
-  document.getElementById("btnWhats").addEventListener("click", ()=>{
-    if(!__lastTop3){
-      alert("Ainda estou carregando o resultado. Tente novamente em 1 segundo.");
-      return;
-    }
-    const msg = buildWhatsText(__lastUser, __lastTop3);
-    const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
-    window.open(url, "_blank");
-  });
-
-  (async function init(){
-    try{
-      console.log("Init resultado.html");
-      const respostas = getLocalJSON(RESPOSTAS_KEY) || [];
-      const user = getLead();
-
-      __lastUser = user;
-      document.getElementById("dadosUser").innerHTML = formatUserLine(user);
-
-      if(!Array.isArray(respostas) || respostas.length === 0){
-        showError("Não encontrei respostas salvas. Volte e finalize o teste novamente.");
-        document.getElementById("quickResumo").textContent = "Sem dados.";
-        document.getElementById("comoFunciona").textContent = "Sem dados.";
-        return;
-      }
-
-      const matriz = await loadMatriz();
-      const score = computeScore(respostas, matriz);
-      const top3 = top3FromScore(score);
-
-      __lastTop3 = top3;
-
-      renderTop3(top3);
-      renderPie(top3);
-      renderTextos(top3);
-
-      await sendEmailPlain(user || {}, top3, score);
-
-    }catch(err){
-      console.error(err);
-      showError(err?.message || String(err));
-      document.getElementById("quickResumo").textContent = "Erro ao carregar.";
-      document.getElementById("comoFunciona").textContent = "Erro ao carregar.";
-    }
-  })();
-</script>
-</body>
-</html>
+{
+  "P1_01_A": { "1": 3, "6": 1 },
+  "P1_01_B": { "3": 3, "8": 1 },
+  "P1_01_C": { "7": 3, "5": 1 },
+
+  "P1_02_A": { "1": 3, "6": 1 },
+  "P1_02_B": { "3": 3, "8": 1 },
+  "P1_02_C": { "5": 3, "8": 1 },
+
+  "P1_03_A": { "1": 3, "6": 1 },
+  "P1_03_B": { "3": 3, "7": 1 },
+  "P1_03_C": { "5": 3, "9": 1 },
+
+  "P1_04_A": { "1": 3, "6": 1 },
+  "P1_04_B": { "3": 3, "8": 1 },
+  "P1_04_C": { "8": 3, "5": 1 },
+
+  "P1_05_A": { "1": 3, "6": 1 },
+  "P1_05_B": { "3": 3, "8": 1 },
+  "P1_05_C": { "9": 2, "5": 2 },
+
+  "P1_06_A": { "1": 3, "6": 1 },
+  "P1_06_B": { "3": 3, "8": 1 },
+  "P1_06_C": { "5": 3, "9": 1 },
+
+  "P1_07_A": { "6": 3, "1": 1 },
+  "P1_07_B": { "3": 3, "8": 1 },
+  "P1_07_C": { "5": 3, "9": 1 },
+
+  "P1_08_A": { "1": 3, "6": 1 },
+  "P1_08_B": { "3": 3, "8": 1 },
+  "P1_08_C": { "7": 2, "9": 2 },
+
+  "P1_09_A": { "1": 3, "6": 1 },
+  "P1_09_B": { "8": 2, "3": 2 },
+  "P1_09_C": { "5": 2, "7": 2 },
+
+  "P1_10_A": { "1": 3, "6": 1 },
+  "P1_10_B": { "3": 3, "8": 1 },
+  "P1_10_C": { "7": 2, "8": 2 },
+
+  "P1_11_A": { "1": 3, "6": 1 },
+  "P1_11_B": { "3": 3, "2": 1 },
+  "P1_11_C": { "5": 3, "8": 1 },
+
+  "P1_12_A": { "6": 3, "1": 1 },
+  "P1_12_B": { "3": 3, "8": 1 },
+  "P1_12_C": { "5": 2, "9": 2 },
+
+  "P1_13_A": { "1": 3, "6": 1 },
+  "P1_13_B": { "3": 3, "8": 1 },
+  "P1_13_C": { "5": 3, "4": 1 },
+
+  "P1_14_A": { "1": 3, "2": 1 },
+  "P1_14_B": { "3": 3, "6": 1 },
+  "P1_14_C": { "7": 2, "9": 2 },
+
+  "P1_15_A": { "1": 3, "6": 1 },
+  "P1_15_B": { "3": 3, "7": 1 },
+  "P1_15_C": { "8": 3, "5": 1 },
+
+  "P2_01_A": { "1": 3, "8": 1 },
+  "P2_01_B": { "3": 3, "2": 1 },
+  "P2_01_C": { "8": 2, "5": 2 },
+
+  "P2_02_A": { "1": 3, "6": 1 },
+  "P2_02_B": { "3": 3, "7": 1 },
+  "P2_02_C": { "8": 3, "5": 1 },
+
+  "P2_03_A": { "1": 3, "6": 1 },
+  "P2_03_B": { "3": 3, "2": 1 },
+  "P2_03_C": { "5": 3, "9": 1 },
+
+  "P2_04_A": { "1": 3, "8": 1 },
+  "P2_04_B": { "3": 3, "8": 1 },
+  "P2_04_C": { "5": 3, "6": 1 },
+
+  "P2_05_A": { "6": 3, "1": 1 },
+  "P2_05_B": { "3": 3, "6": 1 },
+  "P2_05_C": { "8": 3, "1": 1 },
+
+  "P2_06_A": { "1": 3, "6": 1 },
+  "P2_06_B": { "3": 3, "8": 1 },
+  "P2_06_C": { "8": 3, "5": 1 },
+
+  "P2_07_A": { "1": 3, "6": 1 },
+  "P2_07_B": { "3": 3, "2": 1 },
+  "P2_07_C": { "8": 3, "6": 1 },
+
+  "P2_08_A": { "1": 3, "6": 1 },
+  "P2_08_B": { "3": 3, "6": 1 },
+  "P2_08_C": { "8": 2, "5": 2 },
+
+  "P2_09_A": { "1": 3, "6": 1 },
+  "P2_09_B": { "3": 3, "4": 1 },
+  "P2_09_C": { "5": 3, "8": 1 },
+
+  "P2_10_A": { "1": 3, "6": 1 },
+  "P2_10_B": { "8": 2, "3": 2 },
+  "P2_10_C": { "9": 2, "5": 2 },
+
+  "P2_11_A": { "1": 3, "6": 1 },
+  "P2_11_B": { "3": 3, "2": 1 },
+  "P2_11_C": { "6": 2, "8": 2 },
+
+  "P2_12_A": { "1": 3, "6": 1 },
+  "P2_12_B": { "3": 3, "2": 1 },
+  "P2_12_C": { "8": 2, "7": 2 },
+
+  "P2_13_A": { "1": 3, "6": 1 },
+  "P2_13_B": { "3": 3, "8": 1 },
+  "P2_13_C": { "8": 3, "5": 1 },
+
+  "P2_14_A": { "1": 3, "6": 1 },
+  "P2_14_B": { "3": 3, "6": 1 },
+  "P2_14_C": { "8": 3, "1": 1 },
+
+  "P2_15_A": { "1": 3, "6": 1 },
+  "P2_15_B": { "4": 2, "3": 2 },
+  "P2_15_C": { "6": 2, "8": 2 },
+
+  "P3_01_A": { "6": 3, "1": 1 },
+  "P3_01_B": { "8": 2, "3": 1, "7": 1 },
+
+  "P3_02_A": { "5": 3, "6": 1 },
+  "P3_02_B": { "8": 2, "3": 2 },
+
+  "P3_03_A": { "1": 3, "6": 1 },
+  "P3_03_B": { "7": 2, "8": 1, "4": 1 },
+
+  "P3_04_A": { "9": 3, "2": 1 },
+  "P3_04_B": { "8": 3, "1": 1 },
+
+  "P3_05_A": { "5": 3, "9": 1 },
+  "P3_05_B": { "3": 3, "7": 1 },
+
+  "P3_06_A": { "6": 3, "5": 1 },
+  "P3_06_B": { "7": 3, "3": 1 },
+
+  "P3_07_A": { "1": 3, "6": 1 },
+  "P3_07_B": { "3": 3, "8": 1 },
+
+  "P3_08_A": { "9": 3, "6": 1 },
+  "P3_08_B": { "4": 3, "8": 1 },
+
+  "P3_09_A": { "5": 3, "6": 1 },
+  "P3_09_B": { "8": 3, "3": 1 },
+
+  "P3_10_A": { "2": 3, "9": 1 },
+  "P3_10_B": { "3": 3, "8": 1 },
+
+  "P3_11_A": { "8": 3, "3": 1 },
+  "P3_11_B": { "9": 3, "2": 1 },
+
+  "P3_12_A": { "6": 3, "5": 1 },
+  "P3_12_B": { "7": 3, "9": 1 },
+
+  "P3_13_A": { "1": 2, "6": 1, "4": 1 },
+  "P3_13_B": { "7": 2, "9": 1, "3": 1 },
+
+  "P3_14_A": { "1": 3, "6": 1 },
+  "P3_14_B": { "7": 3, "8": 1 },
+
+  "P3_15_A": { "8": 3, "3": 1 },
+  "P3_15_B": { "9": 3, "7": 1 },
+
+  "P3_16_A": { "4": 3, "7": 1 },
+  "P3_16_B": { "3": 3, "8": 1 },
+
+  "P3_17_A": { "1": 3, "6": 1 },
+  "P3_17_B": { "7": 3, "9": 1 },
+
+  "P3_18_A": { "5": 3, "9": 1 },
+  "P3_18_B": { "8": 3, "3": 1 },
+
+  "P3_19_A": { "6": 3, "2": 1 },
+  "P3_19_B": { "8": 2, "5": 2 },
+
+  "P3_20_A": { "6": 3, "2": 1 },
+  "P3_20_B": { "5": 3, "8": 1 },
+
+  "P4_01_S": { "6": 2, "1": 1, "3": 1 },
+  "P4_01_1": { "6": 2, "1": 1, "3": 1 },
+
+  "P4_02_S": { "6": 2, "2": 1, "1": 1 },
+  "P4_02_1": { "6": 2, "2": 1, "1": 1 },
+
+  "P4_03_S": { "3": 3, "8": 1 },
+  "P4_03_1": { "3": 3, "8": 1 },
+
+  "P4_04_S": { "3": 2, "8": 2 },
+  "P4_04_1": { "3": 2, "8": 2 },
+
+  "P4_05_S": { "5": 3, "6": 1 },
+  "P4_05_1": { "5": 3, "6": 1 },
+
+  "P4_06_S": { "5": 2, "9": 2 },
+  "P4_06_1": { "5": 2, "9": 2 },
+
+  "P4_07_S": { "1": 2, "6": 2 },
+  "P4_07_1": { "1": 2, "6": 2 },
+
+  "P4_08_S": { "1": 2, "5": 1, "8": 1 },
+  "P4_08_1": { "1": 2, "5": 1, "8": 1 },
+
+  "P4_09_S": { "8": 2, "5": 1, "7": 1 },
+  "P4_09_1": { "8": 2, "5": 1, "7": 1 },
+
+  "P4_10_S": { "6": 3, "2": 1 },
+  "P4_10_1": { "6": 3, "2": 1 },
+
+  "P4_11_S": { "8": 2, "4": 2 },
+  "P4_11_1": { "8": 2, "4": 2 },
+
+  "P4_12_S": { "7": 2, "9": 2 },
+  "P4_12_1": { "7": 2, "9": 2 },
+
+  "P4_13_S": { "3": 2, "1": 1, "8": 1 },
+  "P4_13_1": { "3": 2, "1": 1, "8": 1 },
+
+  "P4_14_S": { "1": 2, "3": 1, "6": 1 },
+  "P4_14_1": { "1": 2, "3": 1, "6": 1 },
+
+  "P4_15_S": { "5": 3, "9": 1 },
+  "P4_15_1": { "5": 3, "9": 1 },
+
+  "P4_16_S": { "6": 2, "1": 1, "3": 1 },
+  "P4_16_1": { "6": 2, "1": 1, "3": 1 },
+
+  "P4_17_S": { "3": 2, "5": 2 },
+  "P4_17_1": { "3": 2, "5": 2 },
+
+  "P4_18_S": { "4": 3, "7": 1 },
+  "P4_18_1": { "4": 3, "7": 1 },
+
+  "P4_19_S": { "4": 2, "2": 2 },
+  "P4_19_1": { "4": 2, "2": 2 },
+
+  "P4_20_S": { "2": 2, "6": 1, "8": 1 },
+  "P4_20_1": { "2": 2, "6": 1, "8": 1 },
+
+  "P4_21_S": { "6": 2, "5": 2 },
+  "P4_21_1": { "6": 2, "5": 2 },
+
+  "P4_22_S": { "6": 3, "5": 1 },
+  "P4_22_1": { "6": 3, "5": 1 },
+
+  "P4_23_S": { "7": 3, "9": 1 },
+  "P4_23_1": { "7": 3, "9": 1 },
+
+  "P4_24_S": { "7": 3, "3": 1 },
+  "P4_24_1": { "7": 3, "3": 1 },
+
+  "P4_25_S": { "8": 3, "3": 1 },
+  "P4_25_1": { "8": 3, "3": 1 },
+
+  "P4_26_S": { "8": 2, "3": 2 },
+  "P4_26_1": { "8": 2, "3": 2 },
+
+  "P4_27_S": { "9": 3, "2": 1 },
+  "P4_27_1": { "9": 3, "2": 1 },
+
+  "P4_28_S": { "9": 3, "2": 1 },
+  "P4_28_1": { "9": 3, "2": 1 },
+
+  "P4_29_S": { "4": 2, "7": 2 },
+  "P4_29_1": { "4": 2, "7": 2 },
+
+  "P4_30_S": { "5": 2, "7": 2 },
+  "P4_30_1": { "5": 2, "7": 2 },
+
+  "P4_31_S": { "1": 2, "3": 2 },
+  "P4_31_1": { "1": 2, "3": 2 },
+
+  "P4_32_S": { "2": 3, "9": 1 },
+  "P4_32_1": { "2": 3, "9": 1 },
+
+  "P4_33_S": { "3": 3, "8": 1 },
+  "P4_33_1": { "3": 3, "8": 1 },
+
+  "P4_34_S": { "4": 2, "7": 2 },
+  "P4_34_1": { "4": 2, "7": 2 },
+
+  "P4_35_S": { "5": 2, "9": 2 },
+  "P4_35_1": { "5": 2, "9": 2 },
+
+  "P4_36_S": { "7": 2, "3": 2 },
+  "P4_36_1": { "7": 2, "3": 2 }
+}
